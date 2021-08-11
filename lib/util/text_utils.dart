@@ -291,8 +291,13 @@ Widget translationLine(
                                 translation.getOppositeHeadword),
                           );
                         },
-                        child: Icon(Icons.open_in_new,
-                            color: Theme.of(context).accentIconTheme.color),
+                        child: Indent(
+                          size: 8,
+                          child: Icon(
+                            Icons.open_in_new,
+                            color: Theme.of(context).accentIconTheme.color,
+                          ),
+                        ),
                       )
                   ],
                 ),
