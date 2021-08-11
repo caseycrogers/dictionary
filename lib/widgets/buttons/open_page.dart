@@ -5,7 +5,7 @@ class OpenPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Icon(
-      Icons.arrow_forward_ios,
+      Icons.keyboard_arrow_right,
       color: Theme.of(context).accentIconTheme.color,
       size: Theme.of(context).accentIconTheme.size,
     );

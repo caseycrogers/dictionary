@@ -2,14 +2,17 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+
 import 'package:rogers_dictionary/entry_database/entry_builders.dart';
+import 'package:rogers_dictionary/i18n.dart' as i18n;
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
 import 'package:rogers_dictionary/util/overflow_markdown_base.dart';
 import 'package:rogers_dictionary/util/string_utils.dart';
 import 'package:rogers_dictionary/widgets/dictionary_chip.dart';
-import 'package:rogers_dictionary/widgets/buttons/favorites_button.dart';
+import 'package:rogers_dictionary/widgets/buttons/bookmarks_button.dart';
 
+import 'constants.dart';
 import 'overflow_markdown.dart';
 
 TextStyle headline1(BuildContext context) => Theme.of(context)
@@ -206,7 +209,6 @@ List<Widget> _translationParentheticals(
       .expand((q) => [
             normal1Text(context, ' '),
             DictionaryChip(
-              padding: const EdgeInsets.only(top: 4),
               child: Text(q, style: italic1(context).copyWith(fontSize: 20)),
             )
           ])
@@ -216,7 +218,10 @@ List<Widget> _translationParentheticals(
 Widget partOfSpeechText(BuildContext context, String text, bool preview) {
   var pos = ['na', ''].contains(text) ? '-' : text;
   if (!preview) {
-    pos = EntryUtils.longPartOfSpeech(pos);
+    pos = EntryUtils.longPartOfSpeech(
+      pos,
+      Localizations.localeOf(context).languageCode == 'es',
+    );
   }
   return Container(
     padding: const EdgeInsets.only(right: 8),
@@ -256,8 +261,7 @@ Widget translationLine(
     ],
     if (translation.namingStandard.isNotEmpty)
       _namingStandard(context, translation.namingStandard, false),
-    ..._translationParentheticals(
-        context, translation.parentheticalQualifier),
+    ..._translationParentheticals(context, translation.parentheticalQualifier),
   ];
   return Row(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -278,9 +282,8 @@ Widget translationLine(
                   children: [
                     wraps.last,
                     if (translation.oppositeHeadword.isNotEmpty)
-                      IconButton(
-                        padding: const EdgeInsets.only(bottom: 2),
-                        onPressed: () {
+                      InkWell(
+                        onTap: () {
                           DictionaryModel.readFrom(context)
                               .onOppositeHeadwordSelected(
                             context,
@@ -288,8 +291,8 @@ Widget translationLine(
                                 translation.getOppositeHeadword),
                           );
                         },
-                        icon: const Icon(Icons.open_in_new, color: Colors.grey),
-                        visualDensity: VisualDensity.compact,
+                        child: Icon(Icons.open_in_new,
+                            color: Theme.of(context).accentIconTheme.color),
                       )
                   ],
                 ),
@@ -334,14 +337,24 @@ Widget irregularInflectionsTable(
     return Container();
   }
   return DictionaryChip(
-    childPadding: const EdgeInsets.only(left: 4),
+    childPadding: const EdgeInsets.all(kPad / 2),
     color: Colors.grey.shade200,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        bold1Text(context, 'Irregular Inflections:'),
-        ...inflections.map(
-          (i) => OverflowMarkdown(i.trim()),
+        bold1Text(context, '${i18n.irregularInflections.get(context)}:'),
+        Table(
+          defaultColumnWidth: const IntrinsicColumnWidth(),
+          children: [
+            ...inflections.map(
+              (i) => TableRow(
+                children: [
+                  OverflowMarkdown('${i.split('* ').first.trim()}* '),
+                  Indent(child: OverflowMarkdown(i.split('* ').last.trim())),
+                ],
+              ),
+            ),
+          ],
         ),
       ],
     ),
@@ -353,13 +366,12 @@ Widget examplePhraseText(BuildContext context, List<String> examplePhrases) {
     return Container();
   }
   return DictionaryChip(
-    padding: const EdgeInsets.only(top: 8),
-    childPadding: const EdgeInsets.only(left: 4),
+    childPadding: const EdgeInsets.all(kPad / 2),
     color: Colors.grey.shade200,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Example Phrases:', style: italic1(context)),
+        Text('${i18n.examplePhrases.get(context)}:', style: italic1(context)),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: examplePhrases
@@ -398,7 +410,7 @@ Widget headwordLine(
             mainAxisSize: MainAxisSize.min,
             children: [
               wraps[wraps.length - 1],
-              FavoritesButton(entry: entry),
+              BookmarksButton(entry: entry),
             ],
           ),
         ],

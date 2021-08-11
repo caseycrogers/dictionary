@@ -17,11 +17,11 @@ class TranslationPageModel {
     required this.translationMode,
   })  : searchPageModel = SearchPageModel(
           translationMode: translationMode,
-          isFavoritesOnly: false,
+          isBookmarkedOnly: false,
         ),
-        favoritesPageModel = SearchPageModel(
+        bookmarksPageModel = SearchPageModel(
           translationMode: translationMode,
-          isFavoritesOnly: true,
+          isBookmarkedOnly: true,
         ),
         layerLink = LayerLink();
 
@@ -30,7 +30,7 @@ class TranslationPageModel {
 
   final SearchPageModel searchPageModel;
 
-  final SearchPageModel favoritesPageModel;
+  final SearchPageModel bookmarksPageModel;
 
   final LayerLink layerLink;
 

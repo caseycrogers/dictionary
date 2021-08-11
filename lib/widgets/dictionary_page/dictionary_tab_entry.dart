@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 
 class DictionaryTabEntry extends StatefulWidget {
   const DictionaryTabEntry({
-    required this.selected,
+    required this.icon,
+    required this.text,
     required this.index,
-    Widget? unselected,
-  }) : unselected = unselected ?? selected;
+  });
 
-  final Widget selected;
-  final Widget unselected;
+  final Widget icon;
+  final String? text;
   final int index;
 
   @override
@@ -33,8 +33,10 @@ class _DictionaryTabEntryState extends State<DictionaryTabEntry> {
   }
 
   @override
-  Widget build(BuildContext context) =>
-      _controller.index == widget.index ? widget.selected : widget.unselected;
+  Widget build(BuildContext context) =>  Tab(
+          icon: widget.icon,
+          text: _controller.index == widget.index ? widget.text : null,
+        );
 
   void _onTabSelected() {
     if (mounted) {

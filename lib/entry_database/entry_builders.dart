@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:rogers_dictionary/entry_database/database_constants.dart';
+import 'package:rogers_dictionary/i18n_base.dart' as i18n;
 import 'package:rogers_dictionary/protobufs/database_version.pb.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
+import 'package:rogers_dictionary/util/string_utils.dart';
 
 typedef Headword = Entry_Headword;
 typedef Translation = Entry_Translation;
@@ -64,38 +66,44 @@ extension EntryUtils on Entry {
     );
   }
 
-  static final Map<String, String> _partOfSpeechAbbreviationMap = {
-    'adj': 'adjective',
-    'adv': 'adverb',
-    'conj': 'conjunction',
-    'deg': 'degree',
-    'f': 'feminine noun',
-    'fpl': 'feminine plural noun',
-    'f(pl)': 'feminine (plural) noun',
-    'inf': 'infinitive',
-    'interj': 'interjection',
-    'm': 'masculine noun',
-    'mf': 'masculine/feminine noun',
-    'mpl': 'masculine plural noun',
-    'm(pl)': 'masculine (plural) noun',
-    'n': 'noun',
-    'npl': 'plural noun',
-    'n(pl)': '(plural) noun',
-    'pref': 'prefix',
-    'prep': 'preposition',
-    'v': 'verb',
-    'vi': 'intransitive verb',
-    'vr': 'reflexive verb',
-    'vt': 'transitive verb',
-    '-': 'phrase',
-    '': '',
+  static final Map<String, i18n.Message> _partOfSpeechAbbreviationMap = {
+    'adj': i18n.adjective,
+    'adv': i18n.adverb,
+    'conj': i18n.conjunction,
+    'deg': i18n.degree,
+    'f': i18n.feminineNoun,
+    'fpl': i18n.femininePluralNoun,
+    'f(pl)': i18n.femininePluralNounParen,
+    'inf': i18n.infinitive,
+    'interj': i18n.interjection,
+    'm': i18n.masculineNoun,
+    'mf': i18n.masculineFeminineNoun,
+    'mpl': i18n.masculinePluralNoun,
+    'm(pl)': i18n.masculinePluralNounParen,
+    'n': i18n.noun,
+    'npl': i18n.pluralNoun,
+    'n(pl)': i18n.pluralNounParen,
+    'pref': i18n.prefix,
+    'prep': i18n.preposition,
+    'v': i18n.verb,
+    'vi': i18n.intransitiveVerb,
+    'vr': i18n.reflexiveVerb,
+    'vt': i18n.transitiveVerb,
+    '-': i18n.phrase,
+    '': i18n.blank,
   };
 
-  static String longPartOfSpeech(String partOfSpeech) {
-    return partOfSpeech.replaceAll(' ', '').splitMapJoin(
+  static String longPartOfSpeech(
+    String partOfSpeech,
+    bool isSpanish,
+  ) {
+    return partOfSpeech
+        .replaceAll(' ', '')
+        .splitMapJoin(
           RegExp('[&,]|phrase'),
           onNonMatch: (String partOfSpeechComponent) =>
-              _partOfSpeechAbbreviationMap[partOfSpeechComponent] ??
+              _partOfSpeechAbbreviationMap[partOfSpeechComponent]
+                  ?.getFor(isSpanish) ??
               '$partOfSpeechComponent*',
           onMatch: (Match separator) {
             //  == '&' ? ' and ' : ', ',
@@ -110,6 +118,11 @@ extension EntryUtils on Entry {
                 return separator.group(0)!;
             }
           },
+        )
+        .replaceAllMapped(
+          RegExp('(.*) phrase'),
+          (match) => '${i18n.phrase.getFor(isSpanish)} '
+              '${match.group(1)?.replaceAll('sustantivo', 'nominal').feminized ?? ''}',
         );
   }
 }

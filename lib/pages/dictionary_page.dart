@@ -16,12 +16,12 @@ import 'package:rogers_dictionary/widgets/dictionary_page/dictionary_tab_bar_vie
 import 'package:rogers_dictionary/widgets/dictionary_page/dictionary_tab_entry.dart';
 import 'package:rogers_dictionary/widgets/dictionary_page/dictionary_top_bar.dart';
 
-import 'favorites_page.dart';
+import 'bookmarks_page.dart';
 import 'search_page.dart';
 
 enum DictionaryTab {
   search,
-  favorites,
+  bookmarks,
   dialogues,
 }
 
@@ -42,7 +42,7 @@ class _DictionaryPageState extends State<DictionaryPage> {
       child: DictionaryTabBarView(
         children: LinkedHashMap.from(<DictionaryTab, Widget>{
           DictionaryTab.search: SearchPage(),
-          DictionaryTab.favorites: FavoritesPage(),
+          DictionaryTab.bookmarks: BookmarksPage(),
           DictionaryTab.dialogues: DialoguesPage(),
         }),
       ),
@@ -70,31 +70,33 @@ class _DictionaryPageState extends State<DictionaryPage> {
                   data:
                       MediaQuery.of(context).removePadding(removeBottom: true),
                   child: TabBar(
-                    labelPadding: const EdgeInsets.all(kPad)
-                        .add(const EdgeInsets.only(bottom: kPad)),
-                    indicatorPadding:
-                        const EdgeInsets.only(bottom: 2 * kPad - 4),
+                    labelColor: Colors.white,
+                    unselectedLabelColor: Colors.white38,
+                    labelPadding:
+                        const EdgeInsets.symmetric(horizontal: 2 * kPad),
                     tabs: [
                       DictionaryTabEntry(
-                          selected: Text(i18n.dictionary.cap.get(context),
-                              style: const TextStyle(fontSize: 24)),
-                          index: 0),
+                        index: 0,
+                        icon: const Icon(Icons.search),
+                        text: i18n.dictionary.cap.get(context),
+                      ),
                       DictionaryTabEntry(
-                          selected: Text(i18n.favorites.cap.get(context),
-                              style: const TextStyle(fontSize: 24)),
-                          index: 1),
+                        index: 1,
+                        icon: const Icon(Icons.bookmarks_outlined),
+                        text: i18n.bookmarks.cap.get(context),
+                      ),
                       DictionaryTabEntry(
-                          selected: Text(i18n.dialogues.cap.get(context),
-                              style: const TextStyle(fontSize: 24)),
-                          index: 2),
+                        index: 2,
+                        icon: const Icon(Icons.speaker_notes_outlined),
+                        text: i18n.dialogues.cap.get(context),
+                      ),
                     ],
                     isScrollable: true,
                     indicator: const UnderlineTabIndicator(
                       borderSide: BorderSide(
                         color: Colors.white,
-                        width: 3,
+                        width: 2,
                       ),
-                      insets: EdgeInsets.symmetric(horizontal: 8),
                     ),
                   ),
                 ),

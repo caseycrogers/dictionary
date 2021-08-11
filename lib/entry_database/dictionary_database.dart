@@ -15,31 +15,31 @@ import 'package:rogers_dictionary/protobufs/entry.pb.dart';
 // A database interface for fetching dictionary entries.
 abstract class DictionaryDatabase {
   DictionaryDatabase()
-      : _englishFavoritesCache = {},
-        _spanishFavoritesCache = {};
+      : _englishBookmarksCache = {},
+        _spanishBookmarksCache = {};
 
   Future<DatabaseVersion> get version => rootBundle
       .loadString(join('assets', '$VERSION_FILE'))
       .then((v) => VersionUtils.fromString(v));
 
-  /// Indicates whether or not the favorites list may have changes since it was
+  /// Indicates whether or not the bookmarks list may have changes since it was
   /// last fetched.
-  final ValueNotifier<bool> _englishIsFavoritesDirty = ValueNotifier(true);
-  final ValueNotifier<bool> _spanishIsFavoritesDirty = ValueNotifier(true);
+  final ValueNotifier<bool> _englishIsBookmarksDirty = ValueNotifier(true);
+  final ValueNotifier<bool> _spanishIsBookmarksDirty = ValueNotifier(true);
 
-  ValueNotifier<bool> isFavoritesDirty(TranslationMode translationMode) {
+  ValueNotifier<bool> isBookmarksDirty(TranslationMode translationMode) {
     if (translationMode == TranslationMode.English) {
-      return _englishIsFavoritesDirty;
+      return _englishIsBookmarksDirty;
     }
-    return _spanishIsFavoritesDirty;
+    return _spanishIsBookmarksDirty;
   }
 
-  void _updateDirtyFavorites(TranslationMode translationMode, bool isDirty) {
-    isFavoritesDirty(translationMode).value = isDirty;
+  void _updateDirtyBookmarks(TranslationMode translationMode, bool isDirty) {
+    isBookmarksDirty(translationMode).value = isDirty;
   }
 
-  final Map<String, bool> _englishFavoritesCache;
-  final Map<String, bool> _spanishFavoritesCache;
+  final Map<String, bool> _englishBookmarksCache;
+  final Map<String, bool> _spanishBookmarksCache;
 
   // Fetch entries from the database.
   Stream<Entry> getEntries(
@@ -53,26 +53,26 @@ abstract class DictionaryDatabase {
       TranslationMode translationMode, String urlEncodedHeadword);
 
   @mustCallSuper
-  Future<bool> setFavorite(TranslationMode translationMode,
-      String urlEncodedHeadword, bool favorite) {
+  Future<bool> setBookmark(TranslationMode translationMode,
+      String urlEncodedHeadword, bool bookmark) {
     final bool? oldValue = _getCache(translationMode)[urlEncodedHeadword];
-    if (oldValue != null && oldValue != favorite) {
+    if (oldValue != null && oldValue != bookmark) {
       // Only dirty the cache if we're actually changing the value.
-      _updateDirtyFavorites(translationMode, true);
+      _updateDirtyBookmarks(translationMode, true);
     }
     return Future<bool>.value(
-      _getCache(translationMode)[urlEncodedHeadword] = favorite,
+      _getCache(translationMode)[urlEncodedHeadword] = bookmark,
     );
   }
 
   @mustCallSuper
-  Stream<Entry> getFavorites(TranslationMode translationMode,
+  Stream<Entry> getBookmarked(TranslationMode translationMode,
       {required int startAfter}) {
-    _updateDirtyFavorites(translationMode, false);
+    _updateDirtyBookmarks(translationMode, false);
     return const Stream.empty();
   }
 
-  bool isFavorite(
+  bool isBookmarked(
       TranslationMode translationMode, String urlEncodedHeadword) {
     return _getCache(translationMode)[urlEncodedHeadword]!;
   }
@@ -83,6 +83,6 @@ abstract class DictionaryDatabase {
 
   Map<String, bool> _getCache(TranslationMode translationMode) =>
       translationMode == TranslationMode.English
-          ? _englishFavoritesCache
-          : _spanishFavoritesCache;
+          ? _englishBookmarksCache
+          : _spanishBookmarksCache;
 }

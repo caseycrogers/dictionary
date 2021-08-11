@@ -6,6 +6,7 @@ import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/search_page_model.dart';
 import 'package:rogers_dictionary/models/translation_page_model.dart';
 import 'package:rogers_dictionary/pages/dictionary_page.dart';
+import 'package:rogers_dictionary/widgets/dictionary_banner_ad.dart';
 import 'package:rogers_dictionary/widgets/search_page/entry_view.dart';
 
 import 'entry_list.dart';
@@ -36,7 +37,7 @@ class SelectedEntrySwitcher extends StatelessWidget {
     return DictionaryModel.of(context).currentTab.value ==
             DictionaryTab.search
         ? t.searchPageModel
-        : t.favoritesPageModel;
+        : t.bookmarksPageModel;
   }
 }
 
@@ -74,7 +75,7 @@ class _PortraitPage extends StatelessWidget {
 
   PageStorageKey get _getKey {
     final String tabString =
-        searchPageModel.isFavoritesOnly ? 'favorites' : 'search';
+        searchPageModel.isBookmarkedOnly ? 'bookmarks' : 'search';
     return PageStorageKey<String>(
       '${tabString}_selected_entry_listenable_navigator',
     );
@@ -115,7 +116,7 @@ class _LandscapePage extends StatelessWidget {
 
   PageStorageKey get _getKey {
     final String tabString =
-        searchPageModel.isFavoritesOnly ? 'favorites' : 'search';
+        searchPageModel.isBookmarkedOnly ? 'bookmarks' : 'search';
     return PageStorageKey<String>(
       '${tabString}_selected_entry_listenable_navigator',
     );

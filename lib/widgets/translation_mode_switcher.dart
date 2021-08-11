@@ -5,6 +5,7 @@ import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/translation_page_model.dart';
 import 'package:rogers_dictionary/util/constants.dart';
+import 'package:rogers_dictionary/widgets/dictionary_banner_ad.dart';
 
 class TranslationModeSwitcher extends StatefulWidget {
   const TranslationModeSwitcher({required this.child, this.header});
@@ -61,6 +62,7 @@ class _TranslationModeSwitcherState extends State<TranslationModeSwitcher> {
       child: Column(
         children: [
           if (widget.header != null) widget.header!,
+          const DictionaryBannerAd(),
           Expanded(child: pages(context)),
         ],
       ),

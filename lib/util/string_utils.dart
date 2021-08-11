@@ -36,4 +36,9 @@ extension NotShittyString on String {
       .join('');
 
   String get enumString => split('.').last;
+
+  String get feminized => splitMapJoin(
+        ' ',
+        onNonMatch: (word) => word.replaceAll(RegExp('o\$'), 'a'),
+      );
 }

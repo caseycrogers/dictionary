@@ -9,6 +9,9 @@
         android:name="io.flutter.app.FlutterApplication"
         android:label="Rogers Spanish-English Medical Dictionary"
         android:icon="@mipmap/ic_launcher">
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="ca-app-pub-4592603753721232~5915474103"/>
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

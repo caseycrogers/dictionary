@@ -5,6 +5,7 @@ import 'package:flutter/rendering.dart';
 import 'package:collection/collection.dart';
 
 import 'package:rogers_dictionary/entry_database/entry_builders.dart';
+import 'package:rogers_dictionary/i18n.dart' as i18n;
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/search_page_model.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
@@ -78,7 +79,7 @@ class EntryView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(height: 48),
-        bold1Text(context, 'Related'),
+        bold1Text(context, i18n.related.get(context)),
         const Divider(),
         ..._entry.related.where((r) => r.isNotEmpty).map(
               (headword) => TextButton(
@@ -118,7 +119,7 @@ class EntryView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(height: 48),
-        bold1Text(context, 'Editorial Notes'),
+        bold1Text(context, i18n.editorialNotes.get(context)),
         const Divider(),
         ...notes,
       ],

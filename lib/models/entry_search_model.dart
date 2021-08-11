@@ -13,7 +13,7 @@ class EntrySearchModel {
   EntrySearchModel._(
     this.currSearchString,
     this._translationMode,
-    this._favoritesOnly,
+    this._isBookmarkedOnly,
   ) {
     _initializeStream();
     currSearchString.addListener(() {
@@ -24,14 +24,14 @@ class EntrySearchModel {
   EntrySearchModel.empty(
     ValueNotifier<String> currSearchString,
     TranslationMode translationMode,
-    bool favoritesOnly,
-  ) : this._(currSearchString, translationMode, favoritesOnly);
+    bool isBookmarkedOnly,
+  ) : this._(currSearchString, translationMode, isBookmarkedOnly);
 
   final TranslationMode _translationMode;
   final ValueNotifier<String> currSearchString;
   late Stream<Entry> _entryStream;
   LinkedHashSet<Entry> _entries = LinkedHashSet();
-  final bool _favoritesOnly;
+  final bool _isBookmarkedOnly;
 
   String get searchString => currSearchString.value;
 
@@ -41,7 +41,7 @@ class EntrySearchModel {
 
   bool get isEmpty => currSearchString.value.isEmpty;
 
-  bool get isFavoritesOnly => _favoritesOnly;
+  bool get isBookmarkedOnly => _isBookmarkedOnly;
 
   void resetStream() => _initializeStream();
 
@@ -49,8 +49,8 @@ class EntrySearchModel {
     Stream<Entry> stream;
     // Use a new hashSet to avoid any potential race conditions.
     final LinkedHashSet<Entry> hashSet = LinkedHashSet();
-    if (_favoritesOnly) {
-      stream = MyApp.db.getFavorites(_translationMode, startAfter: 0);
+    if (_isBookmarkedOnly) {
+      stream = MyApp.db.getBookmarked(_translationMode, startAfter: 0);
     } else {
       if (searchString.isEmpty) {
         stream = const Stream<Entry>.empty();

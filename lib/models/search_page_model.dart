@@ -11,15 +11,15 @@ import 'translation_page_model.dart';
 class SearchPageModel {
   SearchPageModel({
     required this.translationMode,
-    required bool isFavoritesOnly,
+    required bool isBookmarkedOnly,
   })  : currSelectedEntry = ValueNotifier<SelectedEntry?>(null),
         entrySearchModel = EntrySearchModel.empty(
           _currSearchString,
           translationMode,
-          isFavoritesOnly,
+          isBookmarkedOnly,
         ) {
-    MyApp.db.isFavoritesDirty(translationMode).addListener(() {
-      if (MyApp.db.isFavoritesDirty(translationMode).value == true) {
+    MyApp.db.isBookmarksDirty(translationMode).addListener(() {
+      if (MyApp.db.isBookmarksDirty(translationMode).value == true) {
         entrySearchModel.resetStream();
       }
     });
@@ -45,7 +45,7 @@ class SearchPageModel {
 
   bool get hasSelection => currSelectedEntry.value != null;
 
-  bool get isFavoritesOnly => entrySearchModel.isFavoritesOnly;
+  bool get isBookmarkedOnly => entrySearchModel.isBookmarkedOnly;
 
   String get searchString => entrySearchModel.searchString;
 

@@ -35,8 +35,8 @@ class SqfliteDatabase extends DictionaryDatabase {
   String _entryTable(TranslationMode translationMode) =>
       translationMode == TranslationMode.English ? ENGLISH : SPANISH;
 
-  String _favoritesTable(TranslationMode translationMode) =>
-      '${_entryTable(translationMode)}_favorites';
+  String _bookmarksTable(TranslationMode translationMode) =>
+      '${_entryTable(translationMode)}_bookmarks';
 
   @override
   Stream<Entry> getEntries(
@@ -48,7 +48,7 @@ class SqfliteDatabase extends DictionaryDatabase {
         translationMode,
         rawSearchString: searchString,
         startAfter: startAfter,
-        favoritesOnly: false,
+        isBookmarkedOnly: false,
       );
 
   @override
@@ -61,7 +61,7 @@ class SqfliteDatabase extends DictionaryDatabase {
       await db.rawQuery('''
  SELECT *,
         EXISTS(SELECT $URL_ENCODED_HEADWORD
-               FROM ${_favoritesTable(translationMode)}
+               FROM ${_bookmarksTable(translationMode)}
                WHERE $URL_ENCODED_HEADWORD = ${_entryTable(translationMode)}.$URL_ENCODED_HEADWORD) AS $IS_FAVORITE
  FROM ${_entryTable(translationMode)}
  WHERE $URL_ENCODED_HEADWORD = "$urlEncodedHeadword";''').then((List<
@@ -73,40 +73,40 @@ class SqfliteDatabase extends DictionaryDatabase {
   }
 
   @override
-  Stream<Entry> getFavorites(TranslationMode translationMode,
+  Stream<Entry> getBookmarked(TranslationMode translationMode,
       {required int startAfter}) {
-    super.getFavorites(translationMode, startAfter: startAfter);
+    super.getBookmarked(translationMode, startAfter: startAfter);
     return _getEntries(
       translationMode,
       rawSearchString: '',
       startAfter: startAfter,
-      favoritesOnly: true,
+      isBookmarkedOnly: true,
     );
   }
 
   @override
-  Future<bool> setFavorite(TranslationMode translationMode,
+  Future<bool> setBookmark(TranslationMode translationMode,
       String urlEncodedHeadword, bool favorite) async {
     final Database db = await _dbFuture;
     if (favorite) {
       await db.insert(
-        _favoritesTable(translationMode),
+        _bookmarksTable(translationMode),
         {URL_ENCODED_HEADWORD: urlEncodedHeadword},
       );
     } else {
       await db.delete(
-        _favoritesTable(translationMode),
+        _bookmarksTable(translationMode),
         where: '$URL_ENCODED_HEADWORD = "$urlEncodedHeadword"',
       );
     }
-    return super.setFavorite(translationMode, urlEncodedHeadword, favorite);
+    return super.setBookmark(translationMode, urlEncodedHeadword, favorite);
   }
 
   Entry _rowToEntry(String headword, TranslationMode translationMode,
       Map<String, Object?>? snapshot) {
     if (snapshot == null) {
       final Entry notFound = EntryUtils.notFound(headword);
-      super.setFavorite(
+      super.setBookmark(
         translationMode,
         notFound.headword.urlEncodedHeadword,
         false,
@@ -115,7 +115,7 @@ class SqfliteDatabase extends DictionaryDatabase {
     }
     assert(snapshot.containsKey(IS_FAVORITE));
     final Entry entry = Entry.fromBuffer(snapshot[ENTRY_BLOB] as List<int>);
-    super.setFavorite(translationMode, entry.headword.urlEncodedHeadword,
+    super.setBookmark(translationMode, entry.headword.urlEncodedHeadword,
         snapshot[IS_FAVORITE] == 1);
     return entry;
   }
@@ -156,7 +156,7 @@ class SqfliteDatabase extends DictionaryDatabase {
     TranslationMode translationMode, {
     required String rawSearchString,
     required int startAfter,
-    required bool favoritesOnly,
+    required bool isBookmarkedOnly,
   }) async* {
     final Database db = await _dbFuture;
     int offset = startAfter;
@@ -173,7 +173,7 @@ class SqfliteDatabase extends DictionaryDatabase {
   ${_relevancyScore(searchString, IRREGULAR_INFLECTIONS + WITHOUT_OPTIONALS)},
   headword''';
     String whereClause = '''$IS_FAVORITE''';
-    if (!favoritesOnly)
+    if (!isBookmarkedOnly)
       whereClause = '''
   (${_relevancyScore(searchString, HEADWORD)} != $NO_MATCH
    OR ${_relevancyScore(searchString, HEADWORD_ABBREVIATIONS)} != $NO_MATCH
@@ -187,7 +187,7 @@ class SqfliteDatabase extends DictionaryDatabase {
     while (true) {
       final String query = '''SELECT *,
        EXISTS(SELECT $URL_ENCODED_HEADWORD
-              FROM ${_favoritesTable(translationMode)}
+              FROM ${_bookmarksTable(translationMode)}
               WHERE $URL_ENCODED_HEADWORD = ${_entryTable(translationMode)}.$URL_ENCODED_HEADWORD) AS $IS_FAVORITE
 FROM ${_entryTable(translationMode)}
 WHERE $whereClause

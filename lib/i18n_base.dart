@@ -1,0 +1,105 @@
+import 'package:rogers_dictionary/util/string_utils.dart';
+
+//  Localization for DictionaryPage.
+_CapMessage english = _CapMessage('english', 'inglés');
+_CapMessage spanish = _CapMessage('spanish', 'español');
+
+_CapMessage dictionary = _CapMessage('terms', 'términos');
+_CapMessage bookmarks = _CapMessage('bookmarks', 'marcadores');
+_CapMessage dialogues = _CapMessage('dialogues', 'diálogos');
+
+// Localization for EntryList.
+_CapMessage search = _CapMessage('search', 'buscar');
+Message enterTextHint = Message('Enter text above to search for a translation ',
+    '¡Ingrese el texto arriba para buscar una traducción ');
+Message noBookmarksHint = Message('No results! Try favoriting an entry first ',
+    '¡No hay resultados! Primero, intenta marcar una entrada como favorita ');
+Message typosHint = Message('No results! Check for typos ',
+    '¡No hay resultados! Compruebe si hay errores tipográficos ');
+Message swipeLeft = Message('or swipe left for spanish mode.',
+    'o desliza el dedo hacia la izquierda para al modo español.');
+Message swipeRight = Message('or swipe right for english mode.',
+    'o deslice hacia la derecha para al modo inglés.');
+
+// Localizations for EntryView.
+Message irregularInflections =
+    Message('Irregular Inflections', 'Inflexiones Irregulares');
+Message examplePhrases =
+    Message('Example Phrases', 'Frases de Ejemplo');
+Message editorialNotes = Message('Editorial Notes', 'Notas Editoriales');
+Message related = Message('Related', 'Relacionado');
+
+// Localization for the help menu.
+Message giveFeedback = Message('give feedback', 'dar opinion');
+Message aboutThisApp = Message('about this app', 'acerca de esta aplicación');
+
+// Localization for getting feedback.
+_CapMessage feedback = _CapMessage('feedback', 'comentarios');
+_CapMessage feedbackType = _CapMessage('feedback type', 'tipo de comentarios');
+_CapMessage submit = _CapMessage('submit', 'enviar');
+Message opensEmail = Message(
+    '(opens your email app)', '(abre tu aplicación de correo electrónico)');
+
+_CapMessage translationError =
+    _CapMessage('translation error', 'error de traducción');
+_CapMessage bugReport = _CapMessage('bug report', 'informe de error');
+_CapMessage featureRequest =
+    _CapMessage('feature request', 'solicitud de función');
+_CapMessage other = _CapMessage('other', 'otro');
+
+// Parts of speech
+Message adjective = Message('adjective', 'adjetivo');
+Message adverb = Message('adverb', 'adverbio');
+Message conjunction = Message('conjunction', 'conjunción');
+Message degree = Message('degree', 'grado');
+Message feminineNoun = Message('feminine noun', 'sustantivo feminino');
+Message femininePluralNoun =
+    Message('feminine plural noun', 'sustantivo feminino plural');
+Message femininePluralNounParen =
+    Message('feminine (plural) noun', 'sustantivo feminino (plural)');
+Message infinitive = Message('infinitive', 'infinitivo');
+Message interjection = Message('interjection', 'interjección');
+Message masculineNoun = Message('masculine noun', 'sustantivo masculino');
+Message masculineFeminineNoun =
+    Message('masculine/feminine noun', 'sustantivo masculino/feminino');
+Message masculinePluralNoun =
+    Message('masculine plural noun', 'sustantivo masculino plural');
+Message masculinePluralNounParen =
+    Message('masculine (plural) noun', 'sustantivo masculino (plural)');
+Message noun = Message('noun', 'sustantivo');
+Message pluralNoun = Message('plural noun', 'sustantivo plural');
+Message pluralNounParen = Message('(plural) noun', 'sustantivo (plural)');
+Message prefix = Message('prefix', 'prefijo');
+Message preposition = Message('preposition', 'preposición');
+Message verb = Message('verb', 'verbo');
+Message intransitiveVerb = Message('intransitive verb', 'verbo intransitivo');
+Message reflexiveVerb = Message('reflexive verb', 'verbo reflexivo');
+Message transitiveVerb = Message('transitive verb', 'verbo transitivo');
+Message phrase = Message('phrase', 'frase');
+Message blank = Message('', '');
+
+// Misc.
+_CapMessage loading = _CapMessage('loading', 'cargando');
+
+class Message {
+  Message(this._en, this._es);
+
+  String getFor(bool isSpanish) {
+    return isSpanish ? _es : _en;
+  }
+
+  final String _en;
+  final String _es;
+}
+
+class _CapMessage extends Message {
+  _CapMessage(String english, String spanish, [Message? cap])
+      : cap = cap ??
+            Message(
+              english.capitalizeFirst,
+              spanish.capitalizeFirst,
+            ),
+        super(english, spanish);
+
+  final Message cap;
+}

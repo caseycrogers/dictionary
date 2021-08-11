@@ -38,12 +38,12 @@ class EntryList extends StatelessWidget {
         return AsyncListView<Entry>(
           // Maintains scroll state
           key: PageStorageKey('entry_list'
-              '-favorites${entrySearchModel.isFavoritesOnly}'
+              '-bookmarks${entrySearchModel.isBookmarkedOnly}'
               '-${searchPageModel.translationMode}'),
           padding: EdgeInsets.zero,
           noResultsWidgetBuilder: (context) => _noResultsWidget(
-              entrySearchModel.isFavoritesOnly
-                  ? i18n.noFavoritesHint.get(context)
+              entrySearchModel.isBookmarkedOnly
+                  ? i18n.noBookmarksHint.get(context)
                   : i18n.typosHint.get(context),
               context),
           initialData: entrySearchModel.entries,

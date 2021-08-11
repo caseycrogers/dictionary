@@ -123,7 +123,7 @@ Future<void> uploadEntries(bool debug, bool verbose, bool isSpanish) async {
       partOfSpeech = row[PART_OF_SPEECH]!;
       // Reset the qualifier
       dominantHeadwordParentheticalQualifier = '';
-      if (EntryUtils.longPartOfSpeech(partOfSpeech).contains('*'))
+      if (EntryUtils.longPartOfSpeech(partOfSpeech, false).contains('*'))
         print('$WARNING Unrecognized part of speech $partOfSpeech for headword '
             '${row[HEADWORD]} at line ${i + 2}');
     }
@@ -254,11 +254,11 @@ Future<void> wipeTables(Database db, String tableName) async {
     $ENTRY_BLOB BLOB NOT NULL
   )''');
   try {
-    await db.execute('''DROP TABLE ${tableName}_favorites''');
+    await db.execute('''DROP TABLE ${tableName}_bookmarks''');
   } on Exception catch (e) {
     print(e.toString());
   }
-  await db.execute('''CREATE TABLE ${tableName}_favorites(
+  await db.execute('''CREATE TABLE ${tableName}_bookmarks(
     $URL_ENCODED_HEADWORD STRING NOT NULL
   )''');
   return;

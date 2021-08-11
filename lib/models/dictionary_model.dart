@@ -127,8 +127,8 @@ class DictionaryModel {
     Entry? newEntry,
     SearchPageModel? pageModel,
   }) {
-    pageModel ??= isFavoritesOnly
-        ? _currModel.favoritesPageModel
+    pageModel ??= isBookmarkedOnly
+        ? _currModel.bookmarksPageModel
         : _currModel.searchPageModel;
     // Only update if the value has actually changed
     if (newUrlEncodedHeadword == pageModel.currSelectedHeadword) {
@@ -152,7 +152,7 @@ class DictionaryModel {
     pageModel.currSelectedEntry.value = selectedEntry;
   }
 
-  bool get isFavoritesOnly => currentTab.value == DictionaryTab.favorites;
+  bool get isBookmarkedOnly => currentTab.value == DictionaryTab.bookmarks;
 
   String get name {
     String? thirdTier;
@@ -161,7 +161,7 @@ class DictionaryModel {
         thirdTier =
             translationPageModel.value.searchPageModel.currSelectedHeadword;
         break;
-      case DictionaryTab.favorites:
+      case DictionaryTab.bookmarks:
         thirdTier =
             translationPageModel.value.searchPageModel.currSelectedHeadword;
         break;

@@ -9,6 +9,7 @@ import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 
@@ -33,6 +34,8 @@ Color primaryColor(TranslationMode translationMode) =>
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await MobileAds.instance.initialize();
+
   return runZonedGuarded<void>(
     () async {
       if (kDebugMode) {
@@ -87,17 +90,17 @@ class MyApp extends StatelessWidget {
             theme: ThemeData(
               selectedRowColor: Colors.grey.shade200,
               textTheme: TextTheme(
-                headline1: GoogleFonts.openSans(
+                headline1: GoogleFonts.roboto(
                     fontSize: 36,
                     color: Colors.black,
                     fontWeight: FontWeight.bold),
-                headline2: GoogleFonts.openSans(
+                headline2: GoogleFonts.roboto(
                     color: Colors.black,
                     fontSize: 28,
                     fontWeight: FontWeight.bold),
-                bodyText1: GoogleFonts.openSans(
+                bodyText1: GoogleFonts.roboto(
                     fontSize: 24, fontWeight: FontWeight.normal),
-                bodyText2: GoogleFonts.openSans(
+                bodyText2: GoogleFonts.roboto(
                     fontSize: 20, fontWeight: FontWeight.normal),
               ),
               iconTheme: const IconThemeData(
@@ -106,7 +109,7 @@ class MyApp extends StatelessWidget {
               ),
               accentIconTheme: const IconThemeData(
                 size: 28,
-                color: Colors.black38,
+                color: Colors.black45,
               ),
               backgroundColor: Colors.white,
             ),
