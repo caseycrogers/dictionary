@@ -5,7 +5,6 @@ import 'package:rogers_dictionary/entry_database/database_constants.dart';
 import 'package:rogers_dictionary/i18n_base.dart' as i18n;
 import 'package:rogers_dictionary/protobufs/database_version.pb.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
-import 'package:rogers_dictionary/util/string_utils.dart';
 
 typedef Headword = Entry_Headword;
 typedef Translation = Entry_Translation;
@@ -91,6 +90,19 @@ extension EntryUtils on Entry {
     'vt': i18n.transitiveVerb,
     '-': i18n.phrase,
     '': i18n.blank,
+    'adjphrase': i18n.blank,
+    'advphrase': i18n.adverbPhrase,
+    'degphrase': i18n.degreePhrase,
+    'nphrase': i18n.nounPhrase,
+    'nplphrase': i18n.pluralNounPhrase,
+    'prepphrase': i18n.prepositionPhrase,
+    'vphrase': i18n.verbPhrase,
+    'fphrase': i18n.feminineNounPhrase,
+    'fplphrase': i18n.femininePluralNounPhrase,
+    'mfphrase': i18n.masculineFeminineNounPhrase,
+    'mphrase': i18n.masculineNounPhrase,
+    'mplphrase': i18n.masculinePluralNounPhrase,
+    'm(pl)phrase': i18n.masculinePluralNounPhraseParen,
   };
 
   static String longPartOfSpeech(
@@ -100,7 +112,7 @@ extension EntryUtils on Entry {
     return partOfSpeech
         .replaceAll(' ', '')
         .splitMapJoin(
-          RegExp('[&,]|phrase'),
+          RegExp('[&,]'),
           onNonMatch: (String partOfSpeechComponent) =>
               _partOfSpeechAbbreviationMap[partOfSpeechComponent]
                   ?.getFor(isSpanish) ??
@@ -112,17 +124,10 @@ extension EntryUtils on Entry {
                 return ' and ';
               case ',':
                 return ', ';
-              case 'phrase':
-                return ' phrase';
               default:
                 return separator.group(0)!;
             }
           },
-        )
-        .replaceAllMapped(
-          RegExp('(.*) phrase'),
-          (match) => '${i18n.phrase.getFor(isSpanish)} '
-              '${match.group(1)?.replaceAll('sustantivo', 'nominal').feminized ?? ''}',
         );
   }
 }
@@ -136,6 +141,10 @@ extension TranslationUtils on Translation {
       oppositeHeadword == OPPOSITE_HEADWORD_SENTINEL
           ? content
           : oppositeHeadword;
+
+  String getLocalizedPartOfSpeech(bool isSpanish) {
+    return partOfSpeech.replaceAll('phrase', 'frase');
+  }
 }
 
 class EntryBuilder {

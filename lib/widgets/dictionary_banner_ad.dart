@@ -4,7 +4,10 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:rogers_dictionary/main.dart';
 
 class DictionaryBannerAd extends StatefulWidget {
-  const DictionaryBannerAd({Key? key}) : super(key: key);
+  const DictionaryBannerAd({Key? key, this.keywordNotifier})
+      : super(key: key);
+
+  final ValueNotifier<List<String>>? keywordNotifier;
 
   @override
   _DictionaryBannerAdState createState() => _DictionaryBannerAdState();
@@ -22,6 +25,23 @@ class _DictionaryBannerAdState extends State<DictionaryBannerAd> {
     'doctor',
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    widget.keywordNotifier?.addListener(() {
+      _updateKeywords(widget.keywordNotifier!.value);
+    });
+  }
+
+  Future<void> _updateKeywords(List<String> keywords) async {
+    final AdRequest request = (await _bannerAd).request;
+    request.keywords!.clear();
+    request.keywords!.addAll([
+      ..._universalKeywords,
+      ...keywords,
+    ]);
+  }
+
   late final Future<BannerAd> _bannerAd = _getBannerAd();
 
   Future<BannerAd> _getBannerAd() async {
@@ -32,9 +52,10 @@ class _DictionaryBannerAdState extends State<DictionaryBannerAd> {
     final BannerAd ad = BannerAd(
       adUnitId: _testAdUnitId,
       size: adSize ?? AdSize.banner,
-      request: const AdRequest(
+      request: AdRequest(
         keywords: [
-          ..._universalKeywords
+          ..._universalKeywords,
+          ...widget.keywordNotifier?.value ?? [],
         ],
         nonPersonalizedAds: true,
       ),
@@ -50,11 +71,6 @@ class _DictionaryBannerAdState extends State<DictionaryBannerAd> {
     );
     await ad.load();
     return ad;
-  }
-
-  @override
-  void initState() {
-    super.initState();
   }
 
   @override

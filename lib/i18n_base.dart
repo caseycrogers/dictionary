@@ -24,8 +24,7 @@ Message swipeRight = Message('or swipe right for english mode.',
 // Localizations for EntryView.
 Message irregularInflections =
     Message('Irregular Inflections', 'Inflexiones Irregulares');
-Message examplePhrases =
-    Message('Example Phrases', 'Frases de Ejemplo');
+Message examplePhrases = Message('Example Phrases', 'Frases de Ejemplo');
 Message editorialNotes = Message('Editorial Notes', 'Notas Editoriales');
 Message related = Message('Related', 'Relacionado');
 
@@ -52,23 +51,23 @@ Message adjective = Message('adjective', 'adjetivo');
 Message adverb = Message('adverb', 'adverbio');
 Message conjunction = Message('conjunction', 'conjunción');
 Message degree = Message('degree', 'grado');
-Message feminineNoun = Message('feminine noun', 'sustantivo feminino');
+Message feminineNoun = Message('feminine noun', 'nombre femenino');
 Message femininePluralNoun =
-    Message('feminine plural noun', 'sustantivo feminino plural');
+    Message('feminine plural noun', 'nombre femenino plural');
 Message femininePluralNounParen =
-    Message('feminine (plural) noun', 'sustantivo feminino (plural)');
+    Message('feminine (plural) noun', 'nombre femenino (plural)');
 Message infinitive = Message('infinitive', 'infinitivo');
 Message interjection = Message('interjection', 'interjección');
-Message masculineNoun = Message('masculine noun', 'sustantivo masculino');
+Message masculineNoun = Message('masculine noun', 'nombre masculino');
 Message masculineFeminineNoun =
-    Message('masculine/feminine noun', 'sustantivo masculino/feminino');
+    Message('masculine/feminine noun', 'nombre masculino/femenino');
 Message masculinePluralNoun =
-    Message('masculine plural noun', 'sustantivo masculino plural');
+    Message('masculine plural noun', 'nombre masculino plural');
 Message masculinePluralNounParen =
-    Message('masculine (plural) noun', 'sustantivo masculino (plural)');
-Message noun = Message('noun', 'sustantivo');
-Message pluralNoun = Message('plural noun', 'sustantivo plural');
-Message pluralNounParen = Message('(plural) noun', 'sustantivo (plural)');
+    Message('masculine (plural) noun', 'nombre masculino (plural)');
+Message noun = Message('noun', 'nombre');
+Message pluralNoun = Message('plural noun', 'nombre plural');
+Message pluralNounParen = Message('(plural) noun', 'nombre (plural)');
 Message prefix = Message('prefix', 'prefijo');
 Message preposition = Message('preposition', 'preposición');
 Message verb = Message('verb', 'verbo');
@@ -78,18 +77,57 @@ Message transitiveVerb = Message('transitive verb', 'verbo transitivo');
 Message phrase = Message('phrase', 'frase');
 Message blank = Message('', '');
 
+String asdf = '''
+adjective phrase/frase adjectival
+adverbial phrase/frase adverbial
+degree phrase/frase de grado
+noun phrase, noun plural phrase/frase nominal
+prepositional phrase/frase preposicional
+verb phrase/frase verbal
+
+p.o.s. which occur only on SE:
+f phrase/feminine phrase/frase femenina (OJOS! femEnina, not femInina)
+fpl phrase/feminine plural phrase/frase femenina (don't mention plural)
+mf phrase/mf phrase/frase mf*
+m phrase/masculine phrase/frase masculina
+mpl phrase/masculine plural phrase/frase masculina (don't mention plural)
+''';
+
+
+Message adjectivePhrase = Message('adjective phrase', 'frase adjectival');
+Message adverbPhrase = Message('adverb phrase', 'frase adverbial');
+Message degreePhrase = Message('degree phrase', 'frase de grado');
+Message nounPhrase = Message('noun phrase', 'frase nominal');
+Message pluralNounPhrase =
+    Message('plural noun phrase', 'frase nominal');
+Message prepositionPhrase =
+    Message('prepositional phrase', 'frase preposicional');
+Message verbPhrase = Message('verb phrase', 'frase verbal');
+Message feminineNounPhrase =
+    Message('feminine noun phrase', 'frase nominal femenina');
+Message femininePluralNounPhrase =
+    Message('feminine plural noun phrase', 'frase nominal femenina');
+Message masculineFeminineNounPhrase = Message(
+    'masculine/feminine noun phrase', 'frase nominal masculina/femenina');
+Message masculineNounPhrase =
+    Message('masculine noun phase', 'frase nominal masculina');
+Message masculinePluralNounPhrase =
+    Message('masculine plural phrase', 'frase nominal masculina');
+Message masculinePluralNounPhraseParen =
+    Message('masculine (plural) phrase', 'frase nominal masculina');
+
 // Misc.
 _CapMessage loading = _CapMessage('loading', 'cargando');
 
 class Message {
-  Message(this._en, this._es);
+  Message(this.en, this.es);
 
   String getFor(bool isSpanish) {
-    return isSpanish ? _es : _en;
+    return isSpanish ? es : en;
   }
 
-  final String _en;
-  final String _es;
+  final String en;
+  final String es;
 }
 
 class _CapMessage extends Message {

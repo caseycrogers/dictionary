@@ -86,9 +86,9 @@ class SqfliteDatabase extends DictionaryDatabase {
 
   @override
   Future<bool> setBookmark(TranslationMode translationMode,
-      String urlEncodedHeadword, bool favorite) async {
+      String urlEncodedHeadword, bool bookmark) async {
     final Database db = await _dbFuture;
-    if (favorite) {
+    if (bookmark) {
       await db.insert(
         _bookmarksTable(translationMode),
         {URL_ENCODED_HEADWORD: urlEncodedHeadword},
@@ -99,7 +99,7 @@ class SqfliteDatabase extends DictionaryDatabase {
         where: '$URL_ENCODED_HEADWORD = "$urlEncodedHeadword"',
       );
     }
-    return super.setBookmark(translationMode, urlEncodedHeadword, favorite);
+    return super.setBookmark(translationMode, urlEncodedHeadword, bookmark);
   }
 
   Entry _rowToEntry(String headword, TranslationMode translationMode,

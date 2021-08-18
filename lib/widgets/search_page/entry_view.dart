@@ -92,7 +92,7 @@ class EntryView extends StatelessWidget {
                   headword,
                   defaultStyle: Theme.of(context)
                       .textTheme
-                      .bodyText1!
+                      .bodyText2!
                       .copyWith(color: Colors.blue),
                 ),
                 onPressed: () {

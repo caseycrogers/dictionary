@@ -91,17 +91,19 @@ class MyApp extends StatelessWidget {
               selectedRowColor: Colors.grey.shade200,
               textTheme: TextTheme(
                 headline1: GoogleFonts.roboto(
-                    fontSize: 36,
-                    color: Colors.black,
-                    fontWeight: FontWeight.bold),
+                  fontSize: 36,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
                 headline2: GoogleFonts.roboto(
-                    color: Colors.black,
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold),
-                bodyText1: GoogleFonts.roboto(
-                    fontSize: 24, fontWeight: FontWeight.normal),
+                  color: Colors.black,
+                  fontSize: 28,
+                  fontWeight: FontWeight.bold,
+                ),
                 bodyText2: GoogleFonts.roboto(
-                    fontSize: 20, fontWeight: FontWeight.normal),
+                  fontSize: 22,
+                  fontWeight: FontWeight.normal,
+                ),
               ),
               iconTheme: const IconThemeData(
                 color: Colors.white,

@@ -68,7 +68,7 @@ class OverflowMarkdown extends StatelessWidget {
     return RichText(
       overflow: overflow ?? TextOverflow.visible,
       text: TextSpan(
-        style: defaultStyle ?? Theme.of(context).textTheme.bodyText1,
+        style: defaultStyle ?? Theme.of(context).textTheme.bodyText2,
         children: spans,
       ),
     );
@@ -76,7 +76,7 @@ class OverflowMarkdown extends StatelessWidget {
 
   TextStyle getTextStyle(BuildContext context, MarkdownStyle mdStyle) {
     final TextStyle baseStyle =
-        defaultStyle ?? Theme.of(context).textTheme.bodyText1!;
+        defaultStyle ?? Theme.of(context).textTheme.bodyText2!;
     if (mdStyle.isDefault) {
       return baseStyle;
     }

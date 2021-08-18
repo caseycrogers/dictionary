@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:math';
 import 'package:provider/provider.dart';
 
 import 'package:flutter/cupertino.dart';
@@ -135,6 +136,11 @@ class DictionaryModel {
       return;
     }
     if (newUrlEncodedHeadword.isEmpty) {
+      pageModel.adKeywords.value = [
+        ...pageModel.entrySearchModel.entries
+            .getRange(0, min(pageModel.entrySearchModel.entries.length, 3))
+            .map((e) => e.headword.headwordText),
+      ];
       return pageModel.currSelectedEntry.value = null;
     }
     final FocusScopeNode currentFocus = FocusScope.of(context);
@@ -150,6 +156,9 @@ class DictionaryModel {
       isOppositeHeadword: isOppositeHeadword,
     );
     pageModel.currSelectedEntry.value = selectedEntry;
+    pageModel.adKeywords.value = [
+      EntryUtils.urlDecode(selectedEntry.urlEncodedHeadword),
+    ];
   }
 
   bool get isBookmarkedOnly => currentTab.value == DictionaryTab.bookmarks;

@@ -24,16 +24,16 @@ TextStyle headline2(BuildContext context) =>
     Theme.of(context).textTheme.headline2!;
 
 TextStyle normal1(BuildContext context) =>
-    Theme.of(context).textTheme.bodyText1!;
+    Theme.of(context).textTheme.bodyText2!;
 
 TextStyle bold1(BuildContext context) => Theme.of(context)
     .textTheme
-    .bodyText1!
+    .bodyText2!
     .copyWith(fontWeight: FontWeight.bold);
 
 TextStyle italic1(BuildContext context) => Theme.of(context)
     .textTheme
-    .bodyText1!
+    .bodyText2!
     .copyWith(fontStyle: FontStyle.italic);
 
 Text headline1Text(BuildContext context, String text, {Color? color}) => Text(
@@ -217,6 +217,11 @@ List<Widget> _translationParentheticals(
 
 Widget partOfSpeechText(BuildContext context, String text, bool preview) {
   var pos = ['na', ''].contains(text) ? '-' : text;
+  if (Localizations.localeOf(context).languageCode == 'es') {
+    pos = pos
+        .replaceAll(i18n.phrase.en, i18n.phrase.es)
+        .spanishAdjectiveReorder(i18n.phrase.es);
+  }
   if (!preview) {
     pos = EntryUtils.longPartOfSpeech(
       pos,
@@ -376,7 +381,7 @@ Widget examplePhraseText(BuildContext context, List<String> examplePhrases) {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('${i18n.examplePhrases.get(context)}:', style: italic1(context)),
+        Text('${i18n.examplePhrases.get(context)}:', style: bold1(context)),
         Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: examplePhrases

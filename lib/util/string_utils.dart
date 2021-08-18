@@ -1,4 +1,6 @@
+import 'package:rogers_dictionary/i18n_base.dart' as i18n;
 import 'package:rogers_dictionary/util/overflow_markdown_base.dart';
+
 import 'map_utils.dart';
 
 extension NotShittyString on String {
@@ -40,5 +42,10 @@ extension NotShittyString on String {
   String get feminized => splitMapJoin(
         ' ',
         onNonMatch: (word) => word.replaceAll(RegExp('o\$'), 'a'),
+      );
+
+  String spanishAdjectiveReorder(String nounToReorder) => replaceAllMapped(
+        RegExp('(.*) $nounToReorder'),
+        (match) => '$nounToReorder ${match.group(1)}',
       );
 }

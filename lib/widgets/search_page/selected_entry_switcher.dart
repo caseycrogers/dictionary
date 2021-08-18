@@ -51,10 +51,12 @@ class _PortraitPage extends StatelessWidget {
     return ListenableNavigator<SelectedEntry?>(
       key: _getKey,
       valueListenable: searchPageModel.currSelectedEntry,
-      builder: (BuildContext context, SelectedEntry? selectedEntry, _) =>
-          selectedEntry != null
-              ? EntryView.asPage(context)
-              : EntryList(key: _getKey),
+      builder: (BuildContext context, SelectedEntry? selectedEntry, _) {
+        if (selectedEntry == null) {
+          return EntryList(key: _getKey);
+        }
+        return EntryView.asPage(context);
+      },
       getDepth: (selectedEntry) {
         if (selectedEntry == null) {
           return 0;

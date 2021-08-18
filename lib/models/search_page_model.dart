@@ -17,7 +17,8 @@ class SearchPageModel {
           _currSearchString,
           translationMode,
           isBookmarkedOnly,
-        ) {
+        ),
+        adKeywords = ValueNotifier([]) {
     MyApp.db.isBookmarksDirty(translationMode).addListener(() {
       if (MyApp.db.isBookmarksDirty(translationMode).value == true) {
         entrySearchModel.resetStream();
@@ -36,8 +37,11 @@ class SearchPageModel {
   // Selected entry state.
   final ValueNotifier<SelectedEntry?> currSelectedEntry;
 
-  // Entry search state
+  // Entry search state.
   final EntrySearchModel entrySearchModel;
+
+  // keywords for ads.
+  final ValueNotifier<List<String>> adKeywords;
 
   static final ValueNotifier<String> _currSearchString = ValueNotifier('');
 
