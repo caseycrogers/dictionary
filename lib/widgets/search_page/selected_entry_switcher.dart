@@ -6,7 +6,6 @@ import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/search_page_model.dart';
 import 'package:rogers_dictionary/models/translation_page_model.dart';
 import 'package:rogers_dictionary/pages/dictionary_page.dart';
-import 'package:rogers_dictionary/widgets/dictionary_banner_ad.dart';
 import 'package:rogers_dictionary/widgets/search_page/entry_view.dart';
 
 import 'entry_list.dart';
@@ -34,8 +33,7 @@ class SelectedEntrySwitcher extends StatelessWidget {
 
   SearchPageModel _pageModel(BuildContext context) {
     final TranslationPageModel t = TranslationPageModel.of(context);
-    return DictionaryModel.of(context).currentTab.value ==
-            DictionaryTab.search
+    return DictionaryModel.of(context).currentTab.value == DictionaryTab.search
         ? t.searchPageModel
         : t.bookmarksPageModel;
   }
@@ -49,11 +47,10 @@ class _PortraitPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListenableNavigator<SelectedEntry?>(
-      key: _getKey,
       valueListenable: searchPageModel.currSelectedEntry,
       builder: (BuildContext context, SelectedEntry? selectedEntry, _) {
         if (selectedEntry == null) {
-          return EntryList(key: _getKey);
+          return EntryList(key: _getKey(context));
         }
         return EntryView.asPage(context);
       },
@@ -75,11 +72,13 @@ class _PortraitPage extends StatelessWidget {
     );
   }
 
-  PageStorageKey get _getKey {
+  PageStorageKey _getKey(BuildContext context) {
     final String tabString =
         searchPageModel.isBookmarkedOnly ? 'bookmarks' : 'search';
     return PageStorageKey<String>(
-      '${tabString}_selected_entry_listenable_navigator',
+      '$tabString'
+      '_selected_entry_listenable_navigator_'
+      '${SearchPageModel.of(context).translationMode}',
     );
   }
 }
@@ -93,7 +92,10 @@ class _LandscapePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Flexible(child: EntryList(key: _getKey), flex: 1),
+        const Flexible(
+          child: EntryList(key: PageStorageKey('entryList')),
+          flex: 1,
+        ),
         Flexible(
           flex: 2,
           child: Row(

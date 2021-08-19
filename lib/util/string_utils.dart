@@ -1,4 +1,3 @@
-import 'package:rogers_dictionary/i18n_base.dart' as i18n;
 import 'package:rogers_dictionary/util/overflow_markdown_base.dart';
 
 import 'map_utils.dart';

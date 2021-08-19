@@ -42,12 +42,12 @@ class SqfliteDatabase extends DictionaryDatabase {
   Stream<Entry> getEntries(
     TranslationMode translationMode, {
     required String searchString,
-    required int startAfter,
+    required int startAt,
   }) =>
       _getEntries(
         translationMode,
         rawSearchString: searchString,
-        startAfter: startAfter,
+        startAt: startAt,
         isBookmarkedOnly: false,
       );
 
@@ -74,12 +74,12 @@ class SqfliteDatabase extends DictionaryDatabase {
 
   @override
   Stream<Entry> getBookmarked(TranslationMode translationMode,
-      {required int startAfter}) {
-    super.getBookmarked(translationMode, startAfter: startAfter);
+      {required int startAt}) {
+    super.getBookmarked(translationMode, startAt: startAt);
     return _getEntries(
       translationMode,
       rawSearchString: '',
-      startAfter: startAfter,
+      startAt: startAt,
       isBookmarkedOnly: true,
     );
   }
@@ -126,10 +126,10 @@ class SqfliteDatabase extends DictionaryDatabase {
 
   @override
   Stream<DialogueChapter> getDialogues({
-    int? startAfter,
+    int? startAt,
   }) async* {
     final Database db = await _dbFuture;
-    int offset = startAfter ?? 0;
+    int offset = startAt ?? 0;
     while (true) {
       final String query = '''
     SELECT *
@@ -155,11 +155,11 @@ class SqfliteDatabase extends DictionaryDatabase {
   Stream<Entry> _getEntries(
     TranslationMode translationMode, {
     required String rawSearchString,
-    required int startAfter,
+    required int startAt,
     required bool isBookmarkedOnly,
   }) async* {
     final Database db = await _dbFuture;
-    int offset = startAfter;
+    int offset = startAt;
     String searchString = rawSearchString;
     searchString = rawSearchString.withoutDiacriticalMarks;
     final String orderByClause = '''
@@ -182,8 +182,7 @@ class SqfliteDatabase extends DictionaryDatabase {
    OR ${_relevancyScore(searchString, HEADWORD + WITHOUT_OPTIONALS)} != $NO_MATCH
    OR ${_relevancyScore(searchString, HEADWORD_ABBREVIATIONS + WITHOUT_OPTIONALS)} != $NO_MATCH
    OR ${_relevancyScore(searchString, ALTERNATE_HEADWORDS + WITHOUT_OPTIONALS)} != $NO_MATCH
-   OR ${_relevancyScore(searchString, IRREGULAR_INFLECTIONS + WITHOUT_OPTIONALS)} != $NO_MATCH)
-  AND url_encoded_headword > "$startAfter"''';
+   OR ${_relevancyScore(searchString, IRREGULAR_INFLECTIONS + WITHOUT_OPTIONALS)} != $NO_MATCH)''';
     while (true) {
       final String query = '''SELECT *,
        EXISTS(SELECT $URL_ENCODED_HEADWORD

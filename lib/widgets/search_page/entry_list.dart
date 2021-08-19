@@ -18,58 +18,102 @@ import 'package:rogers_dictionary/widgets/buttons/open_page.dart';
 import 'package:rogers_dictionary/widgets/loading_text.dart';
 import 'package:rogers_dictionary/widgets/search_page/entry_view.dart';
 
-class EntryList extends StatelessWidget {
+class EntryList extends StatefulWidget {
   const EntryList({Key? key}) : super(key: key);
 
   @override
+  _EntryListState createState() => _EntryListState();
+}
+
+class _EntryListState extends State<EntryList> {
+  late Stream<Entry> _entryStream;
+  List<Entry> _initialData = [];
+
+  // We need to save a pointer to the search model so that we can call it form
+  // dispose. Can only be called after init.
+  late final EntrySearchModel _entrySearchModel =
+      SearchPageModel.of(context).entrySearchModel;
+
+  void _initializeStream() {
+    _initialData = [];
+    final EntrySearchModel entrySearchModel =
+        SearchPageModel.readFrom(context).entrySearchModel;
+    final _EntryListStorableState? cached = _EntryListStorableState.of(context);
+    if (cached != null &&
+        cached.searchString == entrySearchModel.searchString) {
+      _initialData = cached.entries ?? [];
+    }
+    _entryStream = SearchPageModel.readFrom(context)
+        .entrySearchModel
+        .newStream(startAt: _initialData.length);
+  }
+
+  void _onSearchStringChanged() {
+    setState(() {
+      _initializeStream();
+    });
+  }
+
+  @override
+  void initState() {
+    _initializeStream();
+    SearchPageModel.readFrom(context)
+        .entrySearchModel
+        .currSearchString
+        .addListener(_onSearchStringChanged);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _entrySearchModel.currSearchString.removeListener(_onSearchStringChanged);
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<String>(
-      valueListenable:
-          SearchPageModel.of(context).entrySearchModel.currSearchString,
-      builder: (context, _, __) {
-        final SearchPageModel searchPageModel = SearchPageModel.of(context);
-        final EntrySearchModel entrySearchModel =
-            searchPageModel.entrySearchModel;
-        if (entrySearchModel.isEmpty &&
-            DictionaryModel.of(context).currentTab.value ==
-                DictionaryTab.search) {
-          return _noResultsWidget(i18n.enterTextHint.get(context), context);
-        }
-        return AsyncListView<Entry>(
-          // Maintains scroll state
-          key: PageStorageKey('entry_list'
-              '-bookmarks${entrySearchModel.isBookmarkedOnly}'
-              '-${searchPageModel.translationMode}'),
-          padding: EdgeInsets.zero,
-          noResultsWidgetBuilder: (context) => _noResultsWidget(
-              entrySearchModel.isBookmarkedOnly
-                  ? i18n.noBookmarksHint.get(context)
-                  : i18n.typosHint.get(context),
-              context),
-          initialData: entrySearchModel.entries,
-          stream: entrySearchModel.entryStream,
-          loadingWidget: Delayed(
-            delay: const Duration(milliseconds: 100),
-            initialChild: Container(),
-            child: const Padding(
-              padding: EdgeInsets.all(16),
-              child: LoadingText(),
-            ),
-          ),
-          itemBuilder: _buildRow,
-          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-        );
-      },
+    if (_entrySearchModel.isEmpty &&
+        DictionaryModel.of(context).currentTab.value == DictionaryTab.search) {
+      return _noResultsWidget(i18n.enterTextHint.get(context), context);
+    }
+    return AsyncListView<Entry>(
+      // Maintains scroll state
+      key: const PageStorageKey('listView'),
+      padding: EdgeInsets.zero,
+      noResultsWidgetBuilder: (context) => _noResultsWidget(
+          _entrySearchModel.isBookmarkedOnly
+              ? i18n.noBookmarksHint.get(context)
+              : i18n.typosHint.get(context),
+          context),
+      stream: _entryStream,
+      initialData: _initialData,
+      loadingWidget: Delayed(
+        delay: const Duration(milliseconds: 100),
+        initialChild: Container(),
+        child: const Padding(
+          padding: EdgeInsets.all(16),
+          child: LoadingText(),
+        ),
+      ),
+      itemBuilder: _buildRow,
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
     );
   }
 
   Widget _buildRow(
-    BuildContext context,
+    BuildContext rowContext,
     AsyncSnapshot<List<Entry>> snapshot,
     int index,
   ) {
-    final dictionaryModel = DictionaryModel.readFrom(context);
-    final SearchPageModel searchPageModel = SearchPageModel.readFrom(context);
+    final dictionaryModel = DictionaryModel.readFrom(rowContext);
+    final SearchPageModel searchPageModel =
+        SearchPageModel.readFrom(rowContext);
+    _EntryListStorableState.write(
+      context,
+      _entrySearchModel.searchString,
+      snapshot.data,
+    );
+    _entrySearchModel.entries = snapshot.data ?? <Entry>[];
     return ValueListenableBuilder<SelectedEntry?>(
       valueListenable: searchPageModel.currSelectedEntry,
       builder: (context, selectedEntry, _) {
@@ -141,6 +185,31 @@ class EntryList extends StatelessWidget {
         ),
         const Icon(Icons.swipe, color: Colors.grey),
       ],
+    );
+  }
+}
+
+@immutable
+class _EntryListStorableState {
+  const _EntryListStorableState(this.searchString, this.entries);
+
+  final String searchString;
+  final List<Entry>? entries;
+
+  static _EntryListStorableState? of(BuildContext context) {
+    return PageStorage.of(context)!.readState(
+      context,
+    ) as _EntryListStorableState?;
+  }
+
+  static void write(
+    BuildContext context,
+    String searchString,
+    List<Entry>? entries,
+  ) {
+    PageStorage.of(context)!.writeState(
+      context,
+      _EntryListStorableState(searchString, entries),
     );
   }
 }

@@ -21,7 +21,7 @@ class SearchPageModel {
         adKeywords = ValueNotifier([]) {
     MyApp.db.isBookmarksDirty(translationMode).addListener(() {
       if (MyApp.db.isBookmarksDirty(translationMode).value == true) {
-        entrySearchModel.resetStream();
+        //entrySearchModel.reset();
       }
     });
     _currSearchString.addListener(() {

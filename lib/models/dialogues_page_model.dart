@@ -37,7 +37,7 @@ class DialoguesPageModel {
       return;
     }
     Stream<DialogueChapter> stream;
-    stream = MyApp.db.getDialogues(startAfter: _dialogues.length);
+    stream = MyApp.db.getDialogues(startAt: _dialogues.length);
     _dialogueStream = stream.handleError((Object error, StackTrace stackTrace) {
       print('ERROR (dialogue stream): $error\n$stackTrace');
     }).map((DialogueChapter chapter) {

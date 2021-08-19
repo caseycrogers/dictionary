@@ -45,7 +45,7 @@ abstract class DictionaryDatabase {
   Stream<Entry> getEntries(
     TranslationMode translationMode, {
     required String searchString,
-    required int startAfter,
+    required int startAt,
   });
 
   // Get the given entry from the database.
@@ -67,18 +67,22 @@ abstract class DictionaryDatabase {
 
   @mustCallSuper
   Stream<Entry> getBookmarked(TranslationMode translationMode,
-      {required int startAfter}) {
+      {required int startAt}) {
     _updateDirtyBookmarks(translationMode, false);
     return const Stream.empty();
   }
 
   bool isBookmarked(
       TranslationMode translationMode, String urlEncodedHeadword) {
+    assert(
+      _getCache(translationMode).containsKey(urlEncodedHeadword),
+      'Could not find \'$urlEncodedHeadword\' in the favorites cache.',
+    );
     return _getCache(translationMode)[urlEncodedHeadword]!;
   }
 
   Stream<DialogueChapter> getDialogues({
-    int startAfter,
+    int startAt,
   });
 
   Map<String, bool> _getCache(TranslationMode translationMode) =>

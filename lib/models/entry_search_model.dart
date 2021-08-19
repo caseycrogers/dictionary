@@ -1,9 +1,7 @@
 import 'dart:async';
-import 'dart:collection';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:rogers_dictionary/entry_database/entry_builders.dart';
 import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/translation_page_model.dart';
@@ -14,12 +12,7 @@ class EntrySearchModel {
     this.currSearchString,
     this._translationMode,
     this._isBookmarkedOnly,
-  ) {
-    _initializeStream();
-    currSearchString.addListener(() {
-      _initializeStream();
-    });
-  }
+  );
 
   EntrySearchModel.empty(
     ValueNotifier<String> currSearchString,
@@ -27,53 +20,37 @@ class EntrySearchModel {
     bool isBookmarkedOnly,
   ) : this._(currSearchString, translationMode, isBookmarkedOnly);
 
+  // Used to expose the current entry list to other widgets.
+  List<Entry> entries = [];
+
   final TranslationMode _translationMode;
   final ValueNotifier<String> currSearchString;
-  late Stream<Entry> _entryStream;
-  LinkedHashSet<Entry> _entries = LinkedHashSet();
   final bool _isBookmarkedOnly;
 
   String get searchString => currSearchString.value;
-
-  Stream<Entry> get entryStream => _entryStream;
-
-  List<Entry> get entries => _entries.toList();
 
   bool get isEmpty => currSearchString.value.isEmpty;
 
   bool get isBookmarkedOnly => _isBookmarkedOnly;
 
-  void resetStream() => _initializeStream();
-
-  void _initializeStream() {
-    Stream<Entry> stream;
-    // Use a new hashSet to avoid any potential race conditions.
-    final LinkedHashSet<Entry> hashSet = LinkedHashSet();
+  Stream<Entry> newStream({int startAt = 0}) {
     if (_isBookmarkedOnly) {
-      stream = MyApp.db.getBookmarked(_translationMode, startAfter: 0);
-    } else {
-      if (searchString.isEmpty) {
-        stream = const Stream<Entry>.empty();
-      }
-      stream = MyApp.db.getEntries(
-        _translationMode,
-        searchString: searchString,
-        startAfter: 0,
-      );
+      return MyApp.db.getBookmarked(_translationMode, startAt: 0);
     }
-    _entryStream = stream
-        .handleError((Object error, StackTrace stackTrace) =>
-            print('ERROR (entry stream): :$error\n$stackTrace'))
-        .map(
-      (Entry entry) {
-        if (!hashSet.add(entry))
-          print('WARNING: added duplicate entry '
-              '${entry.headword.urlEncodedHeadword}. '
-              'Set:\n${hashSet.toList()}');
-        return entry;
+    if (searchString.isEmpty) {
+      return const Stream<Entry>.empty();
+    }
+    return MyApp.db
+        .getEntries(
+      _translationMode,
+      searchString: searchString,
+      startAt: startAt,
+    )
+        .handleError(
+      (Object error, StackTrace stackTrace) {
+        print('ERROR (entry stream): $error\n$stackTrace');
       },
-    ).asBroadcastStream();
-    _entries = hashSet;
+    );
   }
 
   void onSearchStringChanged({
