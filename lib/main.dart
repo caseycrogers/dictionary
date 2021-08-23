@@ -72,59 +72,51 @@ class MyApp extends StatelessWidget {
         ],
         feedbackBuilder: (BuildContext context, OnSubmit onSubmit) =>
             GetDictionaryFeedback(onSubmit),
-        child: GestureDetector(
-          onTap: () {
-            final FocusScopeNode currentFocus = FocusScope.of(context);
-            if (!currentFocus.hasPrimaryFocus) {
-              currentFocus.unfocus();
-            }
-          },
-          child: MaterialApp(
-            title: 'Dictionary',
-            home: Provider<DictionaryModel>(
-              create: (_) => DictionaryModel(),
-              builder: (BuildContext context, _) {
-                return DictionaryPage();
-              },
-            ),
-            theme: ThemeData(
-              selectedRowColor: Colors.grey.shade200,
-              textTheme: TextTheme(
-                headline1: GoogleFonts.roboto(
-                  fontSize: 36,
-                  color: Colors.black,
-                  fontWeight: FontWeight.bold,
-                ),
-                headline2: GoogleFonts.roboto(
-                  color: Colors.black,
-                  fontSize: 28,
-                  fontWeight: FontWeight.bold,
-                ),
-                bodyText2: GoogleFonts.roboto(
-                  fontSize: 22,
-                  fontWeight: FontWeight.normal,
-                ),
-              ),
-              iconTheme: const IconThemeData(
-                color: Colors.white,
-                size: 28,
-              ),
-              accentIconTheme: const IconThemeData(
-                size: 28,
-                color: Colors.black45,
-              ),
-              backgroundColor: Colors.white,
-            ),
-            localizationsDelegates: const [
-              GlobalMaterialLocalizations.delegate,
-              GlobalWidgetsLocalizations.delegate,
-              GlobalCupertinoLocalizations.delegate,
-            ],
-            supportedLocales: const [
-              Locale('en', ''),
-              Locale('es', ''),
-            ],
+        child: MaterialApp(
+          title: 'Dictionary',
+          home: Provider<DictionaryModel>(
+            create: (_) => DictionaryModel(),
+            builder: (BuildContext context, _) {
+              return DictionaryPage();
+            },
           ),
+          theme: ThemeData(
+            selectedRowColor: Colors.grey.shade200,
+            textTheme: TextTheme(
+              headline1: GoogleFonts.roboto(
+                fontSize: 36,
+                color: Colors.black,
+                fontWeight: FontWeight.bold,
+              ),
+              headline2: GoogleFonts.roboto(
+                color: Colors.black,
+                fontSize: 28,
+                fontWeight: FontWeight.bold,
+              ),
+              bodyText2: GoogleFonts.roboto(
+                fontSize: 22,
+                fontWeight: FontWeight.normal,
+              ),
+            ),
+            iconTheme: const IconThemeData(
+              color: Colors.white,
+              size: 28,
+            ),
+            accentIconTheme: const IconThemeData(
+              size: 28,
+              color: Colors.black45,
+            ),
+            backgroundColor: Colors.white,
+          ),
+          localizationsDelegates: const [
+            GlobalMaterialLocalizations.delegate,
+            GlobalWidgetsLocalizations.delegate,
+            GlobalCupertinoLocalizations.delegate,
+          ],
+          supportedLocales: const [
+            Locale('en', ''),
+            Locale('es', ''),
+          ],
         ),
       ),
     );

@@ -77,6 +77,7 @@ class _DictionaryTabBarViewState extends State<DictionaryTabBarView> {
       return true;
     }());
     return ListenableNavigator<DictionaryTab>(
+      key: const ValueKey('tab_selector'),
       valueListenable: currentTab,
       builder: (context, tab, _) => widget.children[tab]!,
       getDepth: (tab) => tab == DictionaryTab.search ? 0 : 1,

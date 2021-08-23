@@ -11,7 +11,7 @@ import 'package:rogers_dictionary/util/map_utils.dart';
 
 class ListenableNavigator<T> extends StatefulWidget {
   const ListenableNavigator({
-    Key? key,
+    required Key key,
     required this.valueListenable,
     required this.builder,
     required this.getDepth,

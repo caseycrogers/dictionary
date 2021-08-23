@@ -24,10 +24,10 @@ abstract class DictionaryDatabase {
 
   /// Indicates whether or not the bookmarks list may have changes since it was
   /// last fetched.
-  final ValueNotifier<bool> _englishIsBookmarksDirty = ValueNotifier(true);
-  final ValueNotifier<bool> _spanishIsBookmarksDirty = ValueNotifier(true);
+  bool _englishIsBookmarksDirty = true;
+  bool _spanishIsBookmarksDirty = true;
 
-  ValueNotifier<bool> isBookmarksDirty(TranslationMode translationMode) {
+  bool areBookmarksDirty(TranslationMode translationMode) {
     if (translationMode == TranslationMode.English) {
       return _englishIsBookmarksDirty;
     }
@@ -35,7 +35,11 @@ abstract class DictionaryDatabase {
   }
 
   void _updateDirtyBookmarks(TranslationMode translationMode, bool isDirty) {
-    isBookmarksDirty(translationMode).value = isDirty;
+    if (translationMode == TranslationMode.English) {
+      _englishIsBookmarksDirty = isDirty;
+      return;
+    }
+    _spanishIsBookmarksDirty = isDirty;
   }
 
   final Map<String, bool> _englishBookmarksCache;

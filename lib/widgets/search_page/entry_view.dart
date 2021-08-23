@@ -165,8 +165,7 @@ class EntryView extends StatelessWidget {
           padding: const EdgeInsets.only(top: 10),
           child: previewTranslationLine(
             context,
-            translations.first,
-            translations.length != 1,
+            translations,
           ),
         ),
       ]);

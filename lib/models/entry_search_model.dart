@@ -35,10 +35,7 @@ class EntrySearchModel {
 
   Stream<Entry> newStream({int startAt = 0}) {
     if (_isBookmarkedOnly) {
-      return MyApp.db.getBookmarked(_translationMode, startAt: 0);
-    }
-    if (searchString.isEmpty) {
-      return const Stream<Entry>.empty();
+      return MyApp.db.getBookmarked(_translationMode, startAt: startAt);
     }
     return MyApp.db
         .getEntries(
@@ -51,6 +48,10 @@ class EntrySearchModel {
         print('ERROR (entry stream): $error\n$stackTrace');
       },
     );
+  }
+
+  bool isDirty() {
+    return _isBookmarkedOnly && MyApp.db.areBookmarksDirty(_translationMode);
   }
 
   void onSearchStringChanged({

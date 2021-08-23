@@ -47,6 +47,7 @@ class _PortraitPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListenableNavigator<SelectedEntry?>(
+      key: const ValueKey('entry_selector'),
       valueListenable: searchPageModel.currSelectedEntry,
       builder: (BuildContext context, SelectedEntry? selectedEntry, _) {
         if (selectedEntry == null) {
@@ -93,7 +94,7 @@ class _LandscapePage extends StatelessWidget {
     return Row(
       children: [
         const Flexible(
-          child: EntryList(key: PageStorageKey('entryList')),
+          child: EntryList(key: PageStorageKey('entry_list')),
           flex: 1,
         ),
         Flexible(

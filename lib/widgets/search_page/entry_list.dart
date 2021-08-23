@@ -4,18 +4,16 @@ import 'dart:ui';
 import 'package:async_list_view/async_list_view.dart';
 import 'package:flutter/material.dart';
 
-import 'package:rogers_dictionary/i18n.dart' as i18n;
 import 'package:rogers_dictionary/entry_database/entry_builders.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/entry_search_model.dart';
 import 'package:rogers_dictionary/models/search_page_model.dart';
-import 'package:rogers_dictionary/models/translation_page_model.dart';
 import 'package:rogers_dictionary/pages/dictionary_page.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
-import 'package:rogers_dictionary/util/constants.dart';
 import 'package:rogers_dictionary/util/delayed.dart';
 import 'package:rogers_dictionary/widgets/buttons/open_page.dart';
 import 'package:rogers_dictionary/widgets/loading_text.dart';
+import 'package:rogers_dictionary/widgets/no_results_widget.dart';
 import 'package:rogers_dictionary/widgets/search_page/entry_view.dart';
 
 class EntryList extends StatefulWidget {
@@ -29,17 +27,15 @@ class _EntryListState extends State<EntryList> {
   late Stream<Entry> _entryStream;
   List<Entry> _initialData = [];
 
-  // We need to save a pointer to the search model so that we can call it form
-  // dispose. Can only be called after init.
-  late final EntrySearchModel _entrySearchModel =
-      SearchPageModel.of(context).entrySearchModel;
+  late final VoidCallback _disposeListener;
 
   void _initializeStream() {
     _initialData = [];
     final EntrySearchModel entrySearchModel =
         SearchPageModel.readFrom(context).entrySearchModel;
     final _EntryListStorableState? cached = _EntryListStorableState.of(context);
-    if (cached != null &&
+    if (!SearchPageModel.readFrom(context).entrySearchModel.isDirty() &&
+        cached != null &&
         cached.searchString == entrySearchModel.searchString) {
       _initialData = cached.entries ?? [];
     }
@@ -57,34 +53,29 @@ class _EntryListState extends State<EntryList> {
   @override
   void initState() {
     _initializeStream();
-    SearchPageModel.readFrom(context)
-        .entrySearchModel
-        .currSearchString
-        .addListener(_onSearchStringChanged);
+    final ValueNotifier<String> currSearchString =
+        SearchPageModel.readFrom(context).entrySearchModel.currSearchString;
+    currSearchString.addListener(_onSearchStringChanged);
+    _disposeListener =
+        () => currSearchString.removeListener(_onSearchStringChanged);
     super.initState();
   }
 
   @override
   void dispose() {
-    _entrySearchModel.currSearchString.removeListener(_onSearchStringChanged);
+    _disposeListener();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_entrySearchModel.isEmpty &&
-        DictionaryModel.of(context).currentTab.value == DictionaryTab.search) {
-      return _noResultsWidget(i18n.enterTextHint.get(context), context);
-    }
     return AsyncListView<Entry>(
       // Maintains scroll state
-      key: const PageStorageKey('listView'),
+      key: const PageStorageKey('list_view'),
       padding: EdgeInsets.zero,
-      noResultsWidgetBuilder: (context) => _noResultsWidget(
-          _entrySearchModel.isBookmarkedOnly
-              ? i18n.noBookmarksHint.get(context)
-              : i18n.typosHint.get(context),
-          context),
+      noResultsWidgetBuilder: (context) => const SingleChildScrollView(
+        child: NoResultsWidget(),
+      ),
       stream: _entryStream,
       initialData: _initialData,
       loadingWidget: Delayed(
@@ -96,7 +87,6 @@ class _EntryListState extends State<EntryList> {
         ),
       ),
       itemBuilder: _buildRow,
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
     );
   }
 
@@ -110,11 +100,11 @@ class _EntryListState extends State<EntryList> {
         SearchPageModel.readFrom(rowContext);
     _EntryListStorableState.write(
       context,
-      _entrySearchModel.searchString,
+      searchPageModel.entrySearchModel.searchString,
       snapshot.data,
     );
-    _entrySearchModel.entries = snapshot.data ?? <Entry>[];
-    return ValueListenableBuilder<SelectedEntry?>(
+    searchPageModel.entrySearchModel.entries = snapshot.data ?? <Entry>[];
+    final Widget row = ValueListenableBuilder<SelectedEntry?>(
       valueListenable: searchPageModel.currSelectedEntry,
       builder: (context, selectedEntry, _) {
         if (snapshot.hasError) {
@@ -164,28 +154,18 @@ class _EntryListState extends State<EntryList> {
         );
       },
     );
-  }
 
-  Widget _noResultsWidget(String text, BuildContext context) {
-    final TranslationPageModel pageModel = TranslationPageModel.of(context);
-    final String swipeText = pageModel.isEnglish
-        ? i18n.swipeLeft.get(context)
-        : i18n.swipeRight.get(context);
-    return ListView(
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 2 * kPad),
-          child: Text(
-            '\n\n$text$swipeText',
-            textAlign: TextAlign.center,
-            style: const TextStyle(
-              color: Colors.grey,
-            ),
-          ),
-        ),
-        const Icon(Icons.swipe, color: Colors.grey),
-      ],
-    );
+    // Put no results widget at top
+    if (index == 0 &&
+        SearchPageModel.of(context).entrySearchModel.isEmpty &&
+        dictionaryModel.currentTab.value == DictionaryTab.search) {
+      return Column(children: [
+        const NoResultsWidget(),
+        const Divider(height: 0),
+        row,
+      ]);
+    }
+    return row;
   }
 }
 

@@ -241,11 +241,13 @@ Widget partOfSpeechText(BuildContext context, String text, bool preview) {
 }
 
 Widget previewTranslationLine(
-    BuildContext context, Translation translation, bool addEllipsis) {
-  var text = translation.content;
-  if (translation.genderAndPlural.isNotEmpty)
-    text += ' *${translation.genderAndPlural}*';
-  if (addEllipsis) {
+  BuildContext context,
+  List<Translation> translations,
+) {
+  var text = translations.first.content;
+  if (translations.first.genderAndPlural.isNotEmpty)
+    text += ' *${translations.first.genderAndPlural}*';
+  if (translations.length > 1) {
     text += '...';
   }
   return OverflowMarkdown(text);

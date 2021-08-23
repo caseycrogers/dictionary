@@ -162,7 +162,9 @@ class SqfliteDatabase extends DictionaryDatabase {
     int offset = startAt;
     String searchString = rawSearchString;
     searchString = rawSearchString.withoutDiacriticalMarks;
-    final String orderByClause = '''
+    String orderByClause = ENTRY_ID;
+    if (searchString.isNotEmpty) {
+      orderByClause = '''
   ${_relevancyScore(searchString, HEADWORD)},
   ${_relevancyScore(searchString, HEADWORD_ABBREVIATIONS)},
   ${_relevancyScore(searchString, ALTERNATE_HEADWORDS)},
@@ -172,6 +174,7 @@ class SqfliteDatabase extends DictionaryDatabase {
   ${_relevancyScore(searchString, ALTERNATE_HEADWORDS + WITHOUT_OPTIONALS)},
   ${_relevancyScore(searchString, IRREGULAR_INFLECTIONS + WITHOUT_OPTIONALS)},
   headword''';
+    }
     String whereClause = '''$IS_FAVORITE''';
     if (!isBookmarkedOnly)
       whereClause = '''

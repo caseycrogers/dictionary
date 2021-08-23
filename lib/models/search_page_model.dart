@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:rogers_dictionary/main.dart';
 
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
 
@@ -19,11 +18,6 @@ class SearchPageModel {
           isBookmarkedOnly,
         ),
         adKeywords = ValueNotifier([]) {
-    MyApp.db.isBookmarksDirty(translationMode).addListener(() {
-      if (MyApp.db.isBookmarksDirty(translationMode).value == true) {
-        //entrySearchModel.reset();
-      }
-    });
     _currSearchString.addListener(() {
       if (_currSearchString.value.isNotEmpty) {
         currSelectedEntry.value = null;

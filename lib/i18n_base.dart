@@ -16,10 +16,10 @@ Message noBookmarksHint = Message('No results! Try favoriting an entry first ',
     '¡No hay resultados! Primero, intenta marcar una entrada como favorita ');
 Message typosHint = Message('No results! Check for typos ',
     '¡No hay resultados! Compruebe si hay errores tipográficos ');
-Message swipeLeft = Message('or swipe left for spanish mode.',
-    'o desliza el dedo hacia la izquierda para al modo español.');
-Message swipeRight = Message('or swipe right for english mode.',
-    'o deslice hacia la derecha para al modo inglés.');
+Message swipeForSpanish = Message('or swipe for spanish mode.',
+    'o desliza el dedo para al modo español.');
+Message swipeForEnglish = Message('or swipe for english mode.',
+    'o desliza el dedo para al modo inglés.');
 
 // Localizations for EntryView.
 Message irregularInflections =
