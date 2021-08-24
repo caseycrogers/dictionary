@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:rogers_dictionary/entry_database/database_constants.dart';
+import 'package:rogers_dictionary/clients/database_constants.dart';
 import 'package:rogers_dictionary/i18n_base.dart' as i18n;
 import 'package:rogers_dictionary/protobufs/database_version.pb.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';

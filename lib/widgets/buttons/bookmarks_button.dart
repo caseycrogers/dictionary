@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:rogers_dictionary/entry_database/entry_builders.dart';
+import 'package:rogers_dictionary/clients/entry_builders.dart';
 import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/models/translation_page_model.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';

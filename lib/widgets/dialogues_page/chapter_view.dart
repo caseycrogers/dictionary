@@ -6,7 +6,7 @@ import 'package:rogers_dictionary/util/dictionary_progess_indicator.dart';
 
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-import 'package:rogers_dictionary/entry_database/dialogue_builders.dart';
+import 'package:rogers_dictionary/clients/dialogue_builders.dart';
 import 'package:rogers_dictionary/models/dialogues_page_model.dart';
 import 'package:rogers_dictionary/models/translation_page_model.dart';
 import 'package:rogers_dictionary/util/text_utils.dart';

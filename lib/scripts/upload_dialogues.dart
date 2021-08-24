@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:rogers_dictionary/entry_database/database_constants.dart';
-import 'package:rogers_dictionary/entry_database/dialogue_builders.dart';
-import 'package:rogers_dictionary/entry_database/entry_builders.dart';
+import 'package:rogers_dictionary/clients/database_constants.dart';
+import 'package:rogers_dictionary/clients/dialogue_builders.dart';
+import 'package:rogers_dictionary/clients/entry_builders.dart';
 import 'package:rogers_dictionary/protobufs/database_version.pb.dart';
 import 'package:rogers_dictionary/protobufs/dialogues.pb.dart';
 

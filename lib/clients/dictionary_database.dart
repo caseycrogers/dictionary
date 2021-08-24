@@ -5,8 +5,8 @@ import 'package:flutter/services.dart';
 
 import 'package:path/path.dart';
 
-import 'package:rogers_dictionary/entry_database/database_constants.dart';
-import 'package:rogers_dictionary/entry_database/entry_builders.dart';
+import 'package:rogers_dictionary/clients/database_constants.dart';
+import 'package:rogers_dictionary/clients/entry_builders.dart';
 import 'package:rogers_dictionary/models/translation_page_model.dart';
 import 'package:rogers_dictionary/protobufs/database_version.pb.dart';
 import 'package:rogers_dictionary/protobufs/dialogues.pb.dart';

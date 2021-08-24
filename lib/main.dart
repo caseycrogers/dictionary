@@ -13,12 +13,12 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 
-import 'package:rogers_dictionary/entry_database/sqflite_database.dart';
+import 'package:rogers_dictionary/clients/sqflite_database.dart';
 import 'package:rogers_dictionary/models/translation_page_model.dart';
 import 'package:rogers_dictionary/pages/dictionary_page.dart';
 import 'package:rogers_dictionary/widgets/get_dictionary_feedback.dart';
 
-import 'entry_database/dictionary_database.dart';
+import 'clients/dictionary_database.dart';
 import 'models/dictionary_model.dart';
 
 final Color englishPrimary = Colors.indigo.shade600;

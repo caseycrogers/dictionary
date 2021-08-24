@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 
-import 'package:rogers_dictionary/entry_database/entry_builders.dart';
+import 'package:rogers_dictionary/clients/entry_builders.dart';
 import 'package:rogers_dictionary/i18n.dart' as i18n;
 import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/pages/page_header.dart';

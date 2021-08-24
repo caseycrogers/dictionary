@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:rogers_dictionary/entry_database/dialogue_builders.dart';
+import 'package:rogers_dictionary/clients/dialogue_builders.dart';
 import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/protobufs/dialogues.pb.dart';
 
