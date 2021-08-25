@@ -151,8 +151,8 @@ Widget alternateHeadwordLines(BuildContext context,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: alternateHeadwords.map(
         (alt) {
-          return _appendWidgets(
-            wraps: [
+          return Wrap(
+            children: [
               // Only display the alt header for the first entry.
               Opacity(
                 opacity: alt == alternateHeadwords.first ? 1.0 : 0.0,
@@ -172,12 +172,6 @@ Widget alternateHeadwordLines(BuildContext context,
                 alt.parentheticalQualifier,
                 true,
                 size: 20,
-              ),
-            ],
-            suffixes: [
-              SpeakButton(
-                text: alt.headwordText,
-                mode: SearchPageModel.of(context).translationMode,
               ),
             ],
           );
@@ -246,12 +240,6 @@ Widget previewTranslationLine(
   BuildContext context,
   List<Translation> translations,
 ) {
-  var text = translations.first.content;
-  if (translations.first.genderAndPlural.isNotEmpty)
-    text += ' *${translations.first.genderAndPlural}*';
-  if (translations.length > 1) {
-    text += '...';
-  }
   return _appendWidgets(
     wraps: [
       ...OverflowMarkdown(translations.first.content).forWrap(context),
@@ -261,12 +249,11 @@ Widget previewTranslationLine(
     ],
     suffixes: [
       SpeakButton(
-        text: translations.first.content,
+        text: translations.first.content.pronounceable,
         mode: oppositeMode(SearchPageModel.of(context).translationMode),
       ),
     ],
   );
-  return OverflowMarkdown(text);
 }
 
 Widget translationLine(
@@ -293,7 +280,7 @@ Widget translationLine(
     ],
     suffixes: [
       SpeakButton(
-        text: translation.content,
+        text: translation.content.pronounceable,
         mode: oppositeMode(SearchPageModel.of(context).translationMode),
       ),
       if (translation.oppositeHeadword.isNotEmpty)
@@ -408,10 +395,6 @@ Widget headwordLine(
             mainAxisSize: MainAxisSize.min,
             children: [
               wraps[wraps.length - 1],
-              SpeakButton(
-                text: entry.headword.headwordText,
-                mode: SearchPageModel.of(context).translationMode,
-              ),
               BookmarksButton(entry: entry),
             ],
           ),

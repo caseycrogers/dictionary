@@ -27,6 +27,13 @@ extension NotShittyString on String {
 
   String get withoutOptionals => replaceAll(RegExp(r'\(.*?\) ?'), '').trim();
 
+  String get withoutHyphenateds => replaceAll(RegExp(r' -.[^ ]+'), '').trim();
+
+  String get withoutGenderIndicators =>
+      replaceAll(RegExp(r' \*[mf]+\*'), '').trim();
+
+  String get pronounceable => withoutHyphenateds.withoutGenderIndicators;
+
   String? get emptyToNull => isNotEmpty ? this : null;
 
   List<String> get splitItalicized => MarkdownBase(this).strip(italics: true);

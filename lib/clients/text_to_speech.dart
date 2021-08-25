@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
@@ -20,9 +21,14 @@ const String _esName = 'es-US-Wavenet-B';
 
 const String _audioContent = 'audioContent';
 
+const String _apiKeyFile = 'text_to_speech.key';
+
 class TextToSpeech {
   final http.Client _client = http.Client();
   final AudioPlayer _audioPlayer = AudioPlayer();
+
+  static late final Future<String> _apiKey =
+      rootBundle.loadString(join('assets', '$_apiKeyFile'));
 
   Future<void> playAudio(String text, TranslationMode mode) async {
     final Directory tmpDir = await getTemporaryDirectory();
@@ -56,12 +62,6 @@ class TextToSpeech {
     _audioPlayer.stop();
     _audioPlayer.release();
   }
-
-  Map<String, String> get _headers => {
-        'Authorization': '',
-        'Content-Type': 'application/json; charset=utf-8',
-        'X-Goog-Api-Key': _apiKey,
-      };
 
   String _data(String text, TranslationMode mode) {
     return json.encode(
@@ -98,7 +98,11 @@ class TextToSpeech {
   Future<Uint8List> _getMp3(String text, TranslationMode mode) async {
     final http.Response response = await http.post(
       _textToSpeechUrl,
-      headers: _headers,
+      headers: {
+        'Authorization': '',
+        'Content-Type': 'application/json; charset=utf-8',
+        'X-Goog-Api-Key': await _apiKey,
+      },
       body: _data(text, mode),
     );
     return _extractAudio(response);
