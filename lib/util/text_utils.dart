@@ -6,9 +6,13 @@ import 'package:flutter/cupertino.dart';
 import 'package:rogers_dictionary/clients/entry_builders.dart';
 import 'package:rogers_dictionary/i18n.dart' as i18n;
 import 'package:rogers_dictionary/models/dictionary_model.dart';
+import 'package:rogers_dictionary/models/search_page_model.dart';
+import 'package:rogers_dictionary/models/translation_page_model.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
 import 'package:rogers_dictionary/util/overflow_markdown_base.dart';
 import 'package:rogers_dictionary/util/string_utils.dart';
+import 'package:rogers_dictionary/widgets/buttons/opposite_headword_button.dart';
+import 'package:rogers_dictionary/widgets/buttons/speak_button.dart';
 import 'package:rogers_dictionary/widgets/dictionary_chip.dart';
 import 'package:rogers_dictionary/widgets/buttons/bookmarks_button.dart';
 
@@ -147,35 +151,33 @@ Widget alternateHeadwordLines(BuildContext context,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: alternateHeadwords.map(
         (alt) {
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+          return _appendWidgets(
+            wraps: [
               // Only display the alt header for the first entry.
               Opacity(
                 opacity: alt == alternateHeadwords.first ? 1.0 : 0.0,
                 child: italic1Text(context, 'alt. '),
               ),
-              Expanded(
-                child: Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.center,
-                  children: [
-                    ...highlightedText(context, alt.headwordText, preview,
-                        searchString: searchString),
-                    if (alt.abbreviation.isNotEmpty) normal1Text(context, ' '),
-                    if (alt.abbreviation.isNotEmpty)
-                      ...highlightedText(
-                          context, '(${alt.abbreviation})', preview,
-                          searchString: searchString, forWrap: false),
-                    if (alt.namingStandard.isNotEmpty)
-                      _namingStandard(context, alt.namingStandard, true),
-                    ...parentheticalTexts(
-                      context,
-                      alt.parentheticalQualifier,
-                      true,
-                      size: 20,
-                    ),
-                  ],
-                ),
+              ...highlightedText(context, alt.headwordText, preview,
+                  searchString: searchString),
+              if (alt.abbreviation.isNotEmpty) normal1Text(context, ' '),
+              if (alt.abbreviation.isNotEmpty)
+                ...highlightedText(
+                    context, '(${alt.abbreviation})', preview,
+                    searchString: searchString, forWrap: false),
+              if (alt.namingStandard.isNotEmpty)
+                _namingStandard(context, alt.namingStandard, true),
+              ...parentheticalTexts(
+                context,
+                alt.parentheticalQualifier,
+                true,
+                size: 20,
+              ),
+            ],
+            suffixes: [
+              SpeakButton(
+                text: alt.headwordText,
+                mode: SearchPageModel.of(context).translationMode,
               ),
             ],
           );
@@ -250,6 +252,20 @@ Widget previewTranslationLine(
   if (translations.length > 1) {
     text += '...';
   }
+  return _appendWidgets(
+    wraps: [
+      ...OverflowMarkdown(translations.first.content).forWrap(context),
+      if (translations.first.genderAndPlural.isNotEmpty)
+        OverflowMarkdown(' *${translations.first.genderAndPlural}*'),
+      if (translations.length > 1) normal1Text(context, '...'),
+    ],
+    suffixes: [
+      SpeakButton(
+        text: translations.first.content,
+        mode: oppositeMode(SearchPageModel.of(context).translationMode),
+      ),
+    ],
+  );
   return OverflowMarkdown(text);
 }
 
@@ -258,60 +274,30 @@ Widget translationLine(
   Translation translation,
   int i,
 ) {
-  final List<Widget> wraps = [
-    ...OverflowMarkdown(translation.content).forWrap(context),
-    if (translation.genderAndPlural.isNotEmpty)
-      OverflowMarkdown(' *${translation.genderAndPlural}*'),
-    if (translation.abbreviation.isNotEmpty) ...[
-      normal1Text(context, ' '),
-      OverflowMarkdown('(${translation.abbreviation})'),
-    ],
-    if (translation.namingStandard.isNotEmpty)
-      _namingStandard(context, translation.namingStandard, false),
-    ..._translationParentheticals(context, translation.parentheticalQualifier),
-  ];
-  return Row(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-      normal1Text(context, '${i.toString()}. '),
-      Expanded(
-        child: Wrap(
-          crossAxisAlignment: WrapCrossAlignment.start,
-          // Opposite headword button is always paired with the last item.
-          children: wraps
-            ..replaceRange(
-              wraps.length - 1,
-              wraps.length,
-              [
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    wraps.last,
-                    if (translation.oppositeHeadword.isNotEmpty)
-                      InkWell(
-                        onTap: () {
-                          DictionaryModel.readFrom(context)
-                              .onOppositeHeadwordSelected(
-                            context,
-                            EntryUtils.urlEncode(
-                                translation.getOppositeHeadword),
-                          );
-                        },
-                        child: Indent(
-                          size: 8,
-                          child: Icon(
-                            Icons.open_in_new,
-                            color: Theme.of(context).accentIconTheme.color,
-                          ),
-                        ),
-                      )
-                  ],
-                ),
-              ],
-            ),
-        ),
+  return _appendWidgets(
+    wraps: [
+      normal1Text(context, '$i. '),
+      ...OverflowMarkdown(translation.content).forWrap(context),
+      if (translation.genderAndPlural.isNotEmpty)
+        OverflowMarkdown(' *${translation.genderAndPlural}*'),
+      if (translation.abbreviation.isNotEmpty) ...[
+        normal1Text(context, ' '),
+        OverflowMarkdown('(${translation.abbreviation})'),
+      ],
+      if (translation.namingStandard.isNotEmpty)
+        _namingStandard(context, translation.namingStandard, false),
+      ..._translationParentheticals(
+        context,
+        translation.parentheticalQualifier,
       ),
+    ],
+    suffixes: [
+      SpeakButton(
+        text: translation.content,
+        mode: oppositeMode(SearchPageModel.of(context).translationMode),
+      ),
+      if (translation.oppositeHeadword.isNotEmpty)
+        OppositeHeadwordButton(translation: translation),
     ],
   );
 }
@@ -422,6 +408,10 @@ Widget headwordLine(
             mainAxisSize: MainAxisSize.min,
             children: [
               wraps[wraps.length - 1],
+              SpeakButton(
+                text: entry.headword.headwordText,
+                mode: SearchPageModel.of(context).translationMode,
+              ),
               BookmarksButton(entry: entry),
             ],
           ),
@@ -434,5 +424,29 @@ Widget headwordLine(
         searchString,
       ),
     ],
+  );
+}
+
+Widget _appendWidgets({
+  required List<Widget> wraps,
+  required List<Widget> suffixes,
+}) {
+  return Wrap(
+    crossAxisAlignment: WrapCrossAlignment.center,
+    // Opposite headword button is always paired with the last item.
+    children: wraps
+      ..replaceRange(
+        wraps.length - 1,
+        wraps.length,
+        [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              wraps.last,
+              ...suffixes,
+            ],
+          ),
+        ],
+      ),
   );
 }

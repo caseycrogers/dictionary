@@ -15,7 +15,7 @@ class TranslationModeSelector extends StatelessWidget {
   static final GlobalKey _spanishKey = GlobalKey();
 
   RenderBox _getBox(TranslationMode mode) {
-    if (mode == TranslationMode.English) {
+    if (isEnglish(mode)) {
       return _englishKey.currentContext!.findRenderObject() as RenderBox;
     }
     return _spanishKey.currentContext!.findRenderObject() as RenderBox;
@@ -107,7 +107,9 @@ class _Button extends StatelessWidget {
         ),
         onPressed: isSelected
             ? null
-            : () => dictionaryModel.onTranslationModeChanged(context, mode),
+            : () {
+              dictionaryModel.onTranslationModeChanged(context, mode);
+            },
         child: Container(
           alignment: Alignment.center,
           child: Text(

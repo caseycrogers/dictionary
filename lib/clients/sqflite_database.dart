@@ -33,7 +33,7 @@ class SqfliteDatabase extends DictionaryDatabase {
   }
 
   String _entryTable(TranslationMode translationMode) =>
-      translationMode == TranslationMode.English ? ENGLISH : SPANISH;
+      isEnglish(translationMode) ? ENGLISH : SPANISH;
 
   String _bookmarksTable(TranslationMode translationMode) =>
       '${_entryTable(translationMode)}_bookmarks';

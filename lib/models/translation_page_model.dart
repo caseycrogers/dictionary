@@ -12,6 +12,11 @@ enum TranslationMode {
   Spanish,
 }
 
+bool isEnglish(TranslationMode mode) => mode == TranslationMode.English;
+
+TranslationMode oppositeMode(TranslationMode mode) =>
+    isEnglish(mode) ? TranslationMode.Spanish : TranslationMode.English;
+
 class TranslationPageModel {
   TranslationPageModel({
     required this.translationMode,

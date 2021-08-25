@@ -14,6 +14,7 @@ import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 
 import 'package:rogers_dictionary/clients/sqflite_database.dart';
+import 'package:rogers_dictionary/clients/text_to_speech.dart';
 import 'package:rogers_dictionary/models/translation_page_model.dart';
 import 'package:rogers_dictionary/pages/dictionary_page.dart';
 import 'package:rogers_dictionary/widgets/get_dictionary_feedback.dart';
@@ -27,7 +28,7 @@ final Color englishSecondary = Colors.indigo.shade200;
 final Color spanishSecondary = Colors.orange.shade200;
 
 Color primaryColor(TranslationMode translationMode) =>
-    translationMode == TranslationMode.English
+    isEnglish(translationMode)
         ? englishPrimary
         : spanishPrimary;
 
@@ -50,14 +51,26 @@ Future<void> main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   static final DictionaryDatabase db = SqfliteDatabase();
+  static final TextToSpeech textToSpeech = TextToSpeech();
   static final Future<PackageInfo> packageInfo = PackageInfo.fromPlatform();
 
   static final FirebaseAnalytics analytics = FirebaseAnalytics();
 
   static FirebaseAnalyticsObserver get observer =>
       FirebaseAnalyticsObserver(analytics: analytics);
+
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void dispose() {
+    MyApp.textToSpeech.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {

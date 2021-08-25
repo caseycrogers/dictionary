@@ -19,6 +19,7 @@ class _BookmarksButtonState extends State<BookmarksButton> {
   Widget build(BuildContext context) {
     final translationMode = TranslationPageModel.of(context).translationMode;
     return IconButton(
+      visualDensity: VisualDensity.compact,
       icon: _icon,
       onPressed: () async {
         final bool newIsBookmarked = !MyApp.db.isBookmarked(

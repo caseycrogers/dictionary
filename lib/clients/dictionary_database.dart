@@ -28,14 +28,14 @@ abstract class DictionaryDatabase {
   bool _spanishIsBookmarksDirty = true;
 
   bool areBookmarksDirty(TranslationMode translationMode) {
-    if (translationMode == TranslationMode.English) {
+    if (isEnglish(translationMode)) {
       return _englishIsBookmarksDirty;
     }
     return _spanishIsBookmarksDirty;
   }
 
   void _updateDirtyBookmarks(TranslationMode translationMode, bool isDirty) {
-    if (translationMode == TranslationMode.English) {
+    if (isEnglish(translationMode)) {
       _englishIsBookmarksDirty = isDirty;
       return;
     }
@@ -90,7 +90,7 @@ abstract class DictionaryDatabase {
   });
 
   Map<String, bool> _getCache(TranslationMode translationMode) =>
-      translationMode == TranslationMode.English
+      isEnglish(translationMode)
           ? _englishBookmarksCache
           : _spanishBookmarksCache;
 }

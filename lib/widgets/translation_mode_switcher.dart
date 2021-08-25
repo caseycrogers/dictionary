@@ -67,7 +67,7 @@ class _TranslationModeSwitcherState extends State<TranslationModeSwitcher> {
       child: Column(
         children: [
           if (widget.header != null) widget.header!,
-          DictionaryBannerAd(keywordNotifier: widget.keywordNotifier),
+          //DictionaryBannerAd(keywordNotifier: widget.keywordNotifier),
           Expanded(child: pages(context)),
         ],
       ),

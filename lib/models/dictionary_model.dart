@@ -41,8 +41,8 @@ class DictionaryModel {
   final TranslationPageModel englishPageModel;
   final TranslationPageModel spanishPageModel;
 
-  TranslationPageModel pageModel(TranslationMode translationMode) {
-    if (translationMode == TranslationMode.English) {
+  TranslationPageModel pageModel(TranslationMode mode) {
+    if (mode == TranslationMode.English) {
       return englishPageModel;
     }
     return spanishPageModel;
@@ -70,9 +70,7 @@ class DictionaryModel {
       context.read<DictionaryModel>();
 
   TranslationPageModel getPageModel(TranslationMode translationMode) =>
-      translationMode == TranslationMode.English
-          ? englishPageModel
-          : spanishPageModel;
+      isEnglish ? englishPageModel : spanishPageModel;
 
   TranslationPageModel get _oppModel =>
       _currModel.isEnglish ? spanishPageModel : englishPageModel;

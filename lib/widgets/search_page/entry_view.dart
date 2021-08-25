@@ -156,19 +156,21 @@ class EntryView extends StatelessWidget {
     final hasParenthetical = translations
         .any((t) => t.dominantHeadwordParentheticalQualifier.isNotEmpty);
     if (_preview)
-      return TableRow(children: [
-        Container(
-          child: partOfSpeechText(context, partOfSpeech, _preview),
-          alignment: Alignment.centerRight,
-        ),
-        Container(
-          padding: const EdgeInsets.only(top: 10),
-          child: previewTranslationLine(
-            context,
-            translations,
+      return TableRow(
+        children: [
+          Container(
+            child: partOfSpeechText(context, partOfSpeech, _preview),
+            alignment: Alignment.centerRight,
           ),
-        ),
-      ]);
+          Container(
+            padding: const EdgeInsets.only(top: 3),
+            child: previewTranslationLine(
+              context,
+              translations,
+            ),
+          ),
+        ],
+      );
     return TableRow(
       children: [
         Column(
