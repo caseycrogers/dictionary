@@ -248,7 +248,7 @@ Widget previewTranslationLine(
       if (translations.length > 1) normal1Text(context, '...'),
     ],
     suffixes: [
-      SpeakButton(
+      PronunciationButton(
         text: translations.first.content.pronounceable,
         mode: oppositeMode(SearchPageModel.of(context).translationMode),
       ),
@@ -279,7 +279,7 @@ Widget translationLine(
       ),
     ],
     suffixes: [
-      SpeakButton(
+      PronunciationButton(
         text: translation.content.pronounceable,
         mode: oppositeMode(SearchPageModel.of(context).translationMode),
       ),

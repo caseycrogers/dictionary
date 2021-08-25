@@ -6,8 +6,8 @@ import 'package:pedantic/pedantic.dart';
 import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/models/translation_page_model.dart';
 
-class SpeakButton extends StatelessWidget {
-  SpeakButton({
+class PronunciationButton extends StatelessWidget {
+  PronunciationButton({
     Key? key,
     required this.text,
     required this.mode,
