@@ -71,6 +71,27 @@ class TextToSpeech {
     await _player.setAudioSource(source);
     await _player.play();
 
+    yield* _getStream(text, mode);
+  }
+
+  bool isPlaying(String text, TranslationMode mode) {
+    return _textToFileName(text, mode) ==
+        (_player.audioSource as ProgressiveAudioSource).uri.pathSegments.last;
+  }
+
+  Future<void> stop(String text, TranslationMode mode) async {
+    if (isPlaying(text, mode)) {
+      // ONly stop if we're the currently playing text.
+      await _player.stop();
+    }
+  }
+
+  void dispose() {
+    _client.close();
+    _player.dispose();
+  }
+
+  Stream<PlaybackInfo> _getStream(String text, TranslationMode mode) async* {
     // Ensure duration is initialized before we emit events.
     final Duration duration = (await _player.durationFuture)!;
     PlaybackInfo _currentPlaybackInfo() {
@@ -86,38 +107,27 @@ class TextToSpeech {
     // We need to emit from both streams to ensure we get all events from both.
     final StreamController<PlaybackInfo> controller = StreamController();
     final StreamSubscription positionSub = _player.positionStream.listen(
-      (_) {
+          (_) {
         controller.add(_currentPlaybackInfo());
       },
     );
     final StreamSubscription stateSub = _player.processingStateStream.listen(
-      (_) {
+          (_) {
         controller.add(_currentPlaybackInfo());
       },
     );
-    yield* controller.stream.map((info) {
-      if (info.isDone || source != _player.audioSource) {
-        // Clean up when a complete info object is received or another audio
-        // source starts playing.
-        positionSub.cancel();
-        stateSub.cancel();
-        controller.close();
-      }
-      return info;
-    });
-  }
-
-  Future<void> stop(String text, TranslationMode mode) async {
-    if ((_player.audioSource as ProgressiveAudioSource).uri.pathSegments.last ==
-        _textToFileName(text, mode)) {
-      // ONly stop if we're the currently playing text.
-      await _player.stop();
-    }
-  }
-
-  void dispose() {
-    _client.close();
-    _player.dispose();
+    yield* controller.stream.map(
+          (info) {
+        if (info.isDone || !isPlaying(text, mode)) {
+          // Clean up when a complete info object is received or another audio
+          // source starts playing.
+          positionSub.cancel();
+          stateSub.cancel();
+          controller.close();
+        }
+        return info;
+      },
+    );
   }
 
   String _data(String text, TranslationMode mode) {

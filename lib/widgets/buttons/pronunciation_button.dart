@@ -154,6 +154,7 @@ class _LoadingIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      onTap: () {},
       child: Container(
         height: size,
         width: size,
