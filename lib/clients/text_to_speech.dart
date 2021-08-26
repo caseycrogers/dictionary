@@ -81,8 +81,12 @@ class TextToSpeech {
 
   Future<void> stop(String text, TranslationMode mode) async {
     if (isPlaying(text, mode)) {
-      // ONly stop if we're the currently playing text.
-      await _player.stop();
+      // Only stop if we're the currently playing text.
+      // We seek instead of stop as a garbage hack to ensure that the stream
+      // finishes.
+      await _player.seek(
+        Duration(milliseconds: _player.duration!.inMilliseconds + 1),
+      );
     }
   }
 
@@ -107,17 +111,17 @@ class TextToSpeech {
     // We need to emit from both streams to ensure we get all events from both.
     final StreamController<PlaybackInfo> controller = StreamController();
     final StreamSubscription positionSub = _player.positionStream.listen(
-          (_) {
+      (_) {
         controller.add(_currentPlaybackInfo());
       },
     );
     final StreamSubscription stateSub = _player.processingStateStream.listen(
-          (_) {
+      (_) {
         controller.add(_currentPlaybackInfo());
       },
     );
     yield* controller.stream.map(
-          (info) {
+      (info) {
         if (info.isDone || !isPlaying(text, mode)) {
           // Clean up when a complete info object is received or another audio
           // source starts playing.
