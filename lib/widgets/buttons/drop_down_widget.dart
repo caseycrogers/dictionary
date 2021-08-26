@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:rogers_dictionary/util/constants.dart';
 
 class DropDownWidget extends StatefulWidget {
   const DropDownWidget({
@@ -93,7 +92,6 @@ class _DropDownWidgetState extends State<DropDownWidget>
               scale: _curve,
               child: Material(
                 color: Theme.of(context).cardColor,
-                elevation: kHighElevation,
                 child: Padding(
                     padding: widget.padding ?? const EdgeInsets.all(2),
                     child: widget.builder(context, _toggle)),

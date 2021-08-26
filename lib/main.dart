@@ -115,9 +115,9 @@ class _MyAppState extends State<MyApp> {
               color: Colors.white,
               size: 28,
             ),
-            accentIconTheme: const IconThemeData(
+            accentIconTheme: IconThemeData(
               size: 28,
-              color: Colors.black45,
+              color: Color.lerp(Colors.black, Colors.white, .52),
             ),
             backgroundColor: Colors.white,
           ),

@@ -5,14 +5,13 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:rogers_dictionary/clients/entry_builders.dart';
 import 'package:rogers_dictionary/i18n.dart' as i18n;
-import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/search_page_model.dart';
 import 'package:rogers_dictionary/models/translation_page_model.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
 import 'package:rogers_dictionary/util/overflow_markdown_base.dart';
 import 'package:rogers_dictionary/util/string_utils.dart';
 import 'package:rogers_dictionary/widgets/buttons/opposite_headword_button.dart';
-import 'package:rogers_dictionary/widgets/buttons/speak_button.dart';
+import 'package:rogers_dictionary/widgets/buttons/pronunciation_button.dart';
 import 'package:rogers_dictionary/widgets/dictionary_chip.dart';
 import 'package:rogers_dictionary/widgets/buttons/bookmarks_button.dart';
 

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import 'package:rogers_dictionary/clients/entry_builders.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
-import 'package:rogers_dictionary/util/text_utils.dart';
 
 class OppositeHeadwordButton extends StatelessWidget {
   const OppositeHeadwordButton({

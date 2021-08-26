@@ -112,6 +112,7 @@ class _ChapterViewState extends State<ChapterView> {
             Container(
               child: DictionaryProgressIndicator(
                 child: _subChapterSelector(),
+                style: IndicatorStyle.linear,
                 progress: _subChapterProgress,
               ),
             ),

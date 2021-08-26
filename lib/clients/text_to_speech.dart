@@ -1,10 +1,13 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/services.dart';
+
+import 'package:audio_session/audio_session.dart';
 import 'package:http/http.dart' as http;
+import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -25,42 +28,96 @@ const String _apiKeyFile = 'text_to_speech.key';
 
 class TextToSpeech {
   final http.Client _client = http.Client();
-  final AudioPlayer _audioPlayer = AudioPlayer();
+  final AudioPlayer _player = AudioPlayer();
+  final Future<AudioSession> _session = AudioSession.instance.then((session) {
+    session.configure(
+      const AudioSessionConfiguration(
+        avAudioSessionCategory: AVAudioSessionCategory.playAndRecord,
+        avAudioSessionCategoryOptions: AVAudioSessionCategoryOptions.duckOthers,
+        avAudioSessionMode: AVAudioSessionMode.voicePrompt,
+        androidWillPauseWhenDucked: true,
+        androidAudioAttributes: AndroidAudioAttributes(
+          contentType: AndroidAudioContentType.speech,
+          usage: AndroidAudioUsage.assistant,
+        ),
+      ),
+    );
+    return session;
+  });
 
   static late final Future<String> _apiKey =
       rootBundle.loadString(join('assets', '$_apiKeyFile'));
 
-  Future<void> playAudio(String text, TranslationMode mode) async {
+  Stream<PlaybackInfo> playAudio(
+    String text,
+    TranslationMode mode,
+  ) async* {
     final Directory tmpDir = await getTemporaryDirectory();
     final File mp3 = File(
       join(
         tmpDir.path,
-        mode.toString().replaceAll('.', '_'),
-        '${text.replaceAll(' ', '_')}.mp3',
+        _textToFileName(text, mode),
       ),
     );
     await mp3.parent.create();
     if (!mp3.existsSync()) {
+      print('Downloading!');
       await mp3.writeAsBytes(await _getMp3(text, mode));
     }
-    // Stop any other audio files that are currently playing.
-    if (_audioPlayer.state == PlayerState.PLAYING) {
-      await _audioPlayer.stop();
+    await _session;
+    final ProgressiveAudioSource source = ProgressiveAudioSource(mp3.uri);
+    _player.currentIndex;
+
+    await _player.setAudioSource(source);
+    await _player.play();
+
+    // Ensure duration is initialized before we emit events.
+    final Duration duration = (await _player.durationFuture)!;
+    PlaybackInfo _currentPlaybackInfo() {
+      return PlaybackInfo(
+        track: text,
+        state: _player.processingState,
+        // Position can overshoot-clamp it if it does.
+        position: _player.position > duration ? duration : _player.position,
+        duration: duration,
+      );
     }
 
-    // Ensure we create this before playing so we don't miss the event.
-    final Future<void> done = _onPlayerStoppedOrCompleted;
-    await _audioPlayer.play(
-      mp3.path,
-      isLocal: true,
+    // We need to emit from both streams to ensure we get all events from both.
+    final StreamController<PlaybackInfo> controller = StreamController();
+    final StreamSubscription positionSub = _player.positionStream.listen(
+      (_) {
+        controller.add(_currentPlaybackInfo());
+      },
     );
-    await done;
+    final StreamSubscription stateSub = _player.processingStateStream.listen(
+      (_) {
+        controller.add(_currentPlaybackInfo());
+      },
+    );
+    yield* controller.stream.map((info) {
+      if (info.isDone || source != _player.audioSource) {
+        // Clean up when a complete info object is received or another audio
+        // source starts playing.
+        positionSub.cancel();
+        stateSub.cancel();
+        controller.close();
+      }
+      return info;
+    });
+  }
+
+  Future<void> stop(String text, TranslationMode mode) async {
+    if ((_player.audioSource as ProgressiveAudioSource).uri.pathSegments.last ==
+        _textToFileName(text, mode)) {
+      // ONly stop if we're the currently playing text.
+      await _player.stop();
+    }
   }
 
   void dispose() {
     _client.close();
-    _audioPlayer.stop();
-    _audioPlayer.release();
+    _player.dispose();
   }
 
   String _data(String text, TranslationMode mode) {
@@ -86,15 +143,6 @@ class TextToSpeech {
     );
   }
 
-  Future<void> get _onPlayerStoppedOrCompleted {
-    return _audioPlayer.onPlayerCompletion.firstWhere(
-      (_) {
-        return [PlayerState.COMPLETED, PlayerState.STOPPED]
-            .contains(_audioPlayer.state);
-      },
-    );
-  }
-
   Future<Uint8List> _getMp3(String text, TranslationMode mode) async {
     final http.Response response = await http.post(
       _textToSpeechUrl,
@@ -106,5 +154,41 @@ class TextToSpeech {
       body: _data(text, mode),
     );
     return _extractAudio(response);
+  }
+
+  String _textToFileName(String text, TranslationMode mode) {
+    return '${mode.toString().replaceAll('.', '_')}'
+        '_${text.replaceAll(' ', '_')}.mp3';
+  }
+}
+
+class PlaybackInfo {
+  const PlaybackInfo({
+    required this.track,
+    required this.state,
+    required this.position,
+    required this.duration,
+  });
+
+  factory PlaybackInfo.initialPosition(String track) {
+    return PlaybackInfo(
+      track: track,
+      state: ProcessingState.loading,
+      position: Duration.zero,
+      duration: Duration.zero,
+    );
+  }
+
+  final String track;
+  final ProcessingState state;
+  final Duration position;
+  final Duration duration;
+
+  bool get isDone => position == duration && state == ProcessingState.completed;
+
+  @override
+  String toString() {
+    return '$state: ${position.inMilliseconds}/${duration.inMilliseconds} '
+        '-- $track';
   }
 }
