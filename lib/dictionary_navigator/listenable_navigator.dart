@@ -54,7 +54,7 @@ class ListenableNavigator<T> extends StatefulWidget {
   _ListenableNavigatorState<T> createState() => _ListenableNavigatorState<T>();
 
   static Future<bool> pop({bool isSystem = true}) async {
-    await MyApp.analytics.logEvent(
+    await DictionaryApp.analytics.logEvent(
       name: 'pop${isSystem ? '_system' : ''}',
       parameters: {
         'stack': navigatorStack.map(
@@ -111,7 +111,7 @@ class _ListenableNavigatorState<T> extends State<ListenableNavigator<T>> {
   @override
   void didChangeDependencies() {
     analyticsListener ??= () {
-      MyApp.analytics
+      DictionaryApp.analytics
           .setCurrentScreen(screenName: DictionaryModel.readFrom(context).name);
     };
     widget.valueListenable.addListener(analyticsListener!);

@@ -61,7 +61,7 @@ class _DictionaryBannerAdState extends State<DictionaryBannerAd> {
       ),
       listener: BannerAdListener(
         onAdFailedToLoad: (Ad ad, loadAdError) {
-          MyApp.analytics.logEvent(
+          DictionaryApp.analytics.logEvent(
             name: 'ad_load_error',
             parameters: {'ad': ad.toString(), 'error': loadAdError.toString()},
           );

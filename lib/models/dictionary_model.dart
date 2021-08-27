@@ -34,7 +34,7 @@ class DictionaryModel {
     translationPageModel =
         ValueNotifier<TranslationPageModel>(englishPageModel);
     translationPageModel.addListener(() {
-      MyApp.analytics.setCurrentScreen(screenName: name);
+      DictionaryApp.analytics.setCurrentScreen(screenName: name);
     });
   }
 
@@ -148,7 +148,7 @@ class DictionaryModel {
     final SelectedEntry selectedEntry = SelectedEntry(
       urlEncodedHeadword: newUrlEncodedHeadword,
       entry: newEntry == null
-          ? MyApp.db.getEntry(_currModel.translationMode, newUrlEncodedHeadword)
+          ? DictionaryApp.db.getEntry(_currModel.translationMode, newUrlEncodedHeadword)
           : Future<Entry>.value(newEntry),
       isRelated: isRelated,
       isOppositeHeadword: isOppositeHeadword,

@@ -35,9 +35,9 @@ class EntrySearchModel {
 
   Stream<Entry> newStream({int startAt = 0}) {
     if (_isBookmarkedOnly) {
-      return MyApp.db.getBookmarked(_translationMode, startAt: startAt);
+      return DictionaryApp.db.getBookmarked(_translationMode, startAt: startAt);
     }
-    return MyApp.db
+    return DictionaryApp.db
         .getEntries(
       _translationMode,
       searchString: searchString,
@@ -51,14 +51,14 @@ class EntrySearchModel {
   }
 
   bool isDirty() {
-    return _isBookmarkedOnly && MyApp.db.areBookmarksDirty(_translationMode);
+    return _isBookmarkedOnly && DictionaryApp.db.areBookmarksDirty(_translationMode);
   }
 
   void onSearchStringChanged({
     required BuildContext context,
     required String newSearchString,
   }) {
-    MyApp.analytics.logSearch(searchTerm: newSearchString);
+    DictionaryApp.analytics.logSearch(searchTerm: newSearchString);
     DictionaryModel.readFrom(context).onHeadwordSelected(
       context,
       '',

@@ -12,6 +12,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
+import 'package:rogers_dictionary/clients/speech_to_text.dart';
 
 import 'package:rogers_dictionary/clients/sqflite_database.dart';
 import 'package:rogers_dictionary/clients/text_to_speech.dart';
@@ -28,9 +29,7 @@ final Color englishSecondary = Colors.indigo.shade200;
 final Color spanishSecondary = Colors.orange.shade200;
 
 Color primaryColor(TranslationMode translationMode) =>
-    isEnglish(translationMode)
-        ? englishPrimary
-        : spanishPrimary;
+    isEnglish(translationMode) ? englishPrimary : spanishPrimary;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -45,30 +44,44 @@ Future<void> main() async {
       }
       FlutterError.onError = FirebaseCrashlytics.instance.recordFlutterError;
 
-      runApp(MyApp());
+      runApp(DictionaryApp());
     },
     FirebaseCrashlytics.instance.recordError,
   );
 }
 
-class MyApp extends StatefulWidget {
+String _localeId(Locale locale) {
+  return '${locale.languageCode}_${locale.countryCode}';
+}
+
+class DictionaryApp extends StatefulWidget {
   static final DictionaryDatabase db = SqfliteDatabase();
   static final TextToSpeech textToSpeech = TextToSpeech();
   static final Future<PackageInfo> packageInfo = PackageInfo.fromPlatform();
-
   static final FirebaseAnalytics analytics = FirebaseAnalytics();
+
+  static SpeechToText? _speechToText;
+
+  static SpeechToText speechToText(BuildContext context) {
+    _speechToText ??= SpeechToText(_localeId(Localizations.localeOf(context)));
+    return _speechToText!;
+  }
 
   static FirebaseAnalyticsObserver get observer =>
       FirebaseAnalyticsObserver(analytics: analytics);
 
   @override
-  _MyAppState createState() => _MyAppState();
+  _DictionaryAppState createState() => _DictionaryAppState();
+
+  static _DictionaryAppState of(BuildContext context) {
+    return context.findAncestorStateOfType<_DictionaryAppState>()!;
+  }
 }
 
-class _MyAppState extends State<MyApp> {
+class _DictionaryAppState extends State<DictionaryApp> {
   @override
   void dispose() {
-    MyApp.textToSpeech.dispose();
+    DictionaryApp.textToSpeech.dispose();
     super.dispose();
   }
 

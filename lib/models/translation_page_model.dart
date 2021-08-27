@@ -21,11 +21,11 @@ class TranslationPageModel {
   TranslationPageModel({
     required this.translationMode,
   })  : searchPageModel = SearchPageModel(
-          translationMode: translationMode,
+          mode: translationMode,
           isBookmarkedOnly: false,
         ),
         bookmarksPageModel = SearchPageModel(
-          translationMode: translationMode,
+          mode: translationMode,
           isBookmarkedOnly: true,
         ),
         layerLink = LayerLink();

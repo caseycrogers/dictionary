@@ -35,7 +35,7 @@ class FeedbackButton extends StatelessWidget {
     // Close the menu before displaying feedback.
     onPressed?.call();
     // Log user feedback in analytics
-    unawaited(MyApp.analytics.logEvent(
+    unawaited(DictionaryApp.analytics.logEvent(
       name: 'feedback_opened',
     ));
     final Locale locale = Localizations.localeOf(context);
@@ -52,7 +52,7 @@ class FeedbackButton extends StatelessWidget {
     final String typeString = feedback.type.toString().enumString;
 
     // Log user feedback in analytics
-    unawaited(MyApp.analytics.logEvent(
+    unawaited(DictionaryApp.analytics.logEvent(
       name: 'feedback_submitted',
       parameters: feedback.toMap(),
     ));

@@ -22,16 +22,16 @@ class _BookmarksButtonState extends State<BookmarksButton> {
       visualDensity: VisualDensity.compact,
       icon: _icon,
       onPressed: () async {
-        final bool newIsBookmarked = !MyApp.db.isBookmarked(
+        final bool newIsBookmarked = !DictionaryApp.db.isBookmarked(
             translationMode, widget.entry.headword.urlEncodedHeadword);
-        await MyApp.analytics.logEvent(
+        await DictionaryApp.analytics.logEvent(
           name: 'set_bookmark',
           parameters: {
             'entry': widget.entry.headword.urlEncodedHeadword,
             'value': newIsBookmarked.toString(),
           },
         );
-        await MyApp.db.setBookmark(
+        await DictionaryApp.db.setBookmark(
           translationMode,
           widget.entry.headword.urlEncodedHeadword,
           newIsBookmarked,
@@ -43,7 +43,7 @@ class _BookmarksButtonState extends State<BookmarksButton> {
 
   Widget get _icon {
     return Icon(
-      MyApp.db.isBookmarked(TranslationPageModel.of(context).translationMode,
+      DictionaryApp.db.isBookmarked(TranslationPageModel.of(context).translationMode,
               widget.entry.headword.urlEncodedHeadword)
           ? Icons.bookmark
           : Icons.bookmark_border,

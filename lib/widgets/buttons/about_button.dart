@@ -25,7 +25,7 @@ class AboutButton extends StatelessWidget {
         style: kButtonTextStyle,
       ),
       onPressed: () {
-        MyApp.analytics.logEvent(name: 'about_pressed');
+        DictionaryApp.analytics.logEvent(name: 'about_pressed');
         onPressed();
         showDialog<void>(
           context: context,
@@ -108,8 +108,8 @@ class _DebugInfo extends StatelessWidget {
       child: Column(
         children: <String, Future<String>>{
           '': Future.value(Theme.of(context).platform.toString().enumString),
-          'app v': MyApp.packageInfo.then((p) => p.version),
-          'database v': MyApp.db.version.then((v) => v.versionString),
+          'app v': DictionaryApp.packageInfo.then((p) => p.version),
+          'database v': DictionaryApp.db.version.then((v) => v.versionString),
         }
             .mapDown(
               (label, future) => Row(

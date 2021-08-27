@@ -2,108 +2,59 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-import 'package:pedantic/pedantic.dart';
+import 'package:rogers_dictionary/clients/speech_to_text.dart';
 
 import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/models/translation_page_model.dart';
 
-class RecordButton extends StatelessWidget {
-  RecordButton({
+// Needs to be stateful so that the _currRecordingStream won't get trampled on
+// rebuild.
+class RecordButton extends StatefulWidget {
+  const RecordButton({
     Key? key,
-    required this.outputStream,
+    required this.outputStreamController,
     required this.mode,
   }) : super(key: key);
 
-  final StreamController<String> outputStream;
+  final StreamController<String> outputStreamController;
   final TranslationMode mode;
 
-  final ValueNotifier<bool> _isRecording = ValueNotifier<bool>(false);
-  final GlobalKey _buttonKey = GlobalKey();
+  @override
+  _RecordButtonState createState() => _RecordButtonState();
+}
+
+class _RecordButtonState extends State<RecordButton> {
+  final ValueNotifier<Stream<RecordingUpdate>?> _currRecordingStream =
+      ValueNotifier(null);
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: _isRecording,
-      builder: (context, isPlaying, child) {
-        return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 50),
-          transitionBuilder: (child, animation) {
-            return FadeTransition(
-              child: child,
-              opacity: animation,
-            );
+    return ValueListenableBuilder<Stream<RecordingUpdate>?>(
+      valueListenable: _currRecordingStream,
+      builder: (context, recordingStream, child) {
+        if (recordingStream == null) {
+          return IconButton(
+            icon: const Icon(Icons.mic),
+            onPressed: () async {
+              final Stream<RecordingUpdate> textStream =
+                  DictionaryApp.speechToText(context).listenForText(widget.mode);
+              _currRecordingStream.value = textStream;
+              await widget.outputStreamController.addStream(
+                textStream.map((result) => result.text),
+              ).onError((error, stackTrace) => print(error));
+              print('done!');
+              _currRecordingStream.value = null;
+            },
+          );
+        }
+        return IconButton(
+          onPressed: () {
+            DictionaryApp.speechToText(context).stop();
+            _currRecordingStream.value = null;
           },
-          child: isPlaying
-              ? _ProgressIndicator(_size)
-              : _RecordButton(
-                  outputStream,
-                  mode,
-                  _isRecording,
-                  key: _buttonKey,
-                ),
+          icon: const Icon(Icons.stop),
         );
       },
-    );
-  }
-
-  double get _size =>
-      (_buttonKey.currentContext!.findRenderObject() as RenderBox).size.height;
-}
-
-class _RecordButton extends StatelessWidget {
-  const _RecordButton(
-    this.outPutStream,
-    this.mode,
-    this._isRecording, {
-    Key? key,
-  }) : super(key: key);
-
-  final StreamController<String> outPutStream;
-  final TranslationMode mode;
-  final ValueNotifier<bool> _isRecording;
-
-  @override
-  Widget build(BuildContext context) {
-    return IconButton(
-      visualDensity: VisualDensity.compact,
-      onPressed: () async {
-        unawaited(MyApp.analytics.logEvent(
-          name: 'play_audio',
-          parameters: {
-            'text': 'asdf',
-            'mode': mode.toString().split('.').last,
-          },
-        ));
-        _isRecording.value = true;
-        await MyApp.textToSpeech.playAudio('asdf', mode);
-        _isRecording.value = false;
-      },
-      icon: Icon(
-        Icons.volume_up,
-        color: Theme.of(context).accentIconTheme.color,
-      ),
-    );
-  }
-}
-
-class _ProgressIndicator extends StatelessWidget {
-  const _ProgressIndicator(this.size, {Key? key}) : super(key: key);
-
-  final double size;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      child: Container(
-        height: size,
-        width: size,
-        padding: const EdgeInsets.all(12),
-        child: CircularProgressIndicator(
-          strokeWidth: 3,
-          color: Theme.of(context).accentIconTheme.color,
-        ),
-      ),
     );
   }
 }

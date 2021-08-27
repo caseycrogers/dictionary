@@ -79,7 +79,7 @@ class _PortraitPage extends StatelessWidget {
     return PageStorageKey<String>(
       '$tabString'
       '_selected_entry_listenable_navigator_'
-      '${SearchPageModel.of(context).translationMode}',
+      '${SearchPageModel.of(context).mode}',
     );
   }
 }

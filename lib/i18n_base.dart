@@ -77,23 +77,6 @@ Message transitiveVerb = Message('transitive verb', 'verbo transitivo');
 Message phrase = Message('phrase', 'frase');
 Message blank = Message('', '');
 
-String asdf = '''
-adjective phrase/frase adjectival
-adverbial phrase/frase adverbial
-degree phrase/frase de grado
-noun phrase, noun plural phrase/frase nominal
-prepositional phrase/frase preposicional
-verb phrase/frase verbal
-
-p.o.s. which occur only on SE:
-f phrase/feminine phrase/frase femenina (OJOS! femEnina, not femInina)
-fpl phrase/feminine plural phrase/frase femenina (don't mention plural)
-mf phrase/mf phrase/frase mf*
-m phrase/masculine phrase/frase masculina
-mpl phrase/masculine plural phrase/frase masculina (don't mention plural)
-''';
-
-
 Message adjectivePhrase = Message('adjective phrase', 'frase adjectival');
 Message adverbPhrase = Message('adverb phrase', 'frase adverbial');
 Message degreePhrase = Message('degree phrase', 'frase de grado');

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:rogers_dictionary/protobufs/dialogues.pb.dart';
 import 'package:rogers_dictionary/util/constants.dart';
-import 'package:rogers_dictionary/util/dictionary_progess_indicator.dart';
+import 'package:rogers_dictionary/util/dictionary_progress_indicator.dart';
 
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 

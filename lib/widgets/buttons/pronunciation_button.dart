@@ -1,10 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:pedantic/pedantic.dart';
+
 import 'package:rogers_dictionary/clients/text_to_speech.dart';
 import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/models/translation_page_model.dart';
-import 'package:rogers_dictionary/util/dictionary_progess_indicator.dart';
+import 'package:rogers_dictionary/util/dictionary_progress_indicator.dart';
 
 class PronunciationButton extends StatelessWidget {
   PronunciationButton({
@@ -58,14 +60,14 @@ class _PlayButton extends StatelessWidget {
     return IconButton(
       visualDensity: VisualDensity.compact,
       onPressed: () async {
-        unawaited(MyApp.analytics.logEvent(
+        unawaited(DictionaryApp.analytics.logEvent(
           name: 'play_audio',
           parameters: {
             'text': text,
             'mode': mode.toString().split('.').last,
           },
         ));
-        _currPlaybackStream.value = MyApp.textToSpeech.playAudio(text, mode);
+        _currPlaybackStream.value = DictionaryApp.textToSpeech.playAudio(text, mode);
       },
       icon: Icon(
         Icons.volume_up,
@@ -136,7 +138,7 @@ class _StopButton extends StatelessWidget {
       visualDensity: VisualDensity.compact,
       onPressed: () {
         _onDone();
-        MyApp.textToSpeech.stop(text, mode);
+        DictionaryApp.textToSpeech.stop(text, mode);
       },
       icon: Icon(
         Icons.stop,

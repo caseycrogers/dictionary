@@ -9,12 +9,12 @@ import 'translation_page_model.dart';
 
 class SearchPageModel {
   SearchPageModel({
-    required this.translationMode,
+    required this.mode,
     required bool isBookmarkedOnly,
   })  : currSelectedEntry = ValueNotifier<SelectedEntry?>(null),
         entrySearchModel = EntrySearchModel.empty(
           _currSearchString,
-          translationMode,
+          mode,
           isBookmarkedOnly,
         ),
         adKeywords = ValueNotifier([]) {
@@ -26,7 +26,7 @@ class SearchPageModel {
   }
 
   // Translation mode state.
-  final TranslationMode translationMode;
+  final TranslationMode mode;
 
   // Selected entry state.
   final ValueNotifier<SelectedEntry?> currSelectedEntry;
@@ -39,7 +39,7 @@ class SearchPageModel {
 
   static final ValueNotifier<String> _currSearchString = ValueNotifier('');
 
-  bool get isEnglish => translationMode == TranslationMode.English;
+  bool get isEnglish => mode == TranslationMode.English;
 
   bool get hasSelection => currSelectedEntry.value != null;
 
