@@ -16,7 +16,7 @@ import 'package:rogers_dictionary/clients/speech_to_text.dart';
 
 import 'package:rogers_dictionary/clients/sqflite_database.dart';
 import 'package:rogers_dictionary/clients/text_to_speech.dart';
-import 'package:rogers_dictionary/models/translation_page_model.dart';
+import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/pages/dictionary_page.dart';
 import 'package:rogers_dictionary/widgets/get_dictionary_feedback.dart';
 

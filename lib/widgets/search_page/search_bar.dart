@@ -2,13 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rogers_dictionary/clients/speech_to_text.dart';
 
 import 'package:rogers_dictionary/i18n.dart' as i18n;
 import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/entry_search_model.dart';
-import 'package:rogers_dictionary/models/search_page_model.dart';
-import 'package:rogers_dictionary/models/translation_page_model.dart';
+import 'package:rogers_dictionary/models/search_model.dart';
+import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/widgets/buttons/record_button.dart';
 
 class SearchBar extends StatefulWidget {
@@ -24,31 +25,40 @@ class _SearchBarState extends State<SearchBar> {
 
   bool _shouldInit = true;
 
-  final StreamController<String> _speechToTextStreamController =
-      StreamController();
-  late final StreamSubscription _speechToTextSubscription;
+  StreamSubscription? _speechToTextSubscription;
+  late final ValueNotifier<Stream<RecordingUpdate>?> _currSpeechStream;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final SearchPageModel searchPageModel = DictionaryModel.readFrom(context)
-        .translationPageModel
+        .translationModel
         .value
         .searchPageModel;
     if (_shouldInit) {
       _controller = TextEditingController(text: searchPageModel.searchString);
-      _speechToTextSubscription = _speechToTextStreamController.stream.listen(
-        (text) {
-          if (text.isNotEmpty) {
-            _controller.text = text;
-            _controller.selection = TextSelection.fromPosition(
-              TextPosition(offset: text.length),
-            );
-            searchPageModel.entrySearchModel.onSearchStringChanged(
-              context: context,
-              newSearchString: text,
-            );
+      _currSpeechStream =
+          searchPageModel.entrySearchModel.currSpeechToTextStream;
+      _currSpeechStream.addListener(
+        () {
+          final Stream<RecordingUpdate>? speechStream =
+              searchPageModel.entrySearchModel.currSpeechToTextStream.value;
+          if (speechStream == null) {
+            return;
           }
+          _speechToTextSubscription = speechStream.listen((speechUpdate) {
+            print(speechUpdate);
+            if (speechUpdate.text.isNotEmpty) {
+              _controller.text = speechUpdate.text;
+              _controller.selection = TextSelection.fromPosition(
+                TextPosition(offset: speechUpdate.text.length),
+              );
+              searchPageModel.entrySearchModel.onSearchStringChanged(
+                context: context,
+                newSearchString: speechUpdate.text,
+              );
+            }
+          });
         },
       );
       _controller.addListener(_updateIsEmpty);
@@ -60,15 +70,14 @@ class _SearchBarState extends State<SearchBar> {
   @override
   void dispose() {
     super.dispose();
-    _speechToTextSubscription.cancel();
-    _speechToTextStreamController.close();
+    _speechToTextSubscription?.cancel();
     _controller.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<TranslationPageModel>(
-      valueListenable: DictionaryModel.of(context).translationPageModel,
+    return ValueListenableBuilder<TranslationModel>(
+      valueListenable: DictionaryModel.of(context).translationModel,
       builder: (context, translationPage, content) {
         return Material(
           color: primaryColor(translationPage.translationMode),
@@ -78,7 +87,6 @@ class _SearchBarState extends State<SearchBar> {
               children: [
                 Expanded(child: content!),
                 RecordButton(
-                  outputStreamController: _speechToTextStreamController,
                   mode: translationPage.translationMode,
                 ),
               ],
@@ -123,7 +131,7 @@ class _SearchBarState extends State<SearchBar> {
   }
 
   EntrySearchModel get entrySearchModel => DictionaryModel.readFrom(context)
-      .translationPageModel
+      .translationModel
       .value
       .searchPageModel
       .entrySearchModel;

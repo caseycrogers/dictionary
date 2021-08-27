@@ -5,7 +5,7 @@ import 'package:pedantic/pedantic.dart';
 
 import 'package:rogers_dictionary/clients/text_to_speech.dart';
 import 'package:rogers_dictionary/main.dart';
-import 'package:rogers_dictionary/models/translation_page_model.dart';
+import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/util/dictionary_progress_indicator.dart';
 
 class PronunciationButton extends StatelessWidget {

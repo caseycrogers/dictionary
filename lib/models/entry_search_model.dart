@@ -2,30 +2,38 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:rogers_dictionary/clients/speech_to_text.dart';
 import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
-import 'package:rogers_dictionary/models/translation_page_model.dart';
+import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
 
 class EntrySearchModel {
   EntrySearchModel._(
-    this.currSearchString,
     this._translationMode,
     this._isBookmarkedOnly,
   );
 
   EntrySearchModel.empty(
-    ValueNotifier<String> currSearchString,
     TranslationMode translationMode,
     bool isBookmarkedOnly,
-  ) : this._(currSearchString, translationMode, isBookmarkedOnly);
+  ) : this._(translationMode, isBookmarkedOnly);
+
+  // Static so that these are shared between both modes
+  static final ValueNotifier<String> _currSearchString = ValueNotifier('');
+  static final ValueNotifier<Stream<RecordingUpdate>?> _currSpeechToTextStream =
+      ValueNotifier(null);
 
   // Used to expose the current entry list to other widgets.
   List<Entry> entries = [];
 
   final TranslationMode _translationMode;
-  final ValueNotifier<String> currSearchString;
   final bool _isBookmarkedOnly;
+
+  ValueNotifier<String> get currSearchString => _currSearchString;
+
+  ValueNotifier<Stream<RecordingUpdate>?> get currSpeechToTextStream =>
+      _currSpeechToTextStream;
 
   String get searchString => currSearchString.value;
 
@@ -51,7 +59,8 @@ class EntrySearchModel {
   }
 
   bool isDirty() {
-    return _isBookmarkedOnly && DictionaryApp.db.areBookmarksDirty(_translationMode);
+    return _isBookmarkedOnly &&
+        DictionaryApp.db.areBookmarksDirty(_translationMode);
   }
 
   void onSearchStringChanged({

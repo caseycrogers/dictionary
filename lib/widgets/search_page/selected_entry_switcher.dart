@@ -3,8 +3,8 @@ import 'package:provider/provider.dart';
 
 import 'package:rogers_dictionary/dictionary_navigator/listenable_navigator.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
-import 'package:rogers_dictionary/models/search_page_model.dart';
-import 'package:rogers_dictionary/models/translation_page_model.dart';
+import 'package:rogers_dictionary/models/search_model.dart';
+import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/pages/dictionary_page.dart';
 import 'package:rogers_dictionary/widgets/search_page/entry_view.dart';
 
@@ -32,7 +32,7 @@ class SelectedEntrySwitcher extends StatelessWidget {
   }
 
   SearchPageModel _pageModel(BuildContext context) {
-    final TranslationPageModel t = TranslationPageModel.of(context);
+    final TranslationModel t = TranslationModel.of(context);
     return DictionaryModel.of(context).currentTab.value == DictionaryTab.search
         ? t.searchPageModel
         : t.bookmarksPageModel;

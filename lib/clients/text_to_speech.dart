@@ -11,7 +11,7 @@ import 'package:just_audio/just_audio.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'package:rogers_dictionary/models/translation_page_model.dart';
+import 'package:rogers_dictionary/models/translation_model.dart';
 
 final Uri _textToSpeechUrl =
     Uri.parse('https://texttospeech.googleapis.com/v1/text:synthesize');

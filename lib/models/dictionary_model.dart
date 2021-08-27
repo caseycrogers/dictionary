@@ -7,8 +7,8 @@ import 'package:flutter/material.dart';
 
 import 'package:rogers_dictionary/clients/entry_builders.dart';
 import 'package:rogers_dictionary/main.dart';
-import 'package:rogers_dictionary/models/search_page_model.dart';
-import 'package:rogers_dictionary/models/translation_page_model.dart';
+import 'package:rogers_dictionary/models/search_model.dart';
+import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/pages/dictionary_page.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
 import 'package:rogers_dictionary/util/string_utils.dart';
@@ -25,30 +25,30 @@ int translationModeToIndex(TranslationMode translationMode) {
 class DictionaryModel {
   DictionaryModel()
       : currentTab = ValueNotifier(DictionaryTab.search),
-        englishPageModel = TranslationPageModel(
+        englishPageModel = TranslationModel(
           translationMode: TranslationMode.English,
         ),
-        spanishPageModel = TranslationPageModel(
+        spanishPageModel = TranslationModel(
           translationMode: TranslationMode.Spanish,
         ) {
-    translationPageModel =
-        ValueNotifier<TranslationPageModel>(englishPageModel);
-    translationPageModel.addListener(() {
+    translationModel =
+        ValueNotifier<TranslationModel>(englishPageModel);
+    translationModel.addListener(() {
       DictionaryApp.analytics.setCurrentScreen(screenName: name);
     });
   }
 
-  final TranslationPageModel englishPageModel;
-  final TranslationPageModel spanishPageModel;
+  final TranslationModel englishPageModel;
+  final TranslationModel spanishPageModel;
 
-  TranslationPageModel pageModel(TranslationMode mode) {
+  TranslationModel pageModel(TranslationMode mode) {
     if (mode == TranslationMode.English) {
       return englishPageModel;
     }
     return spanishPageModel;
   }
 
-  late final ValueNotifier<TranslationPageModel> translationPageModel;
+  late final ValueNotifier<TranslationModel> translationModel;
 
   final ValueNotifier<DictionaryTab> currentTab;
 
@@ -56,12 +56,12 @@ class DictionaryModel {
 
   final ScrollController nestedController = ScrollController();
 
-  TranslationPageModel get _currModel => translationPageModel.value;
+  TranslationModel get currTranslationModel => translationModel.value;
 
   TranslationMode get currTranslationMode =>
-      translationPageModel.value.translationMode;
+      translationModel.value.translationMode;
 
-  bool get isEnglish => translationPageModel.value.isEnglish;
+  bool get isEnglish => translationModel.value.isEnglish;
 
   static DictionaryModel of(BuildContext context) => context
       .select<DictionaryModel, DictionaryModel>((DictionaryModel mdl) => mdl);
@@ -69,15 +69,15 @@ class DictionaryModel {
   static DictionaryModel readFrom(BuildContext context) =>
       context.read<DictionaryModel>();
 
-  TranslationPageModel getPageModel(TranslationMode translationMode) =>
+  TranslationModel getPageModel(TranslationMode translationMode) =>
       isEnglish ? englishPageModel : spanishPageModel;
 
-  TranslationPageModel get _oppModel =>
-      _currModel.isEnglish ? spanishPageModel : englishPageModel;
+  TranslationModel get _oppModel =>
+      currTranslationModel.isEnglish ? spanishPageModel : englishPageModel;
 
   void onTranslationModeChanged(BuildContext context,
       [TranslationMode? newTranslationMode]) {
-    translationPageModel.value =
+    translationModel.value =
         pageModel(newTranslationMode ?? _oppModel.translationMode);
   }
 
@@ -107,7 +107,7 @@ class DictionaryModel {
     BuildContext context,
     String newUrlEncodedHeadword,
   ) {
-    translationPageModel.value = _oppModel;
+    translationModel.value = _oppModel;
     _onHeadwordSelected(
       context,
       newUrlEncodedHeadword: newUrlEncodedHeadword,
@@ -127,8 +127,8 @@ class DictionaryModel {
     SearchPageModel? pageModel,
   }) {
     pageModel ??= isBookmarkedOnly
-        ? _currModel.bookmarksPageModel
-        : _currModel.searchPageModel;
+        ? currTranslationModel.bookmarksPageModel
+        : currTranslationModel.searchPageModel;
     // Only update if the value has actually changed
     if (newUrlEncodedHeadword == pageModel.currSelectedHeadword) {
       return;
@@ -148,7 +148,7 @@ class DictionaryModel {
     final SelectedEntry selectedEntry = SelectedEntry(
       urlEncodedHeadword: newUrlEncodedHeadword,
       entry: newEntry == null
-          ? DictionaryApp.db.getEntry(_currModel.translationMode, newUrlEncodedHeadword)
+          ? DictionaryApp.db.getEntry(currTranslationModel.translationMode, newUrlEncodedHeadword)
           : Future<Entry>.value(newEntry),
       isRelated: isRelated,
       isOppositeHeadword: isOppositeHeadword,
@@ -166,14 +166,14 @@ class DictionaryModel {
     switch (currentTab.value) {
       case DictionaryTab.search:
         thirdTier =
-            translationPageModel.value.searchPageModel.currSelectedHeadword;
+            translationModel.value.searchPageModel.currSelectedHeadword;
         break;
       case DictionaryTab.bookmarks:
         thirdTier =
-            translationPageModel.value.searchPageModel.currSelectedHeadword;
+            translationModel.value.searchPageModel.currSelectedHeadword;
         break;
       case DictionaryTab.dialogues:
-        thirdTier = translationPageModel
+        thirdTier = translationModel
             .value.dialoguesPageModel.selectedChapter?.englishTitle;
         break;
     }

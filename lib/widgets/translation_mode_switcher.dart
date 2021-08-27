@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
-import 'package:rogers_dictionary/models/translation_page_model.dart';
+import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/util/constants.dart';
 import 'package:rogers_dictionary/widgets/dictionary_banner_ad.dart';
 
@@ -41,9 +41,9 @@ class _TranslationModeSwitcherState extends State<TranslationModeSwitcher> {
       _controller!.addListener(() {
         dictionaryModel.pageOffset.value = _controller!.page!;
       });
-      dictionaryModel.translationPageModel.addListener(() {
+      dictionaryModel.translationModel.addListener(() {
         final int targetPage = translationModeToIndex(
-            dictionaryModel.translationPageModel.value.translationMode);
+            dictionaryModel.translationModel.value.translationMode);
         // If the controller isn't attached yet then the PageView will be
         // properly constructed via initialPage.
         if (!_controller!.hasClients ||
@@ -87,7 +87,7 @@ class _TranslationModeSwitcherState extends State<TranslationModeSwitcher> {
             Row(
               children: [
                 Expanded(
-                  child: Provider<TranslationPageModel>.value(
+                  child: Provider<TranslationModel>.value(
                     key: const PageStorageKey<TranslationMode>(
                         TranslationMode.English),
                     value: dictionaryModel.englishPageModel,
@@ -105,7 +105,7 @@ class _TranslationModeSwitcherState extends State<TranslationModeSwitcher> {
               children: [
                 const VerticalDivider(width: .25, thickness: .25),
                 Expanded(
-                  child: Provider<TranslationPageModel>.value(
+                  child: Provider<TranslationModel>.value(
                     key: const PageStorageKey<TranslationMode>(
                         TranslationMode.Spanish),
                     value: dictionaryModel.spanishPageModel,

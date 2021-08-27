@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:provider/provider.dart';
 
-import 'package:rogers_dictionary/models/search_page_model.dart';
+import 'package:rogers_dictionary/models/search_model.dart';
 
 import 'dialogues_page_model.dart';
 
@@ -17,8 +17,8 @@ bool isEnglish(TranslationMode mode) => mode == TranslationMode.English;
 TranslationMode oppositeMode(TranslationMode mode) =>
     isEnglish(mode) ? TranslationMode.Spanish : TranslationMode.English;
 
-class TranslationPageModel {
-  TranslationPageModel({
+class TranslationModel {
+  TranslationModel({
     required this.translationMode,
   })  : searchPageModel = SearchPageModel(
           mode: translationMode,
@@ -45,6 +45,6 @@ class TranslationPageModel {
 
   bool get isEnglish => translationMode == TranslationMode.English;
 
-  static TranslationPageModel of(BuildContext context) =>
-      context.read<TranslationPageModel>();
+  static TranslationModel of(BuildContext context) =>
+      context.read<TranslationModel>();
 }

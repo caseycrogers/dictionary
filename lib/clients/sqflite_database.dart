@@ -10,7 +10,7 @@ import 'package:sqflite/sqflite.dart';
 import 'package:rogers_dictionary/clients/database_constants.dart';
 import 'package:rogers_dictionary/clients/dictionary_database.dart';
 import 'package:rogers_dictionary/clients/entry_builders.dart';
-import 'package:rogers_dictionary/models/translation_page_model.dart';
+import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/protobufs/dialogues.pb.dart';
 import 'package:rogers_dictionary/util/string_utils.dart';
 import 'entry_builders.dart';

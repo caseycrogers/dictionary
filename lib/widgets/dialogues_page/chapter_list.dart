@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:rogers_dictionary/clients/dialogue_builders.dart';
 import 'package:rogers_dictionary/models/dialogues_page_model.dart';
-import 'package:rogers_dictionary/models/translation_page_model.dart';
+import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/protobufs/dialogues.pb.dart';
 import 'package:rogers_dictionary/util/text_utils.dart';
 import 'package:rogers_dictionary/util/dialogue_extensions.dart';
@@ -14,8 +14,8 @@ import 'package:rogers_dictionary/widgets/loading_text.dart';
 class ChapterList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final TranslationPageModel dialoguesModel =
-        TranslationPageModel.of(context);
+    final TranslationModel dialoguesModel =
+        TranslationModel.of(context);
     return AsyncListView<DialogueChapter>(
       key: const PageStorageKey('dialogues'),
       padding: EdgeInsets.zero,
@@ -70,7 +70,7 @@ class ChapterList extends StatelessWidget {
     DialogueSubChapter? subChapter,
   }) {
     final DialoguesPageModel dialoguesModel =
-        TranslationPageModel.of(context).dialoguesPageModel;
+        TranslationModel.of(context).dialoguesPageModel;
     return ListTile(
       minLeadingWidth: 0,
       leading: isSubHeader ? const IndentIcon() : null,

@@ -8,7 +8,7 @@ import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 import 'package:rogers_dictionary/clients/dialogue_builders.dart';
 import 'package:rogers_dictionary/models/dialogues_page_model.dart';
-import 'package:rogers_dictionary/models/translation_page_model.dart';
+import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/util/text_utils.dart';
 import 'package:rogers_dictionary/util/dialogue_extensions.dart';
 import 'package:rogers_dictionary/pages/page_header.dart';
@@ -68,7 +68,7 @@ class _ChapterViewState extends State<ChapterView> {
   @override
   Widget build(BuildContext context) {
     final DialoguesPageModel dialoguesModel =
-        TranslationPageModel.of(context).dialoguesPageModel;
+        TranslationModel.of(context).dialoguesPageModel;
     return PageHeader(
       scrollable: false,
       padding: 0,

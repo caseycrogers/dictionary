@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
 
 import 'entry_search_model.dart';
-import 'translation_page_model.dart';
+import 'translation_model.dart';
 
 class SearchPageModel {
   SearchPageModel({
@@ -13,13 +13,12 @@ class SearchPageModel {
     required bool isBookmarkedOnly,
   })  : currSelectedEntry = ValueNotifier<SelectedEntry?>(null),
         entrySearchModel = EntrySearchModel.empty(
-          _currSearchString,
           mode,
           isBookmarkedOnly,
         ),
         adKeywords = ValueNotifier([]) {
-    _currSearchString.addListener(() {
-      if (_currSearchString.value.isNotEmpty) {
+    entrySearchModel.currSearchString.addListener(() {
+      if (entrySearchModel.currSearchString.value.isNotEmpty) {
         currSelectedEntry.value = null;
       }
     });
@@ -36,8 +35,6 @@ class SearchPageModel {
 
   // keywords for ads.
   final ValueNotifier<List<String>> adKeywords;
-
-  static final ValueNotifier<String> _currSearchString = ValueNotifier('');
 
   bool get isEnglish => mode == TranslationMode.English;
 

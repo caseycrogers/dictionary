@@ -5,8 +5,8 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:rogers_dictionary/clients/entry_builders.dart';
 import 'package:rogers_dictionary/i18n.dart' as i18n;
-import 'package:rogers_dictionary/models/search_page_model.dart';
-import 'package:rogers_dictionary/models/translation_page_model.dart';
+import 'package:rogers_dictionary/models/search_model.dart';
+import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
 import 'package:rogers_dictionary/util/overflow_markdown_base.dart';
 import 'package:rogers_dictionary/util/string_utils.dart';

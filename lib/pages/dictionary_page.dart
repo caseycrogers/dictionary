@@ -7,7 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:rogers_dictionary/i18n.dart' as i18n;
 import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
-import 'package:rogers_dictionary/models/translation_page_model.dart';
+import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/pages/dialogues_page.dart';
 import 'package:rogers_dictionary/util/constants.dart';
 import 'package:rogers_dictionary/util/string_utils.dart';
@@ -37,8 +37,8 @@ class _DictionaryPageState extends State<DictionaryPage> {
   @override
   Widget build(BuildContext context) {
     final DictionaryModel dictionaryModel = DictionaryModel.of(context);
-    return ValueListenableBuilder<TranslationPageModel>(
-      valueListenable: dictionaryModel.translationPageModel,
+    return ValueListenableBuilder<TranslationModel>(
+      valueListenable: dictionaryModel.translationModel,
       child: DictionaryTabBarView(
         children: LinkedHashMap.from(<DictionaryTab, Widget>{
           DictionaryTab.search: SearchPage(),

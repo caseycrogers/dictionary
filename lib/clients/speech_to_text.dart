@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
-import 'package:rogers_dictionary/models/translation_page_model.dart';
+import 'package:rogers_dictionary/models/translation_model.dart';
 
 class SpeechToText {
   SpeechToText(this.systemLanguageId);
@@ -10,9 +10,21 @@ class SpeechToText {
   final String systemLanguageId;
   static const String _fallbackSpanishLanguageId = 'es_US';
 
-  final stt.SpeechToText speech = stt.SpeechToText();
+  static final StreamController<String> statusStreamController =
+      StreamController();
+  static final Stream<String> statusStream =
+      statusStreamController.stream.asBroadcastStream();
+  static final stt.SpeechToText _speech = stt.SpeechToText();
+  static final Future<bool> _available = _speech.initialize(
+    onError: (error) {
+      print('Error initializing speech stream: $error');
+    },
+    onStatus: (status) {
+      statusStreamController.add(status);
+    },
+  );
 
-  late final Future<String> _spanishLanguageId = speech.locales().then(
+  late final Future<String> _spanishLanguageId = _speech.locales().then(
     (locales) {
       final List<String> ids = locales.map((l) => l.localeId).toList();
       if (ids.contains(systemLanguageId)) {
@@ -28,20 +40,15 @@ class SpeechToText {
 
   Stream<RecordingUpdate> listenForText(TranslationMode mode) async* {
     final StreamController<RecordingUpdate> output = StreamController();
-    final bool available = await speech.initialize(
-      onError: (error) {
-        print('asdf: $error');
-      },
-      onStatus: (status) {
-        if (status == 'done') {
-          output.close();
-        }
-      },
-    );
+    final Future<void> isClosed = statusStream
+        .firstWhere((status) => status == 'done')
+        .whenComplete(() => output.close());
+    final bool available = await _available;
     if (available) {
       RecordingUpdate currRecordingUpdate = const RecordingUpdate('', false, 0);
-      await speech.listen(
-        pauseFor: const Duration(seconds: 3),
+      yield currRecordingUpdate;
+      await _speech.listen(
+        pauseFor: const Duration(seconds: 2),
         listenMode: stt.ListenMode.search,
         localeId: await _getLocaleId(mode),
         onResult: (result) {
@@ -70,7 +77,7 @@ class SpeechToText {
   }
 
   Future<void> stop() {
-    return speech.stop();
+    return _speech.stop();
   }
 
   Future<String> _getLocaleId(TranslationMode mode) async {

@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rogers_dictionary/clients/entry_builders.dart';
 import 'package:rogers_dictionary/main.dart';
-import 'package:rogers_dictionary/models/translation_page_model.dart';
+import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
 
 class BookmarksButton extends StatefulWidget {
@@ -17,7 +17,7 @@ class BookmarksButton extends StatefulWidget {
 class _BookmarksButtonState extends State<BookmarksButton> {
   @override
   Widget build(BuildContext context) {
-    final translationMode = TranslationPageModel.of(context).translationMode;
+    final translationMode = TranslationModel.of(context).translationMode;
     return IconButton(
       visualDensity: VisualDensity.compact,
       icon: _icon,
@@ -43,7 +43,7 @@ class _BookmarksButtonState extends State<BookmarksButton> {
 
   Widget get _icon {
     return Icon(
-      DictionaryApp.db.isBookmarked(TranslationPageModel.of(context).translationMode,
+      DictionaryApp.db.isBookmarked(TranslationModel.of(context).translationMode,
               widget.entry.headword.urlEncodedHeadword)
           ? Icons.bookmark
           : Icons.bookmark_border,

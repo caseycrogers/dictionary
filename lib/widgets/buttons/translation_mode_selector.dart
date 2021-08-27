@@ -6,7 +6,7 @@ import 'package:flutter/widgets.dart';
 
 import 'package:rogers_dictionary/i18n.dart' as i18n;
 import 'package:rogers_dictionary/models/dictionary_model.dart';
-import 'package:rogers_dictionary/models/translation_page_model.dart';
+import 'package:rogers_dictionary/models/translation_model.dart';
 
 class TranslationModeSelector extends StatelessWidget {
   const TranslationModeSelector({Key? key}) : super(key: key);
@@ -97,7 +97,7 @@ class _Button extends StatelessWidget {
   Widget build(BuildContext context) {
     final DictionaryModel dictionaryModel = DictionaryModel.of(context);
     final bool isSelected =
-        dictionaryModel.translationPageModel.value.translationMode == mode;
+        dictionaryModel.translationModel.value.translationMode == mode;
     return Container(
       height: _buttonHeight,
       child: TextButton(
