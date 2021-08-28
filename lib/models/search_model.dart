@@ -1,17 +1,18 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
 
+import 'dictionary_model.dart';
 import 'entry_search_model.dart';
 import 'translation_model.dart';
 
-class SearchPageModel {
-  SearchPageModel({
+class SearchModel {
+  SearchModel({
     required this.mode,
     required bool isBookmarkedOnly,
-  })  : currSelectedEntry = ValueNotifier<SelectedEntry?>(null),
+  })
+      : currSelectedEntry = ValueNotifier<SelectedEntry?>(null),
         entrySearchModel = EntrySearchModel.empty(
           mode,
           isBookmarkedOnly,
@@ -47,11 +48,14 @@ class SearchPageModel {
   String? get currSelectedHeadword =>
       currSelectedEntry.value?.urlEncodedHeadword;
 
-  static SearchPageModel of(BuildContext context) =>
-      context.watch<SearchPageModel>();
-
-  static SearchPageModel readFrom(BuildContext context) =>
-      context.read<SearchPageModel>();
+  static SearchModel of(BuildContext context) {
+    final DictionaryModel dictionaryModel = DictionaryModel.of(context);
+    final TranslationModel translationModel = TranslationModel.of(context);
+    if (dictionaryModel.isBookmarkedOnly) {
+      return translationModel.bookmarksPageModel;
+    }
+    return translationModel.searchPageModel;
+  }
 }
 
 class SelectedEntry {
@@ -60,7 +64,8 @@ class SelectedEntry {
     required this.entry,
     bool? isRelated,
     bool? isOppositeHeadword,
-  })  : isRelated = isRelated ?? false,
+  })
+      : isRelated = isRelated ?? false,
         isOppositeHeadword = isOppositeHeadword ?? false;
 
   final String urlEncodedHeadword;

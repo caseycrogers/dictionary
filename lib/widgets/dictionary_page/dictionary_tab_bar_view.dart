@@ -24,7 +24,7 @@ class _DictionaryTabBarViewState extends State<DictionaryTabBarView> {
   TabController? _controller;
 
   ValueNotifier<DictionaryTab> get currentTab =>
-      DictionaryModel.readFrom(context).currentTab;
+      DictionaryModel.of(context).currentTab;
 
   void _updateTabController() {
     final TabController newController = DefaultTabController.of(context)!;

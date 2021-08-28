@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
 import 'package:audio_session/audio_session.dart';
@@ -30,9 +29,6 @@ const String _apiKeyFile = 'text_to_speech.key';
 class TextToSpeech {
   TextToSpeech();
 
-  VoidCallback? _onPlay;
-  set onPlay(VoidCallback newValue) => _onPlay = newValue;
-
   final http.Client _client = http.Client();
   final AudioPlayer _player = AudioPlayer();
   final Future<AudioSession> _session = AudioSession.instance.then((session) {
@@ -58,7 +54,6 @@ class TextToSpeech {
     String text,
     TranslationMode mode,
   ) async* {
-    _onPlay?.call();
     final Directory tmpDir = await getTemporaryDirectory();
     final File mp3 = File(
       join(
@@ -72,8 +67,6 @@ class TextToSpeech {
     }
     await _session;
     final ProgressiveAudioSource source = ProgressiveAudioSource(mp3.uri);
-    _player.currentIndex;
-
     await _player.setAudioSource(source);
     await _player.play();
 

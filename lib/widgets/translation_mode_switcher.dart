@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:rogers_dictionary/main.dart';
+
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/util/constants.dart';
@@ -31,7 +30,7 @@ class _TranslationModeSwitcherState extends State<TranslationModeSwitcher> {
   @override
   void didChangeDependencies() {
     if (_controller == null) {
-      final DictionaryModel dictionaryModel = DictionaryModel.readFrom(context);
+      final DictionaryModel dictionaryModel = DictionaryModel.of(context);
       _controller = PageController(
         initialPage:
             translationModeToIndex(dictionaryModel.currTranslationMode),
@@ -81,23 +80,19 @@ class _TranslationModeSwitcherState extends State<TranslationModeSwitcher> {
       builder: (context, constraints) {
         return PageView(
           controller: _controller,
-          onPageChanged: (int index) => DictionaryModel.readFrom(context)
+          onPageChanged: (int index) => DictionaryModel.of(context)
               .onTranslationModeChanged(context, indexToTranslationMode(index)),
           children: [
             Row(
               children: [
                 Expanded(
-                  child: Provider<TranslationModel>.value(
                     key: const PageStorageKey<TranslationMode>(
-                        TranslationMode.English),
-                    value: dictionaryModel.englishPageModel,
-                    builder: (BuildContext context, _) => Theme(
-                      data: Theme.of(context).copyWith(
-                          primaryColor: primaryColor(TranslationMode.English)),
-                      child: widget.child,
+                      TranslationMode.English,
                     ),
-                  ),
-                ),
+                    child: TranslationModelProvider(
+                      translationModel: dictionaryModel.englishPageModel,
+                      child: widget.child,
+                    )),
                 const VerticalDivider(width: .25, thickness: .25),
               ],
             ),
@@ -105,15 +100,12 @@ class _TranslationModeSwitcherState extends State<TranslationModeSwitcher> {
               children: [
                 const VerticalDivider(width: .25, thickness: .25),
                 Expanded(
-                  child: Provider<TranslationModel>.value(
-                    key: const PageStorageKey<TranslationMode>(
-                        TranslationMode.Spanish),
-                    value: dictionaryModel.spanishPageModel,
-                    builder: (BuildContext context, _) => Theme(
-                      data: Theme.of(context).copyWith(
-                          primaryColor: primaryColor(TranslationMode.Spanish)),
-                      child: widget.child,
-                    ),
+                  key: const PageStorageKey<TranslationMode>(
+                    TranslationMode.Spanish,
+                  ),
+                  child: TranslationModelProvider(
+                    translationModel: dictionaryModel.spanishPageModel,
+                    child: widget.child,
                   ),
                 ),
               ],
@@ -122,5 +114,21 @@ class _TranslationModeSwitcherState extends State<TranslationModeSwitcher> {
         );
       },
     );
+  }
+}
+
+class TranslationModelProvider extends StatelessWidget {
+  const TranslationModelProvider({
+    Key? key,
+    required this.translationModel,
+    required this.child,
+  }) : super(key: key);
+
+  final TranslationModel translationModel;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return child;
   }
 }

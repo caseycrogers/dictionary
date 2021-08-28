@@ -11,8 +11,6 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:package_info/package_info.dart';
-import 'package:provider/provider.dart';
-import 'package:rogers_dictionary/clients/speech_to_text.dart';
 
 import 'package:rogers_dictionary/clients/sqflite_database.dart';
 import 'package:rogers_dictionary/clients/text_to_speech.dart';
@@ -21,7 +19,6 @@ import 'package:rogers_dictionary/pages/dictionary_page.dart';
 import 'package:rogers_dictionary/widgets/get_dictionary_feedback.dart';
 
 import 'clients/dictionary_database.dart';
-import 'models/dictionary_model.dart';
 
 final Color englishPrimary = Colors.indigo.shade600;
 final Color spanishPrimary = Colors.orange.shade600;
@@ -51,9 +48,9 @@ Future<void> main() async {
 }
 
 class DictionaryApp extends StatefulWidget {
+  // Client instances.
   static final DictionaryDatabase db = SqfliteDatabase();
   static final TextToSpeech textToSpeech = TextToSpeech();
-  static final SpeechToText speechToText = SpeechToText();
   static final Future<PackageInfo> packageInfo = PackageInfo.fromPlatform();
   static final FirebaseAnalytics analytics = FirebaseAnalytics();
 
@@ -69,16 +66,6 @@ class DictionaryApp extends StatefulWidget {
 }
 
 class _DictionaryAppState extends State<DictionaryApp> {
-  @override
-  void initState() {
-    // Text to speech and speech to text should interrupt each other.
-    DictionaryApp.textToSpeech.onPlay = DictionaryApp.speechToText.stop;
-    DictionaryApp.speechToText.onListen = DictionaryApp.textToSpeech.stop;
-    super.initState();
-  }
-
-
-
   @override
   void dispose() {
     DictionaryApp.textToSpeech.dispose();
@@ -100,12 +87,7 @@ class _DictionaryAppState extends State<DictionaryApp> {
             GetDictionaryFeedback(onSubmit),
         child: MaterialApp(
           title: 'Dictionary',
-          home: Provider<DictionaryModel>(
-            create: (_) => DictionaryModel(),
-            builder: (BuildContext context, _) {
-              return DictionaryPage();
-            },
-          ),
+          home: DictionaryPage(),
           theme: ThemeData(
             selectedRowColor: Colors.grey.shade200,
             textTheme: TextTheme(

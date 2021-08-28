@@ -98,7 +98,7 @@ class _NoResultsContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final SearchPageModel searchPageModel = SearchPageModel.of(context);
+    final SearchModel searchPageModel = SearchModel.of(context);
     final String searchHint =
         searchPageModel.entrySearchModel.searchString.isEmpty
             ? i18n.enterTextHint.get(context)

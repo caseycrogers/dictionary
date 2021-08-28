@@ -69,33 +69,35 @@ class _DictionaryPageState extends State<DictionaryPage> {
                 child: MediaQuery(
                   data:
                       MediaQuery.of(context).removePadding(removeBottom: true),
-                  child: TabBar(
-                    labelColor: Colors.white,
-                    unselectedLabelColor: Colors.white38,
-                    labelPadding:
-                        const EdgeInsets.symmetric(horizontal: 2 * kPad),
-                    tabs: [
-                      DictionaryTabEntry(
-                        index: 0,
-                        icon: const Icon(Icons.search),
-                        text: i18n.dictionary.cap.get(context),
-                      ),
-                      DictionaryTabEntry(
-                        index: 1,
-                        icon: const Icon(Icons.bookmarks_outlined),
-                        text: i18n.bookmarks.cap.get(context),
-                      ),
-                      DictionaryTabEntry(
-                        index: 2,
-                        icon: const Icon(Icons.speaker_notes_outlined),
-                        text: i18n.dialogues.cap.get(context),
-                      ),
-                    ],
-                    isScrollable: true,
-                    indicator: const UnderlineTabIndicator(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                        width: 2,
+                  child: Container(
+                    child: TabBar(
+                      labelColor: Colors.white,
+                      unselectedLabelColor: Colors.white38,
+                      labelPadding:
+                          const EdgeInsets.symmetric(horizontal: 2 * kPad),
+                      tabs: [
+                        DictionaryTabEntry(
+                          index: 0,
+                          icon: const Icon(Icons.search),
+                          text: i18n.dictionary.cap.get(context),
+                        ),
+                        DictionaryTabEntry(
+                          index: 1,
+                          icon: const Icon(Icons.bookmarks_outlined),
+                          text: i18n.bookmarks.cap.get(context),
+                        ),
+                        DictionaryTabEntry(
+                          index: 2,
+                          icon: const Icon(Icons.speaker_notes_outlined),
+                          text: i18n.dialogues.cap.get(context),
+                        ),
+                      ],
+                      isScrollable: true,
+                      indicator: const UnderlineTabIndicator(
+                        borderSide: BorderSide(
+                          color: Colors.white,
+                          width: 2,
+                        ),
                       ),
                     ),
                   ),

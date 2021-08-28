@@ -6,9 +6,9 @@ import 'package:flutter/cupertino.dart';
 
 import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
-
 import 'package:rogers_dictionary/pages/default_page.dart';
 import 'package:rogers_dictionary/util/map_utils.dart';
+import 'package:rogers_dictionary/util/string_utils.dart';
 
 class ListenableNavigator<T> extends StatefulWidget {
   const ListenableNavigator({
@@ -54,11 +54,26 @@ class ListenableNavigator<T> extends StatefulWidget {
   _ListenableNavigatorState<T> createState() => _ListenableNavigatorState<T>();
 
   static Future<bool> pop({bool isSystem = true}) async {
+    print(navigatorStack.map(
+      (depth, nav) => MapEntry(
+          depth.toString(),
+          nav.stack.map<String, String>((key, dynamic value) {
+            return MapEntry(
+                key.toString(), value.toString().truncated(100));
+          }).toString()),
+    ));
     await DictionaryApp.analytics.logEvent(
       name: 'pop${isSystem ? '_system' : ''}',
       parameters: {
         'stack': navigatorStack.map(
-          (depth, nav) => MapEntry(depth.toString(), nav.stack.toString()),
+          (depth, nav) {
+            return MapEntry(
+                depth.toString(),
+                nav.stack.map<String, String>((key, dynamic value) {
+                  return MapEntry(
+                      key.toString(), value.toString().truncated(20));
+                }).toString());
+          },
         ).toString(),
       },
     );
@@ -112,7 +127,7 @@ class _ListenableNavigatorState<T> extends State<ListenableNavigator<T>> {
   void didChangeDependencies() {
     analyticsListener ??= () {
       DictionaryApp.analytics
-          .setCurrentScreen(screenName: DictionaryModel.readFrom(context).name);
+          .setCurrentScreen(screenName: DictionaryModel.of(context).name);
     };
     widget.valueListenable.addListener(analyticsListener!);
     super.didChangeDependencies();

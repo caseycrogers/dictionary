@@ -54,4 +54,7 @@ extension NotShittyString on String {
         RegExp('(.*) $nounToReorder'),
         (match) => '$nounToReorder ${match.group(1)}',
       );
+
+  String truncated(int maxLength) =>
+      length > maxLength - 3 ? '${split('').take(maxLength).join()}...' : this;
 }

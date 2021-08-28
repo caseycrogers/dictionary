@@ -257,7 +257,7 @@ Widget previewTranslationLine(
     suffixes: [
       PronunciationButton(
         text: translations.first.content.pronounceable,
-        mode: oppositeMode(SearchPageModel.of(context).mode),
+        mode: oppositeMode(SearchModel.of(context).mode),
       ),
     ],
   );
@@ -288,7 +288,7 @@ Widget translationLine(
     suffixes: [
       PronunciationButton(
         text: translation.content.pronounceable,
-        mode: oppositeMode(SearchPageModel.of(context).mode),
+        mode: oppositeMode(SearchModel.of(context).mode),
       ),
       if (translation.oppositeHeadword.isNotEmpty)
         OppositeHeadwordButton(translation: translation),

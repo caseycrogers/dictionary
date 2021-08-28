@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 import 'package:rogers_dictionary/dictionary_navigator/listenable_navigator.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
@@ -11,27 +10,26 @@ import 'package:rogers_dictionary/widgets/search_page/entry_view.dart';
 import 'entry_list.dart';
 
 class SelectedEntrySwitcher extends StatelessWidget {
-  const SelectedEntrySwitcher({Key? key}) : super(key: key);
+  const SelectedEntrySwitcher({Key? key, this.searchBar}) : super(key: key);
+
+  final Widget? searchBar;
 
   @override
   Widget build(BuildContext context) {
-    final SearchPageModel searchPageModel = _pageModel(context);
-    return Provider<SearchPageModel>.value(
-      value: searchPageModel,
-      builder: (BuildContext context, _) {
-        return LayoutBuilder(builder: (context, _) {
-          switch (MediaQuery.of(context).orientation) {
-            case Orientation.portrait:
-              return _PortraitPage(searchPageModel);
-            case Orientation.landscape:
-              return _LandscapePage(searchPageModel);
-          }
-        });
+    final SearchModel searchPageModel = _pageModel(context);
+    return LayoutBuilder(
+      builder: (context, _) {
+        switch (MediaQuery.of(context).orientation) {
+          case Orientation.portrait:
+            return _PortraitPage(searchPageModel);
+          case Orientation.landscape:
+            return _LandscapePage(searchPageModel);
+        }
       },
     );
   }
 
-  SearchPageModel _pageModel(BuildContext context) {
+  SearchModel _pageModel(BuildContext context) {
     final TranslationModel t = TranslationModel.of(context);
     return DictionaryModel.of(context).currentTab.value == DictionaryTab.search
         ? t.searchPageModel
@@ -42,14 +40,15 @@ class SelectedEntrySwitcher extends StatelessWidget {
 class _PortraitPage extends StatelessWidget {
   const _PortraitPage(this.searchPageModel, {Key? key}) : super(key: key);
 
-  final SearchPageModel searchPageModel;
+  final SearchModel searchPageModel;
 
   @override
   Widget build(BuildContext context) {
     return ListenableNavigator<SelectedEntry?>(
+      // Used to ensure the navigator knows when to display an animation.
       key: const ValueKey('entry_selector'),
       valueListenable: searchPageModel.currSelectedEntry,
-      builder: (BuildContext context, SelectedEntry? selectedEntry, _) {
+      builder: (context, selectedEntry, __) {
         if (selectedEntry == null) {
           return EntryList(key: _getKey(context));
         }
@@ -65,8 +64,7 @@ class _PortraitPage extends StatelessWidget {
       },
       onPopCallback: (selectedEntry) {
         if (selectedEntry != null && selectedEntry.isOppositeHeadword) {
-          final DictionaryModel dictionaryModel =
-              DictionaryModel.readFrom(context);
+          final DictionaryModel dictionaryModel = DictionaryModel.of(context);
           dictionaryModel.onTranslationModeChanged(context);
         }
       },
@@ -79,7 +77,7 @@ class _PortraitPage extends StatelessWidget {
     return PageStorageKey<String>(
       '$tabString'
       '_selected_entry_listenable_navigator_'
-      '${SearchPageModel.of(context).mode}',
+      '${SearchModel.of(context).mode}',
     );
   }
 }
@@ -87,7 +85,7 @@ class _PortraitPage extends StatelessWidget {
 class _LandscapePage extends StatelessWidget {
   const _LandscapePage(this.searchPageModel, {Key? key}) : super(key: key);
 
-  final SearchPageModel searchPageModel;
+  final SearchModel searchPageModel;
 
   @override
   Widget build(BuildContext context) {

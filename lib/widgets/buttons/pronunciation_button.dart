@@ -19,22 +19,29 @@ class PronunciationButton extends StatelessWidget {
   final TranslationMode mode;
 
   final ValueNotifier<Stream<PlaybackInfo>?> _currPlaybackStream =
-      ValueNotifier(null);
+  ValueNotifier(null);
   final GlobalKey _buttonKey = GlobalKey();
 
   @override
   Widget build(BuildContext context) {
     return ValueListenableBuilder<Stream<PlaybackInfo>?>(
       valueListenable: _currPlaybackStream,
-      builder: (context, playbackStream, child) {
+      builder: (context, playbackStream, _) {
+        late final Widget currButton;
         if (playbackStream == null) {
-          return _PlayButton(text, mode, _currPlaybackStream, key: _buttonKey);
-        }
-        return _PlayingButton(text, mode, _size, playbackStream, () {
-          WidgetsBinding.instance!.addPostFrameCallback((_) {
-            _currPlaybackStream.value = null;
+          currButton =
+              _PlayButton(text, mode, _currPlaybackStream, key: _buttonKey);
+        } else {
+          currButton = _PlayingButton(text, mode, _size, playbackStream, () {
+            WidgetsBinding.instance!.addPostFrameCallback((_) {
+              _currPlaybackStream.value = null;
+            });
           });
-        });
+        }
+        return AnimatedSwitcher(
+          duration: const Duration(milliseconds: 20),
+          child: currButton,
+        );
       },
     );
   }
@@ -44,12 +51,11 @@ class PronunciationButton extends StatelessWidget {
 }
 
 class _PlayButton extends StatelessWidget {
-  const _PlayButton(
-    this.text,
-    this.mode,
-    this._currPlaybackStream, {
-    Key? key,
-  }) : super(key: key);
+  const _PlayButton(this.text,
+      this.mode,
+      this._currPlaybackStream, {
+        Key? key,
+      }) : super(key: key);
 
   final String text;
   final TranslationMode mode;
@@ -64,28 +70,34 @@ class _PlayButton extends StatelessWidget {
           name: 'play_audio',
           parameters: {
             'text': text,
-            'mode': mode.toString().split('.').last,
+            'mode': mode
+                .toString()
+                .split('.')
+                .last,
           },
         ));
-        _currPlaybackStream.value = DictionaryApp.textToSpeech.playAudio(text, mode);
+        _currPlaybackStream.value =
+            DictionaryApp.textToSpeech.playAudio(text, mode);
       },
       icon: Icon(
         Icons.volume_up,
-        color: Theme.of(context).accentIconTheme.color,
+        color: Theme
+            .of(context)
+            .accentIconTheme
+            .color,
       ),
     );
   }
 }
 
 class _PlayingButton extends StatelessWidget {
-  const _PlayingButton(
-    this.text,
-    this.mode,
-    this.size,
-    this._playbackStream,
-    this._onDone, {
-    Key? key,
-  }) : super(key: key);
+  const _PlayingButton(this.text,
+      this.mode,
+      this.size,
+      this._playbackStream,
+      this._onDone, {
+        Key? key,
+      }) : super(key: key);
 
   final String text;
   final TranslationMode mode;
@@ -121,12 +133,11 @@ class _PlayingButton extends StatelessWidget {
 }
 
 class _StopButton extends StatelessWidget {
-  const _StopButton(
-    this._onDone,
-    this.text,
-    this.mode, {
-    Key? key,
-  }) : super(key: key);
+  const _StopButton(this._onDone,
+      this.text,
+      this.mode, {
+        Key? key,
+      }) : super(key: key);
 
   final VoidCallback _onDone;
   final String text;
@@ -142,7 +153,10 @@ class _StopButton extends StatelessWidget {
       },
       icon: Icon(
         Icons.stop,
-        color: Theme.of(context).accentIconTheme.color,
+        color: Theme
+            .of(context)
+            .accentIconTheme
+            .color,
       ),
     );
   }
@@ -163,7 +177,10 @@ class _LoadingIndicator extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         child: CircularProgressIndicator(
           strokeWidth: 3,
-          color: Theme.of(context).accentIconTheme.color,
+          color: Theme
+              .of(context)
+              .accentIconTheme
+              .color,
         ),
       ),
     );

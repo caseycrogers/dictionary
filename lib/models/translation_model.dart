@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:provider/provider.dart';
-
 import 'package:rogers_dictionary/models/search_model.dart';
+import 'package:rogers_dictionary/widgets/translation_mode_switcher.dart';
 
 import 'dialogues_page_model.dart';
 
@@ -20,11 +19,12 @@ TranslationMode oppositeMode(TranslationMode mode) =>
 class TranslationModel {
   TranslationModel({
     required this.translationMode,
-  })  : searchPageModel = SearchPageModel(
-          mode: translationMode,
-          isBookmarkedOnly: false,
-        ),
-        bookmarksPageModel = SearchPageModel(
+  })
+      : searchPageModel = SearchModel(
+    mode: translationMode,
+    isBookmarkedOnly: false,
+  ),
+        bookmarksPageModel = SearchModel(
           mode: translationMode,
           isBookmarkedOnly: true,
         ),
@@ -33,9 +33,9 @@ class TranslationModel {
   // Translation mode state.
   final TranslationMode translationMode;
 
-  final SearchPageModel searchPageModel;
+  final SearchModel searchPageModel;
 
-  final SearchPageModel bookmarksPageModel;
+  final SearchModel bookmarksPageModel;
 
   final LayerLink layerLink;
 
@@ -45,6 +45,9 @@ class TranslationModel {
 
   bool get isEnglish => translationMode == TranslationMode.English;
 
-  static TranslationModel of(BuildContext context) =>
-      context.read<TranslationModel>();
+  static TranslationModel of(BuildContext context) {
+    return context
+        .findAncestorWidgetOfExactType<TranslationModelProvider>()!
+        .translationModel;
+  }
 }

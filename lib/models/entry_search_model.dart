@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:rogers_dictionary/clients/speech_to_text.dart';
 import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/translation_model.dart';
@@ -19,10 +18,8 @@ class EntrySearchModel {
     bool isBookmarkedOnly,
   ) : this._(translationMode, isBookmarkedOnly);
 
-  // Static so that these are shared between both modes
+  // Static so that this is shared between both modes
   static final ValueNotifier<String> _currSearchString = ValueNotifier('');
-  static final ValueNotifier<Stream<RecordingUpdate>?> _currSpeechToTextStream =
-      ValueNotifier(null);
 
   // Used to expose the current entry list to other widgets.
   List<Entry> entries = [];
@@ -31,9 +28,6 @@ class EntrySearchModel {
   final bool _isBookmarkedOnly;
 
   ValueNotifier<String> get currSearchString => _currSearchString;
-
-  ValueNotifier<Stream<RecordingUpdate>?> get currSpeechToTextStream =>
-      _currSpeechToTextStream;
 
   String get searchString => currSearchString.value;
 
@@ -68,7 +62,7 @@ class EntrySearchModel {
     required String newSearchString,
   }) {
     DictionaryApp.analytics.logSearch(searchTerm: newSearchString);
-    DictionaryModel.readFrom(context).onHeadwordSelected(
+    DictionaryModel.of(context).onHeadwordSelected(
       context,
       '',
     );

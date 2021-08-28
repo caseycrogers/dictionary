@@ -28,9 +28,9 @@ class EntryView extends StatelessWidget {
   final bool _preview;
 
   static Widget asPage(BuildContext context) => Builder(
-        key: ValueKey(SearchPageModel.of(context).currSelectedHeadword),
+        key: ValueKey(SearchModel.of(context).currSelectedHeadword),
         builder: (context) {
-          final SearchPageModel searchPageModel = SearchPageModel.of(context);
+          final SearchModel searchPageModel = SearchModel.of(context);
           if (!searchPageModel.hasSelection)
             return Container(color: Theme.of(context).backgroundColor);
           return FutureBuilder(
@@ -63,7 +63,7 @@ class EntryView extends StatelessWidget {
       children: [
         if (_preview)
           headwordLine(context, _entry, _preview,
-              SearchPageModel.of(context).searchString),
+              SearchModel.of(context).searchString),
         _buildTable(context),
         if (!_preview) _buildEditorialNotes(context),
         if (!_preview) _buildRelated(context),
@@ -96,7 +96,7 @@ class EntryView extends StatelessWidget {
                       .copyWith(color: Colors.blue),
                 ),
                 onPressed: () {
-                  DictionaryModel.readFrom(context).onHeadwordSelected(
+                  DictionaryModel.of(context).onHeadwordSelected(
                     context,
                     EntryUtils.urlEncode(headword),
                     isRelated: true,

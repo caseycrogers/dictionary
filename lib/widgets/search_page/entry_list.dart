@@ -32,16 +32,14 @@ class _EntryListState extends State<EntryList> {
   void _initializeStream() {
     _initialData = [];
     final EntrySearchModel entrySearchModel =
-        SearchPageModel.readFrom(context).entrySearchModel;
+        SearchModel.of(context).entrySearchModel;
     final _EntryListStorableState? cached = _EntryListStorableState.of(context);
-    if (!SearchPageModel.readFrom(context).entrySearchModel.isDirty() &&
+    if (!SearchModel.of(context).entrySearchModel.isDirty() &&
         cached != null &&
         cached.searchString == entrySearchModel.searchString) {
       _initialData = cached.entries ?? [];
     }
-    _entryStream = SearchPageModel.readFrom(context)
-        .entrySearchModel
-        .newStream(startAt: _initialData.length);
+    _entryStream = entrySearchModel.newStream(startAt: _initialData.length);
   }
 
   void _onSearchStringChanged() {
@@ -54,7 +52,7 @@ class _EntryListState extends State<EntryList> {
   void initState() {
     _initializeStream();
     final ValueNotifier<String> currSearchString =
-        SearchPageModel.readFrom(context).entrySearchModel.currSearchString;
+        SearchModel.of(context).entrySearchModel.currSearchString;
     currSearchString.addListener(_onSearchStringChanged);
     _disposeListener =
         () => currSearchString.removeListener(_onSearchStringChanged);
@@ -95,9 +93,8 @@ class _EntryListState extends State<EntryList> {
     AsyncSnapshot<List<Entry>> snapshot,
     int index,
   ) {
-    final dictionaryModel = DictionaryModel.readFrom(rowContext);
-    final SearchPageModel searchPageModel =
-        SearchPageModel.readFrom(rowContext);
+    final dictionaryModel = DictionaryModel.of(rowContext);
+    final SearchModel searchPageModel = SearchModel.of(rowContext);
     _EntryListStorableState.write(
       context,
       searchPageModel.entrySearchModel.searchString,
@@ -157,7 +154,7 @@ class _EntryListState extends State<EntryList> {
 
     // Put no results widget at top
     if (index == 0 &&
-        SearchPageModel.of(context).entrySearchModel.isEmpty &&
+        SearchModel.of(context).entrySearchModel.isEmpty &&
         dictionaryModel.currentTab.value == DictionaryTab.search) {
       return Column(children: [
         const NoResultsWidget(),

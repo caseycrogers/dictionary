@@ -16,7 +16,6 @@ class SearchPage extends StatelessWidget {
       child: TranslationModeSwitcher(
         header: SearchBar(),
         child: SelectedEntrySwitcher(),
-
       ),
     );
   }

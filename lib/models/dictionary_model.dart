@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-import 'package:provider/provider.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -31,17 +30,18 @@ class DictionaryModel {
         spanishPageModel = TranslationModel(
           translationMode: TranslationMode.Spanish,
         ) {
-    translationModel =
-        ValueNotifier<TranslationModel>(englishPageModel);
+    translationModel = ValueNotifier<TranslationModel>(englishPageModel);
     translationModel.addListener(() {
       DictionaryApp.analytics.setCurrentScreen(screenName: name);
     });
   }
 
+  static late final DictionaryModel _instance = DictionaryModel();
+
   final TranslationModel englishPageModel;
   final TranslationModel spanishPageModel;
 
-  TranslationModel pageModel(TranslationMode mode) {
+  TranslationModel translationModelFor(TranslationMode mode) {
     if (mode == TranslationMode.English) {
       return englishPageModel;
     }
@@ -63,11 +63,9 @@ class DictionaryModel {
 
   bool get isEnglish => translationModel.value.isEnglish;
 
-  static DictionaryModel of(BuildContext context) => context
-      .select<DictionaryModel, DictionaryModel>((DictionaryModel mdl) => mdl);
-
-  static DictionaryModel readFrom(BuildContext context) =>
-      context.read<DictionaryModel>();
+  static DictionaryModel of(BuildContext context) {
+    return _instance;
+  }
 
   TranslationModel getPageModel(TranslationMode translationMode) =>
       isEnglish ? englishPageModel : spanishPageModel;
@@ -78,7 +76,7 @@ class DictionaryModel {
   void onTranslationModeChanged(BuildContext context,
       [TranslationMode? newTranslationMode]) {
     translationModel.value =
-        pageModel(newTranslationMode ?? _oppModel.translationMode);
+        translationModelFor(newTranslationMode ?? _oppModel.translationMode);
   }
 
   void onEntrySelected(BuildContext context, Entry newEntry) =>
@@ -124,7 +122,7 @@ class DictionaryModel {
     required bool isRelated,
     required bool isOppositeHeadword,
     Entry? newEntry,
-    SearchPageModel? pageModel,
+    SearchModel? pageModel,
   }) {
     pageModel ??= isBookmarkedOnly
         ? currTranslationModel.bookmarksPageModel
@@ -148,7 +146,8 @@ class DictionaryModel {
     final SelectedEntry selectedEntry = SelectedEntry(
       urlEncodedHeadword: newUrlEncodedHeadword,
       entry: newEntry == null
-          ? DictionaryApp.db.getEntry(currTranslationModel.translationMode, newUrlEncodedHeadword)
+          ? DictionaryApp.db.getEntry(
+              currTranslationModel.translationMode, newUrlEncodedHeadword)
           : Future<Entry>.value(newEntry),
       isRelated: isRelated,
       isOppositeHeadword: isOppositeHeadword,
@@ -165,12 +164,10 @@ class DictionaryModel {
     String? thirdTier;
     switch (currentTab.value) {
       case DictionaryTab.search:
-        thirdTier =
-            translationModel.value.searchPageModel.currSelectedHeadword;
+        thirdTier = translationModel.value.searchPageModel.currSelectedHeadword;
         break;
       case DictionaryTab.bookmarks:
-        thirdTier =
-            translationModel.value.searchPageModel.currSelectedHeadword;
+        thirdTier = translationModel.value.searchPageModel.currSelectedHeadword;
         break;
       case DictionaryTab.dialogues:
         thirdTier = translationModel
