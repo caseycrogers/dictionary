@@ -92,26 +92,24 @@ class _DictionaryAppState extends State<DictionaryApp> {
             selectedRowColor: Colors.grey.shade200,
             textTheme: TextTheme(
               headline1: GoogleFonts.roboto(
-                fontSize: 36,
+                fontSize: 30,
                 color: Colors.black,
                 fontWeight: FontWeight.bold,
               ),
               headline2: GoogleFonts.roboto(
                 color: Colors.black,
-                fontSize: 28,
+                fontSize: 24,
                 fontWeight: FontWeight.bold,
               ),
               bodyText2: GoogleFonts.roboto(
-                fontSize: 22,
+                fontSize: 18,
                 fontWeight: FontWeight.normal,
               ),
             ),
             iconTheme: const IconThemeData(
               color: Colors.white,
-              size: 28,
             ),
             accentIconTheme: IconThemeData(
-              size: 28,
               color: Color.lerp(Colors.black, Colors.white, .52),
             ),
             backgroundColor: Colors.white,

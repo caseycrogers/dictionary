@@ -6,6 +6,7 @@ import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/search_model.dart';
 import 'package:rogers_dictionary/models/translation_model.dart';
+import 'package:rogers_dictionary/util/constants.dart';
 
 class SearchBar extends StatefulWidget {
   const SearchBar();
@@ -77,14 +78,16 @@ class _SearchBarBase extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 48,
-      margin: const EdgeInsets.all(8),
+      height: kToolbarHeight,
+      padding: const EdgeInsets.all(kPad),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(40),
         child: Container(
           color: Theme.of(context).backgroundColor,
           child: TextField(
-            style: const TextStyle(fontSize: 20),
+            style: TextStyle(
+              fontSize: Theme.of(context).textTheme.bodyText2!.fontSize,
+            ),
             controller: controller,
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.search),

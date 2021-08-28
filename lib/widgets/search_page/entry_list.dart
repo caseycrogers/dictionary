@@ -10,6 +10,7 @@ import 'package:rogers_dictionary/models/entry_search_model.dart';
 import 'package:rogers_dictionary/models/search_model.dart';
 import 'package:rogers_dictionary/pages/dictionary_page.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
+import 'package:rogers_dictionary/util/constants.dart';
 import 'package:rogers_dictionary/util/delayed.dart';
 import 'package:rogers_dictionary/widgets/buttons/open_page.dart';
 import 'package:rogers_dictionary/widgets/loading_text.dart';
@@ -80,7 +81,7 @@ class _EntryListState extends State<EntryList> {
         delay: const Duration(milliseconds: 100),
         initialChild: Container(),
         child: const Padding(
-          padding: EdgeInsets.all(16),
+          padding: EdgeInsets.all(kPad),
           child: LoadingText(),
         ),
       ),
@@ -124,9 +125,8 @@ class _EntryListState extends State<EntryList> {
                       ? Theme.of(context).selectedRowColor
                       : Colors.transparent,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 12,
+                    padding: const EdgeInsets.all(2 * kPad).subtract(
+                      const EdgeInsets.only(top: (2 * kPad) - 1),
                     ),
                     child: Row(
                       children: [

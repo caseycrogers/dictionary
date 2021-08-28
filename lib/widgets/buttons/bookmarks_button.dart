@@ -43,7 +43,8 @@ class _BookmarksButtonState extends State<BookmarksButton> {
 
   Widget get _icon {
     return Icon(
-      DictionaryApp.db.isBookmarked(TranslationModel.of(context).translationMode,
+      DictionaryApp.db.isBookmarked(
+              TranslationModel.of(context).translationMode,
               widget.entry.headword.urlEncodedHeadword)
           ? Icons.bookmark
           : Icons.bookmark_border,

@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:rogers_dictionary/i18n.dart' as i18n;
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/translation_model.dart';
+import 'package:rogers_dictionary/util/constants.dart';
 
 class TranslationModeSelector extends StatelessWidget {
   const TranslationModeSelector({Key? key}) : super(key: key);
@@ -88,8 +89,8 @@ class TranslationModeSelector extends StatelessWidget {
 class _Button extends StatelessWidget {
   const _Button(this.mode, {Key? key}) : super(key: key);
 
-  static const double _buttonHeight = 48;
-  static const double _buttonSpacing = 10;
+  static const double _buttonHeight = kToolbarHeight - 2*kPad;
+  static const double _buttonSpacing = 5;
 
   final TranslationMode mode;
 
@@ -116,9 +117,8 @@ class _Button extends StatelessWidget {
             mode == TranslationMode.English
                 ? i18n.english.cap.get(context)
                 : i18n.spanish.cap.get(context),
-            style: Theme.of(context).textTheme.headline1!.copyWith(
+            style: Theme.of(context).textTheme.headline2!.copyWith(
                   color: Colors.white,
-                  fontSize: 24,
                 ),
           ),
         ),

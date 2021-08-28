@@ -19,7 +19,7 @@ class PronunciationButton extends StatelessWidget {
   final TranslationMode mode;
 
   final ValueNotifier<Stream<PlaybackInfo>?> _currPlaybackStream =
-  ValueNotifier(null);
+      ValueNotifier(null);
   final GlobalKey _buttonKey = GlobalKey();
 
   @override
@@ -51,11 +51,12 @@ class PronunciationButton extends StatelessWidget {
 }
 
 class _PlayButton extends StatelessWidget {
-  const _PlayButton(this.text,
-      this.mode,
-      this._currPlaybackStream, {
-        Key? key,
-      }) : super(key: key);
+  const _PlayButton(
+    this.text,
+    this.mode,
+    this._currPlaybackStream, {
+    Key? key,
+  }) : super(key: key);
 
   final String text;
   final TranslationMode mode;
@@ -70,10 +71,7 @@ class _PlayButton extends StatelessWidget {
           name: 'play_audio',
           parameters: {
             'text': text,
-            'mode': mode
-                .toString()
-                .split('.')
-                .last,
+            'mode': mode.toString().split('.').last,
           },
         ));
         _currPlaybackStream.value =
@@ -81,23 +79,22 @@ class _PlayButton extends StatelessWidget {
       },
       icon: Icon(
         Icons.volume_up,
-        color: Theme
-            .of(context)
-            .accentIconTheme
-            .color,
+        color: Theme.of(context).accentIconTheme.color,
+        size: Theme.of(context).accentIconTheme.size,
       ),
     );
   }
 }
 
 class _PlayingButton extends StatelessWidget {
-  const _PlayingButton(this.text,
-      this.mode,
-      this.size,
-      this._playbackStream,
-      this._onDone, {
-        Key? key,
-      }) : super(key: key);
+  const _PlayingButton(
+    this.text,
+    this.mode,
+    this.size,
+    this._playbackStream,
+    this._onDone, {
+    Key? key,
+  }) : super(key: key);
 
   final String text;
   final TranslationMode mode;
@@ -133,11 +130,12 @@ class _PlayingButton extends StatelessWidget {
 }
 
 class _StopButton extends StatelessWidget {
-  const _StopButton(this._onDone,
-      this.text,
-      this.mode, {
-        Key? key,
-      }) : super(key: key);
+  const _StopButton(
+    this._onDone,
+    this.text,
+    this.mode, {
+    Key? key,
+  }) : super(key: key);
 
   final VoidCallback _onDone;
   final String text;
@@ -153,10 +151,8 @@ class _StopButton extends StatelessWidget {
       },
       icon: Icon(
         Icons.stop,
-        color: Theme
-            .of(context)
-            .accentIconTheme
-            .color,
+        color: Theme.of(context).accentIconTheme.color,
+        size: Theme.of(context).accentIconTheme.size,
       ),
     );
   }
@@ -177,10 +173,7 @@ class _LoadingIndicator extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         child: CircularProgressIndicator(
           strokeWidth: 3,
-          color: Theme
-              .of(context)
-              .accentIconTheme
-              .color,
+          color: Theme.of(context).accentIconTheme.color,
         ),
       ),
     );

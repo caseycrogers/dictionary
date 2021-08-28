@@ -67,7 +67,7 @@ Text bold1Text(BuildContext context, String text, {Color? color}) => Text(
 
 const TextStyle kButtonTextStyle = TextStyle(
   color: Colors.black,
-  fontSize: 20,
+  fontSize: 18,
   fontWeight: FontWeight.normal,
 );
 
@@ -78,8 +78,12 @@ class Indent extends StatelessWidget {
   final double? size;
 
   @override
-  Widget build(BuildContext context) =>
-      Padding(child: child, padding: EdgeInsets.only(left: size ?? 20));
+  Widget build(BuildContext context) {
+    return Padding(
+      child: child,
+      padding: EdgeInsets.only(left: size ?? 20),
+    );
+  }
 }
 
 List<Widget> highlightedText(
@@ -212,7 +216,7 @@ List<Widget> _translationParentheticals(
       .expand((q) => [
             normal1Text(context, ' '),
             DictionaryChip(
-              child: Text(q, style: italic1(context).copyWith(fontSize: 20)),
+              child: Text(q, style: italic1(context)),
             )
           ])
       .toList();
@@ -232,9 +236,8 @@ Widget partOfSpeechText(BuildContext context, String text, bool preview) {
     );
   }
   return Container(
-    padding: const EdgeInsets.only(right: 8),
+    padding: const EdgeInsets.only(right: 4),
     child: DictionaryChip(
-      padding: const EdgeInsets.symmetric(vertical: 8),
       child: Text(
         pos,
         style: italic1(context),
@@ -247,18 +250,12 @@ Widget previewTranslationLine(
   BuildContext context,
   List<Translation> translations,
 ) {
-  return _appendWidgets(
-    wraps: [
+  return Wrap(
+    children: [
       ...OverflowMarkdown(translations.first.content).forWrap(context),
       if (translations.first.genderAndPlural.isNotEmpty)
         OverflowMarkdown(' *${translations.first.genderAndPlural}*'),
       if (translations.length > 1) normal1Text(context, '...'),
-    ],
-    suffixes: [
-      PronunciationButton(
-        text: translations.first.content.pronounceable,
-        mode: oppositeMode(SearchModel.of(context).mode),
-      ),
     ],
   );
 }

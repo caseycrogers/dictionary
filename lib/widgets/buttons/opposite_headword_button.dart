@@ -28,6 +28,10 @@ class OppositeHeadwordButton extends StatelessWidget {
             .of(context)
             .accentIconTheme
             .color,
+        size: Theme
+            .of(context)
+            .accentIconTheme
+            .size,
       ),
     );
   }

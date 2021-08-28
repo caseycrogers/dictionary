@@ -9,6 +9,7 @@ import 'package:rogers_dictionary/i18n.dart' as i18n;
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/search_model.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
+import 'package:rogers_dictionary/util/constants.dart';
 import 'package:rogers_dictionary/util/delayed.dart';
 import 'package:rogers_dictionary/util/overflow_markdown.dart';
 import 'package:rogers_dictionary/util/text_utils.dart';
@@ -60,8 +61,13 @@ class EntryView extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (_preview)
-          headwordLine(context, _entry, _preview,
-              SearchModel.of(context).searchString),
+          headwordLine(
+            context,
+            _entry,
+            _preview,
+            SearchModel.of(context).searchString,
+          ),
+        if (!_preview) const SizedBox(height: kPad),
         _buildTable(context),
         if (!_preview) _buildEditorialNotes(context),
         if (!_preview) _buildRelated(context),
@@ -76,7 +82,7 @@ class EntryView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(height: 48),
+        Container(height: kSectionSpacer),
         bold1Text(context, i18n.related.get(context)),
         const Divider(),
         ..._entry.related.where((r) => r.isNotEmpty).map(
@@ -116,7 +122,7 @@ class EntryView extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Container(height: 48),
+        Container(height: kSectionSpacer),
         bold1Text(context, i18n.editorialNotes.get(context)),
         const Divider(),
         ...notes,
@@ -129,7 +135,9 @@ class EntryView extends StatelessWidget {
         columnWidths: const {
           0: IntrinsicColumnWidth(),
         },
-        defaultVerticalAlignment: TableCellVerticalAlignment.top,
+        defaultVerticalAlignment: _preview
+            ? TableCellVerticalAlignment.middle
+            : TableCellVerticalAlignment.top,
         children: _buildTranslations(context));
   }
 
@@ -144,12 +152,20 @@ class EntryView extends StatelessWidget {
       final partOfSpeech = translations.first.partOfSpeech;
       final inflections = translations.first.irregularInflections;
       return _buildPartOfSpeechTableRow(
-          context, partOfSpeech, inflections, translations);
+        context: context,
+        partOfSpeech: partOfSpeech,
+        inflections: inflections,
+        translations: translations,
+      );
     }).toList();
   }
 
-  TableRow _buildPartOfSpeechTableRow(BuildContext context, String partOfSpeech,
-      List<String> inflections, List<Translation> translations) {
+  TableRow _buildPartOfSpeechTableRow({
+    required BuildContext context,
+    required String partOfSpeech,
+    required List<String> inflections,
+    required List<Translation> translations,
+  }) {
     String parenthetical = '';
     final hasParenthetical = translations
         .any((t) => t.dominantHeadwordParentheticalQualifier.isNotEmpty);
@@ -157,11 +173,13 @@ class EntryView extends StatelessWidget {
       return TableRow(
         children: [
           Container(
+            padding: translations.first != _entry.translations.first
+                ? const EdgeInsets.only(top: kPad/2)
+                : null,
             child: partOfSpeechText(context, partOfSpeech, _preview),
             alignment: Alignment.centerRight,
           ),
           Container(
-            padding: const EdgeInsets.only(top: 3),
             child: previewTranslationLine(
               context,
               translations,
@@ -193,7 +211,6 @@ class EntryView extends StatelessWidget {
                           children:
                               parentheticalTexts(context, parenthetical, false),
                         ),
-                      if (!parentheticalChanged) const SizedBox(height: 5),
                       _translationContent(
                         context,
                         t,
@@ -213,18 +230,14 @@ class EntryView extends StatelessWidget {
 
   Widget _translationContent(
       BuildContext context, Translation translation, bool indent, int i) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 2),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Indent(
-              child: translationLine(context, translation, i),
-              size: indent ? null : 0.0),
-          examplePhraseText(context, translation.examplePhrases),
-          const SizedBox(height: 0),
-        ],
-      ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Indent(
+            child: translationLine(context, translation, i),
+            size: indent ? null : 0.0),
+        examplePhraseText(context, translation.examplePhrases),
+      ],
     );
   }
 }

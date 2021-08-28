@@ -20,22 +20,24 @@ class DictionaryTopBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final DictionaryModel dictionaryModel = DictionaryModel.of(context);
-    return ValueListenableBuilder<TranslationModel>(
-      valueListenable: dictionaryModel.translationModel,
-      builder: (context, translationPageModel, _) => Material(
-        color: primaryColor(translationPageModel.translationMode),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: 4,
-            horizontal: _horizontalPad,
-          ),
-          child: Row(
-            children: const [
-              _TopSearchBar(),
-              TranslationModeSelector(),
-              Spacer(),
-              HelpMenu(),
-            ],
+    return Container(
+      height: kToolbarHeight,
+      child: ValueListenableBuilder<TranslationModel>(
+        valueListenable: dictionaryModel.translationModel,
+        builder: (context, translationPageModel, _) => Material(
+          color: primaryColor(translationPageModel.translationMode),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: _horizontalPad,
+            ),
+            child: Row(
+              children: const [
+                _TopSearchBar(),
+                TranslationModeSelector(),
+                Spacer(),
+                HelpMenu(),
+              ],
+            ),
           ),
         ),
       ),

@@ -1,4 +1,5 @@
-const kPad = 12.0;
+const kPad = 6.0;
+const kSectionSpacer = 2 * kPad;
 
 const kGroundElevation = 0.0;
 const kHighElevation = 0.0;
