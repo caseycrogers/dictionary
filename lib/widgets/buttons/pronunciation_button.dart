@@ -138,7 +138,7 @@ class _StopButton extends StatelessWidget {
       visualDensity: VisualDensity.compact,
       onPressed: () {
         _onDone();
-        DictionaryApp.textToSpeech.stop(text, mode);
+        DictionaryApp.textToSpeech.stopIfPlaying(text, mode);
       },
       icon: Icon(
         Icons.stop,

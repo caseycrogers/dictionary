@@ -50,22 +50,12 @@ Future<void> main() async {
   );
 }
 
-String _localeId(Locale locale) {
-  return '${locale.languageCode}_${locale.countryCode}';
-}
-
 class DictionaryApp extends StatefulWidget {
   static final DictionaryDatabase db = SqfliteDatabase();
   static final TextToSpeech textToSpeech = TextToSpeech();
+  static final SpeechToText speechToText = SpeechToText();
   static final Future<PackageInfo> packageInfo = PackageInfo.fromPlatform();
   static final FirebaseAnalytics analytics = FirebaseAnalytics();
-
-  static SpeechToText? _speechToText;
-
-  static SpeechToText speechToText(BuildContext context) {
-    _speechToText ??= SpeechToText(_localeId(Localizations.localeOf(context)));
-    return _speechToText!;
-  }
 
   static FirebaseAnalyticsObserver get observer =>
       FirebaseAnalyticsObserver(analytics: analytics);
@@ -79,6 +69,16 @@ class DictionaryApp extends StatefulWidget {
 }
 
 class _DictionaryAppState extends State<DictionaryApp> {
+  @override
+  void initState() {
+    // Text to speech and speech to text should interrupt each other.
+    DictionaryApp.textToSpeech.onPlay = DictionaryApp.speechToText.stop;
+    DictionaryApp.speechToText.onListen = DictionaryApp.textToSpeech.stop;
+    super.initState();
+  }
+
+
+
   @override
   void dispose() {
     DictionaryApp.textToSpeech.dispose();

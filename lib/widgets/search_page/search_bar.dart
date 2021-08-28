@@ -35,32 +35,12 @@ class _SearchBarState extends State<SearchBar> {
         .translationModel
         .value
         .searchPageModel;
+
     if (_shouldInit) {
       _controller = TextEditingController(text: searchPageModel.searchString);
       _currSpeechStream =
           searchPageModel.entrySearchModel.currSpeechToTextStream;
-      _currSpeechStream.addListener(
-        () {
-          final Stream<RecordingUpdate>? speechStream =
-              searchPageModel.entrySearchModel.currSpeechToTextStream.value;
-          if (speechStream == null) {
-            return;
-          }
-          _speechToTextSubscription = speechStream.listen((speechUpdate) {
-            print(speechUpdate);
-            if (speechUpdate.text.isNotEmpty) {
-              _controller.text = speechUpdate.text;
-              _controller.selection = TextSelection.fromPosition(
-                TextPosition(offset: speechUpdate.text.length),
-              );
-              searchPageModel.entrySearchModel.onSearchStringChanged(
-                context: context,
-                newSearchString: speechUpdate.text,
-              );
-            }
-          });
-        },
-      );
+      _currSpeechStream.addListener(_onNewStream);
       _controller.addListener(_updateIsEmpty);
       _isEmpty = searchPageModel.searchString.isEmpty;
       _shouldInit = false;
@@ -69,9 +49,12 @@ class _SearchBarState extends State<SearchBar> {
 
   @override
   void dispose() {
-    super.dispose();
+    _currSpeechStream.removeListener(_onNewStream);
+    _currSpeechStream.value = null;
+    DictionaryApp.speechToText.stop();
     _speechToTextSubscription?.cancel();
     _controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -140,5 +123,32 @@ class _SearchBarState extends State<SearchBar> {
     if (_isEmpty != _controller.text.isEmpty) {
       setState(() => _isEmpty = _controller.text.isEmpty);
     }
+  }
+
+  void _onNewStream() {
+    final SearchPageModel searchPageModel =
+        DictionaryModel.readFrom(context)
+            .translationModel
+            .value
+            .searchPageModel;
+    final Stream<RecordingUpdate>? speechStream =
+        searchPageModel.entrySearchModel.currSpeechToTextStream.value;
+    if (speechStream == null) {
+      return;
+    }
+    _speechToTextSubscription = speechStream.listen(
+          (speechUpdate) {
+        if (speechUpdate.text.isNotEmpty) {
+          _controller.text = speechUpdate.text;
+          _controller.selection = TextSelection.fromPosition(
+            TextPosition(offset: speechUpdate.text.length),
+          );
+          searchPageModel.entrySearchModel.onSearchStringChanged(
+            context: context,
+            newSearchString: speechUpdate.text,
+          );
+        }
+      },
+    );
   }
 }

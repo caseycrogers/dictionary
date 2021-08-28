@@ -1,14 +1,16 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 import 'package:rogers_dictionary/models/translation_model.dart';
 
 class SpeechToText {
-  SpeechToText(this.systemLanguageId);
+  VoidCallback? _onListen;
 
-  final String systemLanguageId;
-  static const String _fallbackSpanishLanguageId = 'es_US';
+  set onListen(VoidCallback newValue) => _onListen = newValue;
+
+  static const String _fallbackSpanishLanguageId = 'es_MX';
 
   static final StreamController<String> statusStreamController =
       StreamController();
@@ -27,38 +29,45 @@ class SpeechToText {
   late final Future<String> _spanishLanguageId = _speech.locales().then(
     (locales) {
       final List<String> ids = locales.map((l) => l.localeId).toList();
-      if (ids.contains(systemLanguageId)) {
-        return systemLanguageId;
-      }
-      if (ids.contains(_fallbackSpanishLanguageId)) {
-        return _fallbackSpanishLanguageId;
-      }
-      return ids.firstWhere((id) => id.startsWith('en'));
+      return _speech.systemLocale().then<String>((systemLocale) {
+        if (systemLocale != null && ids.contains(systemLocale.localeId)) {
+          return systemLocale.localeId;
+        }
+        if (ids.contains(_fallbackSpanishLanguageId)) {
+          return _fallbackSpanishLanguageId;
+        }
+        return ids.firstWhere((id) => id.startsWith('en'));
+      });
     },
   );
   final String _englishLanguageId = 'en_US';
 
   Stream<RecordingUpdate> listenForText(TranslationMode mode) async* {
+    _onListen?.call();
     final StreamController<RecordingUpdate> output = StreamController();
-    final Future<void> isClosed = statusStream
-        .firstWhere((status) => status == 'done')
-        .whenComplete(() => output.close());
     final bool available = await _available;
     if (available) {
       RecordingUpdate currRecordingUpdate = const RecordingUpdate('', false, 0);
-      yield currRecordingUpdate;
+      late final StreamSubscription onDone;
+      onDone = statusStream.listen((status) async {
+        if (status == 'done') {
+          await onDone.cancel();
+          await output.close();
+        }
+      });
       await _speech.listen(
         pauseFor: const Duration(seconds: 2),
         listenMode: stt.ListenMode.search,
         localeId: await _getLocaleId(mode),
         onResult: (result) {
+          print(result.alternates);
           currRecordingUpdate = currRecordingUpdate.copyWith(
             text: result.recognizedWords,
             isFinal: result.finalResult,
           );
           output.add(currRecordingUpdate);
           if (result.finalResult) {
-            // No more words, finish.
+            onDone.cancel();
             output.close();
           }
         },

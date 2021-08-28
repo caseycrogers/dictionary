@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 
 import 'package:audio_session/audio_session.dart';
@@ -27,6 +28,11 @@ const String _audioContent = 'audioContent';
 const String _apiKeyFile = 'text_to_speech.key';
 
 class TextToSpeech {
+  TextToSpeech();
+
+  VoidCallback? _onPlay;
+  set onPlay(VoidCallback newValue) => _onPlay = newValue;
+
   final http.Client _client = http.Client();
   final AudioPlayer _player = AudioPlayer();
   final Future<AudioSession> _session = AudioSession.instance.then((session) {
@@ -52,6 +58,7 @@ class TextToSpeech {
     String text,
     TranslationMode mode,
   ) async* {
+    _onPlay?.call();
     final Directory tmpDir = await getTemporaryDirectory();
     final File mp3 = File(
       join(
@@ -61,7 +68,6 @@ class TextToSpeech {
     );
     await mp3.parent.create();
     if (!mp3.existsSync()) {
-      print('Downloading!');
       await mp3.writeAsBytes(await _getMp3(text, mode));
     }
     await _session;
@@ -79,12 +85,18 @@ class TextToSpeech {
         (_player.audioSource as ProgressiveAudioSource).uri.pathSegments.last;
   }
 
-  Future<void> stop(String text, TranslationMode mode) async {
+  Future<void> stopIfPlaying(String text, TranslationMode mode) async {
     if (isPlaying(text, mode)) {
-      // Only stop if we're the currently playing text.
-      // We seek instead of stop as a garbage hack to ensure that the stream
-      // finishes.
+      // Only stop if we're the currently playing this text.
+      return stop();
+    }
+  }
+
+  Future<void> stop() async {
+    if (_player.duration != null) {
       await _player.seek(
+        // We seek instead of stop as a garbage hack to ensure that the stream
+        // finishes.
         Duration(milliseconds: _player.duration!.inMilliseconds + 1),
       );
     }

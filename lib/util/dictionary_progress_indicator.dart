@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-
 class DictionaryProgressIndicator extends StatelessWidget {
   const DictionaryProgressIndicator({
     Key? key,
@@ -38,11 +37,15 @@ class ProgressGradient extends StatelessWidget {
     required this.child,
     required this.style,
     required this.progress,
+    this.positiveColor,
+    this.negativeColor
   }) : super(key: key);
 
   final Widget child;
   final IndicatorStyle style;
   final double progress;
+  final Color? positiveColor;
+  final Color? negativeColor;
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +55,8 @@ class ProgressGradient extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Theme.of(context).selectedRowColor,
-                Theme.of(context).cardColor,
+                positiveColor ?? Theme.of(context).selectedRowColor,
+                negativeColor ?? Theme.of(context).cardColor,
               ],
               stops: [
                 progress,
@@ -65,14 +68,14 @@ class ProgressGradient extends StatelessWidget {
         );
       case IndicatorStyle.circular:
         return Transform.rotate(
-          angle: -math.pi/2,
+          angle: -math.pi / 2,
           child: Container(
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: SweepGradient(
                 colors: [
-                  Theme.of(context).selectedRowColor,
-                  Theme.of(context).cardColor,
+                  positiveColor ?? Theme.of(context).selectedRowColor,
+                  negativeColor ?? Theme.of(context).cardColor,
                 ],
                 stops: [
                   progress,
@@ -83,11 +86,30 @@ class ProgressGradient extends StatelessWidget {
             child: child,
           ),
         );
+      case IndicatorStyle.radial:
+        return AnimatedContainer(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: RadialGradient(
+              colors: [
+                positiveColor ?? Theme.of(context).selectedRowColor,
+                negativeColor ?? Theme.of(context).cardColor,
+              ],
+              stops: [
+                progress,
+                progress,
+              ],
+            ),
+          ),
+          duration: const Duration(milliseconds: 10),
+          child: child,
+        );
     }
   }
 }
 
 enum IndicatorStyle {
-  circular,
   linear,
+  radial,
+  circular,
 }

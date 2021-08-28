@@ -90,7 +90,12 @@ List<Widget> highlightedText(
   required String searchString,
   bool forWrap = true,
 }) {
-  final overrides = _highlightSearchMatch(context, text, preview, searchString);
+  final overrides = _highlightSearchMatch(
+    context,
+    text,
+    preview,
+    searchString.withoutDiacriticalMarks.toLowerCase(),
+  );
   final OverflowMarkdown md = OverflowMarkdown(
     text,
     defaultStyle: !preview && isHeadword ? headline1(context) : bold1(context),
@@ -104,7 +109,11 @@ List<Widget> highlightedText(
 }
 
 LinkedHashMap<OverrideRule, TextStyle> _highlightSearchMatch(
-    BuildContext context, String text, bool preview, String searchString) {
+  BuildContext context,
+  String text,
+  bool preview,
+  String searchString,
+) {
   if (!preview || searchString.isEmpty) {
     // ignore: prefer_collection_literals
     return LinkedHashMap();
@@ -161,8 +170,7 @@ Widget alternateHeadwordLines(BuildContext context,
                   searchString: searchString),
               if (alt.abbreviation.isNotEmpty) normal1Text(context, ' '),
               if (alt.abbreviation.isNotEmpty)
-                ...highlightedText(
-                    context, '(${alt.abbreviation})', preview,
+                ...highlightedText(context, '(${alt.abbreviation})', preview,
                     searchString: searchString, forWrap: false),
               if (alt.namingStandard.isNotEmpty)
                 _namingStandard(context, alt.namingStandard, true),
