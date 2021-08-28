@@ -12,7 +12,7 @@ import 'package:rogers_dictionary/widgets/search_page/search_bar.dart';
 
 const double _horizontalPad = 8;
 
-const Duration _animationSpeed = Duration(milliseconds: 1000);
+const Duration _animationSpeed = Duration(milliseconds: 200);
 
 class DictionaryTopBar extends StatelessWidget {
   const DictionaryTopBar({Key? key}) : super(key: key);
@@ -54,6 +54,9 @@ class _TopSearchBar extends StatelessWidget {
       builder: (context, tab, child) {
         return LayoutBuilder(
           builder: (context, _) {
+            if (MediaQuery.of(context).orientation == Orientation.portrait) {
+              return Container();
+            }
             return AnimatedContainer(
               duration: _animationSpeed,
               width: _shouldDisplaySearchBar(context)
@@ -61,10 +64,13 @@ class _TopSearchBar extends StatelessWidget {
                       kToolbarHeight -
                       _horizontalPad +
                       1
-                  : 50,
+                  : 0,
               child: AnimatedSwitcher(
                 child: _shouldDisplaySearchBar(context) ? child : Container(),
                 duration: _animationSpeed,
+                transitionBuilder: (child, animation) {
+                  return child;
+                },
               ),
             );
           },

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:rogers_dictionary/dictionary_navigator/listenable_navigator.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/search_model.dart';
-import 'package:rogers_dictionary/pages/dictionary_page.dart';
 
 import 'entry_list.dart';
 import 'entry_view.dart';
@@ -26,8 +25,9 @@ class SelectedEntrySwitcher extends StatelessWidget {
             builder: (context, _) {
               if (MediaQuery.of(context).orientation == Orientation.portrait) {
                 return EntryList(
-                  key: PageStorageKey(
-                      '${SearchModel.of(context).mode}_entry_list'),
+                  key: PageStorageKey('${SearchModel.of(context).mode}'
+                      '_${SearchModel.of(context).isBookmarkedOnly}'
+                      '_entry_list'),
                 );
               }
               return Container(

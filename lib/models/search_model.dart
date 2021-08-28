@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rogers_dictionary/pages/bookmarks_page.dart';
 
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
 
@@ -10,12 +11,12 @@ import 'translation_model.dart';
 class SearchModel {
   SearchModel({
     required this.mode,
-    required bool isBookmarkedOnly,
+    required bool isBookmarksOnly,
   })
       : currSelectedEntry = ValueNotifier<SelectedEntry?>(null),
         entrySearchModel = EntrySearchModel.empty(
           mode,
-          isBookmarkedOnly,
+          isBookmarksOnly,
         ),
         adKeywords = ValueNotifier([]) {
     entrySearchModel.currSearchString.addListener(() {
@@ -49,9 +50,8 @@ class SearchModel {
       currSelectedEntry.value?.urlEncodedHeadword;
 
   static SearchModel of(BuildContext context) {
-    final DictionaryModel dictionaryModel = DictionaryModel.of(context);
     final TranslationModel translationModel = TranslationModel.of(context);
-    if (dictionaryModel.isBookmarkedOnly) {
+    if (context.findAncestorWidgetOfExactType<BookmarksPage>() != null) {
       return translationModel.bookmarksPageModel;
     }
     return translationModel.searchPageModel;

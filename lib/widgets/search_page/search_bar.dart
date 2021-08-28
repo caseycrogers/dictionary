@@ -77,6 +77,7 @@ class _SearchBarBase extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      height: 48,
       margin: const EdgeInsets.all(8),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(40),

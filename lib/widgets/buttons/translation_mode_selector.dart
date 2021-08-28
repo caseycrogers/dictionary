@@ -88,7 +88,7 @@ class TranslationModeSelector extends StatelessWidget {
 class _Button extends StatelessWidget {
   const _Button(this.mode, {Key? key}) : super(key: key);
 
-  static const double _buttonHeight = 50;
+  static const double _buttonHeight = 48;
   static const double _buttonSpacing = 10;
 
   final TranslationMode mode;

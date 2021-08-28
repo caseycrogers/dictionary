@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
+import 'package:rogers_dictionary/models/search_model.dart';
 
 import 'package:rogers_dictionary/pages/dictionary_page.dart';
 import 'package:rogers_dictionary/util/constants.dart';
@@ -56,8 +57,19 @@ class _LandscapePage extends StatelessWidget {
         TranslationModeSwitcher(
           child: Row(
             children: [
-              const Flexible(
-                child: EntryList(key: PageStorageKey('entry_list')),
+              Flexible(
+                child: Builder(
+                  builder: (context) {
+                    // We need the builder to get [SearchModel] below.
+                    return EntryList(
+                      key: PageStorageKey(
+                        '${SearchModel.of(context).mode}'
+                        '_${SearchModel.of(context).isBookmarkedOnly}'
+                        '_entry_list',
+                      ),
+                    );
+                  },
+                ),
                 flex: kLandscapeLeftFlex,
               ),
               Flexible(

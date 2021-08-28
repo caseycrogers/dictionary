@@ -124,7 +124,7 @@ class DictionaryModel {
     Entry? newEntry,
     SearchModel? pageModel,
   }) {
-    pageModel ??= isBookmarkedOnly
+    pageModel ??= isBookmarksOnly
         ? currTranslationModel.bookmarksPageModel
         : currTranslationModel.searchPageModel;
     // Only update if the value has actually changed
@@ -158,7 +158,7 @@ class DictionaryModel {
     ];
   }
 
-  bool get isBookmarkedOnly => currentTab.value == DictionaryTab.bookmarks;
+  bool get isBookmarksOnly => currentTab.value == DictionaryTab.bookmarks;
 
   String get name {
     String? thirdTier;
