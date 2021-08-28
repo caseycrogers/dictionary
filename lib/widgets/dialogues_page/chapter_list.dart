@@ -14,8 +14,7 @@ import 'package:rogers_dictionary/widgets/loading_text.dart';
 class ChapterList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final TranslationModel dialoguesModel =
-        TranslationModel.of(context);
+    final TranslationModel dialoguesModel = TranslationModel.of(context);
     return AsyncListView<DialogueChapter>(
       key: const PageStorageKey('dialogues'),
       padding: EdgeInsets.zero,
@@ -44,16 +43,20 @@ class ChapterList extends StatelessWidget {
           if (chapter.hasSubChapters)
             return ExpansionTile(
               title: bold1Text(context, chapter.title(context)),
-              subtitle: Text(chapter.oppositeTitle(context),
-                  style: TextStyle(color: Colors.grey.shade700)),
+              subtitle: Text(
+                chapter.oppositeTitle(context),
+                style: TextStyle(color: Colors.grey.shade700),
+              ),
               key: _getKey(context, chapter),
               children: chapter.dialogueSubChapters
-                  .map((subChapter) => _clickableHeader(
-                        context,
-                        true,
-                        chapter: chapter,
-                        subChapter: subChapter,
-                      ))
+                  .map(
+                    (subChapter) => _clickableHeader(
+                      context,
+                      true,
+                      chapter: chapter,
+                      subChapter: subChapter,
+                    ),
+                  )
                   .toList(),
             );
           return _clickableHeader(context, false, chapter: chapter);
