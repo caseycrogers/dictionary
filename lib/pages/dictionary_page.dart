@@ -70,6 +70,7 @@ class _DictionaryPageState extends State<DictionaryPage> {
                   data:
                       MediaQuery.of(context).removePadding(removeBottom: true),
                   child: Container(
+                    height: kToolbarHeight,
                     child: TabBar(
                       labelColor: Colors.white,
                       unselectedLabelColor: Colors.white38,

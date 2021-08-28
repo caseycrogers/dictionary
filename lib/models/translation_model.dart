@@ -19,11 +19,10 @@ TranslationMode oppositeMode(TranslationMode mode) =>
 class TranslationModel {
   TranslationModel({
     required this.translationMode,
-  })
-      : searchPageModel = SearchModel(
-    mode: translationMode,
-    isBookmarkedOnly: false,
-  ),
+  })  : searchPageModel = SearchModel(
+          mode: translationMode,
+          isBookmarkedOnly: false,
+        ),
         bookmarksPageModel = SearchModel(
           mode: translationMode,
           isBookmarkedOnly: true,
@@ -46,6 +45,13 @@ class TranslationModel {
   bool get isEnglish => translationMode == TranslationMode.English;
 
   static TranslationModel of(BuildContext context) {
+    final TranslationModel? translationModel = context
+        .findAncestorWidgetOfExactType<TranslationModelProvider>()
+        ?.translationModel;
+    assert(
+      translationModel != null,
+      'Could not find a translation model above this widget.',
+    );
     return context
         .findAncestorWidgetOfExactType<TranslationModelProvider>()!
         .translationModel;

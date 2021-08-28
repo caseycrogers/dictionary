@@ -4,13 +4,18 @@ import 'package:flutter/cupertino.dart';
 import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/translation_model.dart';
+import 'package:rogers_dictionary/pages/dictionary_page.dart';
+import 'package:rogers_dictionary/util/constants.dart';
 import 'package:rogers_dictionary/widgets/buttons/help_menu.dart';
 import 'package:rogers_dictionary/widgets/buttons/translation_mode_selector.dart';
+import 'package:rogers_dictionary/widgets/search_page/search_bar.dart';
+
+const double _horizontalPad = 8;
+
+const Duration _animationSpeed = Duration(milliseconds: 1000);
 
 class DictionaryTopBar extends StatelessWidget {
-  const DictionaryTopBar({
-    Key? key
-  }) : super(key: key);
+  const DictionaryTopBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,9 +25,13 @@ class DictionaryTopBar extends StatelessWidget {
       builder: (context, translationPageModel, _) => Material(
         color: primaryColor(translationPageModel.translationMode),
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+          padding: const EdgeInsets.symmetric(
+            vertical: 4,
+            horizontal: _horizontalPad,
+          ),
           child: Row(
             children: const [
+              _TopSearchBar(),
               TranslationModeSelector(),
               Spacer(),
               HelpMenu(),
@@ -31,5 +40,42 @@ class DictionaryTopBar extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _TopSearchBar extends StatelessWidget {
+  const _TopSearchBar({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<DictionaryTab>(
+      valueListenable: DictionaryModel.of(context).currentTab,
+      child: const SearchBar(),
+      builder: (context, tab, child) {
+        return LayoutBuilder(
+          builder: (context, _) {
+            return AnimatedContainer(
+              duration: _animationSpeed,
+              width: _shouldDisplaySearchBar(context)
+                  ? MediaQuery.of(context).size.width * kLandscapeRatio -
+                      kToolbarHeight -
+                      _horizontalPad +
+                      1
+                  : 50,
+              child: AnimatedSwitcher(
+                child: _shouldDisplaySearchBar(context) ? child : Container(),
+                duration: _animationSpeed,
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  bool _shouldDisplaySearchBar(BuildContext context) {
+    return DictionaryModel.of(context).currentTab.value ==
+            DictionaryTab.search &&
+        MediaQuery.of(context).orientation == Orientation.landscape;
   }
 }

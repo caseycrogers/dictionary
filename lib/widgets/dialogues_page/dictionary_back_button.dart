@@ -7,34 +7,37 @@ class DictionaryBackButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<bool>(
-      valueListenable: ListenableNavigator.emptyNotifier,
-      builder: (context, isEmpty, _) {
-        return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 100),
-          transitionBuilder: (child, animation) {
-            return FadeTransition(
-              opacity: CurvedAnimation(
-                parent: animation,
-                curve: const Interval(0, .8),
+    return Container(
+      child: ValueListenableBuilder<bool>(
+        valueListenable: ListenableNavigator.emptyNotifier,
+        builder: (context, isEmpty, _) {
+          return AnimatedSwitcher(
+            duration: const Duration(milliseconds: 100),
+            transitionBuilder: (child, animation) {
+              return FadeTransition(
+                opacity: CurvedAnimation(
+                  parent: animation,
+                  curve: const Interval(0, .8),
+                ),
+                child: SlideTransition(
+                  child: child,
+                  position: Tween<Offset>(
+                    begin: const Offset(-1, 0),
+                    end: Offset.zero,
+                  ).animate(animation),
+                ),
+              );
+            },
+            child: Visibility(
+              key: ValueKey(!isEmpty),
+              visible: !isEmpty,
+              child: BackButton(
+                onPressed: () => ListenableNavigator.pop(isSystem: false),
               ),
-              child: SlideTransition(
-                child: child,
-                position:
-                    Tween<Offset>(begin: const Offset(-1, 0), end: Offset.zero)
-                        .animate(animation),
-              ),
-            );
-          },
-          child: Visibility(
-            key: ValueKey(!isEmpty),
-            visible: !isEmpty,
-            child: BackButton(
-              onPressed: () => ListenableNavigator.pop(isSystem: false),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

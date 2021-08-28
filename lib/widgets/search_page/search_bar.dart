@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:rogers_dictionary/i18n.dart' as i18n;
 import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
-import 'package:rogers_dictionary/models/entry_search_model.dart';
 import 'package:rogers_dictionary/models/search_model.dart';
 import 'package:rogers_dictionary/models/translation_model.dart';
 
@@ -24,14 +23,12 @@ class _SearchBarState extends State<SearchBar> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final SearchModel searchPageModel = DictionaryModel.of(context)
-        .translationModel
-        .value
-        .searchPageModel;
+    final SearchModel searchPageModel =
+        DictionaryModel.of(context).translationModel.value.searchPageModel;
 
     if (_shouldInit) {
       _controller = TextEditingController(text: searchPageModel.searchString);
-      _controller.addListener(_updateIsEmpty);
+      _controller.addListener(_onChanged);
       _isEmpty = searchPageModel.searchString.isEmpty;
       _shouldInit = false;
     }
@@ -47,32 +44,53 @@ class _SearchBarState extends State<SearchBar> {
   Widget build(BuildContext context) {
     return ValueListenableBuilder<TranslationModel>(
       valueListenable: DictionaryModel.of(context).translationModel,
-      builder: (context, translationPage, content) {
+      builder: (context, translationPage, child) {
         return Material(
           color: primaryColor(translationPage.translationMode),
-          child: Padding(
-            padding: const EdgeInsets.all(8),
-            child: content!,
-          ),
+          child: child!,
         );
       },
+      child: _SearchBarBase(controller: _controller),
+    );
+  }
+
+  void _onChanged() {
+    DictionaryModel.of(context)
+        .currTranslationModel
+        .searchPageModel
+        .entrySearchModel
+        .onSearchStringChanged(
+          context: context,
+          newSearchString: _controller.text,
+        );
+    if (_isEmpty != _controller.text.isEmpty) {
+      setState(() => _isEmpty = _controller.text.isEmpty);
+    }
+  }
+}
+
+class _SearchBarBase extends StatelessWidget {
+  const _SearchBarBase({Key? key, this.controller}) : super(key: key);
+
+  final TextEditingController? controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.all(8),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(40),
         child: Container(
           color: Theme.of(context).backgroundColor,
           child: TextField(
             style: const TextStyle(fontSize: 20),
-            controller: _controller,
+            controller: controller,
             decoration: InputDecoration(
               prefixIcon: const Icon(Icons.search),
-              suffixIcon: _controller.text.isNotEmpty
+              suffixIcon: controller?.text.isNotEmpty ?? false
                   ? IconButton(
                       onPressed: () {
-                        _controller.clear();
-                        entrySearchModel.onSearchStringChanged(
-                          context: context,
-                          newSearchString: '',
-                        );
+                        controller?.clear();
                       },
                       icon: const Icon(Icons.clear),
                     )
@@ -80,27 +98,9 @@ class _SearchBarState extends State<SearchBar> {
               hintText: '${i18n.search.get(context)}...',
               border: InputBorder.none,
             ),
-            onChanged: (searchString) {
-              entrySearchModel.onSearchStringChanged(
-                context: context,
-                newSearchString: searchString,
-              );
-            },
           ),
         ),
       ),
     );
-  }
-
-  EntrySearchModel get entrySearchModel => DictionaryModel.of(context)
-      .translationModel
-      .value
-      .searchPageModel
-      .entrySearchModel;
-
-  void _updateIsEmpty() {
-    if (_isEmpty != _controller.text.isEmpty) {
-      setState(() => _isEmpty = _controller.text.isEmpty);
-    }
   }
 }

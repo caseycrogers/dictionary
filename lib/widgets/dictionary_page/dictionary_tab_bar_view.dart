@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:rogers_dictionary/dictionary_navigator/listenable_navigator.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/pages/dictionary_page.dart';
+import 'package:rogers_dictionary/util/animation_utils.dart';
 
 class DictionaryTabBarView extends StatefulWidget {
   /// Creates a page view with one child per tab.
@@ -107,20 +108,13 @@ class _DictionaryTabBarViewState extends State<DictionaryTabBarView> {
         position: Tween(
           begin: Offset.zero,
           end: const Offset(0, 1),
-        ).animate(CurvedAnimation(
-            parent: secondaryAnimation, curve: _InstantOutCurve())),
+        ).animate(
+          CurvedAnimation(
+              parent: secondaryAnimation,
+              curve: const InstantOutCurve(atStart: false)),
+        ),
         child: child,
       ),
     );
-  }
-}
-
-class _InstantOutCurve extends Curve {
-  @override
-  double transform(double t) {
-    if (t == 1.0) {
-      return 1;
-    }
-    return 0;
   }
 }

@@ -31,8 +31,6 @@ class EntryView extends StatelessWidget {
         key: ValueKey(SearchModel.of(context).currSelectedHeadword),
         builder: (context) {
           final SearchModel searchPageModel = SearchModel.of(context);
-          if (!searchPageModel.hasSelection)
-            return Container(color: Theme.of(context).backgroundColor);
           return FutureBuilder(
             future: searchPageModel.currSelectedEntry.value!.entry,
             builder: (context, AsyncSnapshot<Entry> snap) {

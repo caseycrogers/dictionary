@@ -54,14 +54,6 @@ class ListenableNavigator<T> extends StatefulWidget {
   _ListenableNavigatorState<T> createState() => _ListenableNavigatorState<T>();
 
   static Future<bool> pop({bool isSystem = true}) async {
-    print(navigatorStack.map(
-      (depth, nav) => MapEntry(
-          depth.toString(),
-          nav.stack.map<String, String>((key, dynamic value) {
-            return MapEntry(
-                key.toString(), value.toString().truncated(100));
-          }).toString()),
-    ));
     await DictionaryApp.analytics.logEvent(
       name: 'pop${isSystem ? '_system' : ''}',
       parameters: {
