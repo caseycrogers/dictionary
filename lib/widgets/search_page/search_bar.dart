@@ -83,7 +83,7 @@ class _SearchBarBase extends StatelessWidget {
       child: ClipRRect(
         borderRadius: BorderRadius.circular(40),
         child: Container(
-          color: Theme.of(context).backgroundColor,
+          color: Theme.of(context).cardColor,
           child: TextField(
             style: TextStyle(
               fontSize: Theme.of(context).textTheme.bodyText2!.fontSize,

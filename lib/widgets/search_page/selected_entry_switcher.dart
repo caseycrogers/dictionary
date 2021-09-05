@@ -31,7 +31,7 @@ class SelectedEntrySwitcher extends StatelessWidget {
                 );
               }
               return Container(
-                color: Theme.of(context).backgroundColor,
+                color: Theme.of(context).scaffoldBackgroundColor,
               );
             },
           );

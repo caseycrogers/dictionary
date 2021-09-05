@@ -89,6 +89,7 @@ class _DictionaryAppState extends State<DictionaryApp> {
           title: 'Dictionary',
           home: DictionaryPage(),
           theme: ThemeData(
+
             selectedRowColor: Colors.grey.shade200,
             textTheme: TextTheme(
               headline1: GoogleFonts.roboto(

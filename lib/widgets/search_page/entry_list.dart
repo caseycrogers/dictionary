@@ -125,13 +125,25 @@ class _EntryListState extends State<EntryList> {
                       ? Theme.of(context).selectedRowColor
                       : Colors.transparent,
                   child: Padding(
-                    padding: const EdgeInsets.all(2 * kPad).subtract(
-                      const EdgeInsets.only(top: (2 * kPad) - 1),
-                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 2 * kPad),
                     child: Row(
                       children: [
-                        Expanded(child: EntryView.asPreview(entry)),
-                        OpenPage(),
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 2 * kPad,
+                            ).subtract(
+                              const EdgeInsets.only(top: (2 * kPad) - 1),
+                            ),
+                            child: EntryView.asPreview(entry),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 2 * kPad,
+                          ),
+                          child: OpenPage(),
+                        ),
                       ],
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     ),
