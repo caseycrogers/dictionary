@@ -132,3 +132,8 @@ class TranslationModelProvider extends StatelessWidget {
     return child;
   }
 }
+
+bool isCurrentTranslationPage(BuildContext context) {
+  return TranslationModel.of(context) ==
+      DictionaryModel.of(context).currTranslationModel;
+}

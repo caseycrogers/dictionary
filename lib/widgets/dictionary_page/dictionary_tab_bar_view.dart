@@ -2,10 +2,10 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:rogers_dictionary/dictionary_navigator/listenable_navigator.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/pages/dictionary_page.dart';
 import 'package:rogers_dictionary/util/animation_utils.dart';
+import 'package:value_navigator/value_navigator.dart';
 
 class DictionaryTabBarView extends StatefulWidget {
   /// Creates a page view with one child per tab.
@@ -77,12 +77,12 @@ class _DictionaryTabBarViewState extends State<DictionaryTabBarView> {
       }
       return true;
     }());
-    return ListenableNavigator<DictionaryTab>(
-      key: const ValueKey('tab_selector'),
-      valueListenable: currentTab,
-      builder: (context, tab, _) => widget.children[tab]!,
+    return ValueNavigator.fromNotifier<DictionaryTab>(
+      key: const PageStorageKey('tab_selector'),
+      valueNotifier: currentTab,
+      builder: (context, tab, _, __) => widget.children[tab]!,
       getDepth: (tab) => tab == DictionaryTab.search ? 0 : 1,
-      transitionBuilder: _getTransition,
+      transitionsBuilder: _getTransition,
     );
   }
 

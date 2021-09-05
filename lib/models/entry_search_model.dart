@@ -61,6 +61,10 @@ class EntrySearchModel {
     required BuildContext context,
     required String newSearchString,
   }) {
+    if (newSearchString == currSearchString.value) {
+      // Value hasn't changed, don't update.
+      return;
+    }
     DictionaryApp.analytics.logSearch(searchTerm: newSearchString);
     DictionaryModel.of(context).onHeadwordSelected(
       context,

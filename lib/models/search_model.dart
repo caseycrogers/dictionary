@@ -4,7 +4,6 @@ import 'package:rogers_dictionary/pages/bookmarks_page.dart';
 
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
 
-import 'dictionary_model.dart';
 import 'entry_search_model.dart';
 import 'translation_model.dart';
 

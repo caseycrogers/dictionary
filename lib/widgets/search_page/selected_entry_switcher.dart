@@ -1,25 +1,60 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import 'package:rogers_dictionary/dictionary_navigator/listenable_navigator.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/search_model.dart';
+import 'package:rogers_dictionary/widgets/translation_mode_switcher.dart';
+import 'package:value_navigator/value_navigator.dart';
 
 import 'entry_list.dart';
 import 'entry_view.dart';
 
-class SelectedEntrySwitcher extends StatelessWidget {
+class SelectedEntrySwitcher extends StatefulWidget {
   const SelectedEntrySwitcher({
     Key? key,
   }) : super(key: key);
 
   @override
+  _SelectedEntrySwitcherState createState() => _SelectedEntrySwitcherState();
+}
+
+class _SelectedEntrySwitcherState extends State<SelectedEntrySwitcher> {
+  late ValueNavigatorState _valueNavigator;
+  VoidCallback? _disposeListener;
+
+  @override
+  void didChangeDependencies() {
+    if (_disposeListener == null) {
+      void onTranslationChanged() {
+        if (isCurrentTranslationPage(context)) {
+          return _valueNavigator.enable();
+        }
+        return _valueNavigator.disable();
+      }
+      DictionaryModel.of(context)
+          .translationModel
+          .addListener(onTranslationChanged);
+      _disposeListener = () => DictionaryModel.of(context)
+          .translationModel
+          .removeListener(onTranslationChanged);
+    }
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    _disposeListener?.call();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return ListenableNavigator<SelectedEntry?>(
+    return ValueNavigator.fromNotifier<SelectedEntry?>(
       // Used to ensure the navigator knows when to display an animation.
       key: _getKey(context),
-      valueListenable: SearchModel.of(context).currSelectedEntry,
-      builder: (context, selectedEntry, __) {
+      valueNotifier: SearchModel.of(context).currSelectedEntry,
+      builder: (context, selectedEntry, _, __) {
+        _valueNavigator = ValueNavigator.of<dynamic>(context);
         if (selectedEntry == null) {
           return LayoutBuilder(
             builder: (context, _) {
@@ -36,7 +71,7 @@ class SelectedEntrySwitcher extends StatelessWidget {
             },
           );
         }
-        return EntryView.asPage(context);
+        return EntryView.asPage(selectedEntry);
       },
       getDepth: (selectedEntry) {
         if (selectedEntry == null) {
@@ -46,7 +81,7 @@ class SelectedEntrySwitcher extends StatelessWidget {
         }
         return 2;
       },
-      onPopCallback: (selectedEntry) {
+      onPop: (selectedEntry, prevEntry) {
         if (selectedEntry != null && selectedEntry.isOppositeHeadword) {
           DictionaryModel.of(context).onTranslationModeChanged(context);
         }

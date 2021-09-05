@@ -11,10 +11,10 @@ import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/pages/dialogues_page.dart';
 import 'package:rogers_dictionary/util/constants.dart';
 import 'package:rogers_dictionary/util/string_utils.dart';
-import 'package:rogers_dictionary/widgets/dialogues_page/dictionary_back_button.dart';
 import 'package:rogers_dictionary/widgets/dictionary_page/dictionary_tab_bar_view.dart';
 import 'package:rogers_dictionary/widgets/dictionary_page/dictionary_tab_entry.dart';
 import 'package:rogers_dictionary/widgets/dictionary_page/dictionary_top_bar.dart';
+import 'package:value_navigator/value_navigator.dart';
 
 import 'bookmarks_page.dart';
 import 'search_page.dart';
@@ -50,7 +50,7 @@ class _DictionaryPageState extends State<DictionaryPage> {
         body: Column(
           children: [
             AppBar(
-              leading: const DictionaryBackButton(),
+              leading: const ValueNavigatorBackButton(),
               elevation: kGroundElevation,
               titleSpacing: 0,
               title: const DictionaryTopBar(),

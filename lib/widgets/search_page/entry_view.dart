@@ -28,12 +28,11 @@ class EntryView extends StatelessWidget {
   final Entry _entry;
   final bool _preview;
 
-  static Widget asPage(BuildContext context) => Builder(
-        key: ValueKey(SearchModel.of(context).currSelectedHeadword),
+  static Widget asPage(SelectedEntry selectedEntry) => Builder(
+        key: ValueKey(selectedEntry.urlEncodedHeadword),
         builder: (context) {
-          final SearchModel searchPageModel = SearchModel.of(context);
           return FutureBuilder(
-            future: searchPageModel.currSelectedEntry.value!.entry,
+            future: selectedEntry.entry,
             builder: (context, AsyncSnapshot<Entry> snap) {
               if (!snap.hasData || snap.data == null)
                 // Only display if loading is slow.
@@ -45,7 +44,11 @@ class EntryView extends StatelessWidget {
               final Entry entry = snap.data!;
               return PageHeader(
                 header: headwordLine(
-                    context, entry, false, searchPageModel.searchString),
+                  context,
+                  entry,
+                  false,
+                  SearchModel.of(context).searchString,
+                ),
                 child: EntryView._instance(entry, false),
               );
             },
@@ -174,7 +177,7 @@ class EntryView extends StatelessWidget {
         children: [
           Container(
             padding: translations.first != _entry.translations.first
-                ? const EdgeInsets.only(top: kPad/2)
+                ? const EdgeInsets.only(top: kPad / 2)
                 : null,
             child: partOfSpeechText(context, partOfSpeech, _preview),
             alignment: Alignment.centerRight,
