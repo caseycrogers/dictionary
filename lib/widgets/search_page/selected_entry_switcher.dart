@@ -53,6 +53,10 @@ class _SelectedEntrySwitcherState extends State<SelectedEntrySwitcher> {
       // Used to ensure the navigator knows when to display an animation.
       key: _getKey(context),
       valueNotifier: SearchModel.of(context).currSelectedEntry,
+      // Ensure that a base page is in the history on opposite headword.
+      initialHistory: [
+        ValueHistoryEntry(0, null),
+      ],
       builder: (context, selectedEntry, _, __) {
         _valueNavigator = ValueNavigator.of<dynamic>(context);
         if (selectedEntry == null) {

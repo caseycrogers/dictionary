@@ -32,6 +32,7 @@ class _TranslationModeSwitcherState extends State<TranslationModeSwitcher> {
     if (_controller == null) {
       final DictionaryModel dictionaryModel = DictionaryModel.of(context);
       _controller = PageController(
+        keepPage: false,
         initialPage:
             translationModeToIndex(dictionaryModel.currTranslationMode),
         viewportFraction: (MediaQuery.of(context).size.width + .25) /
