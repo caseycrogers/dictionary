@@ -132,7 +132,7 @@ class _ChapterViewState extends State<ChapterView> {
                 _isExpanded = !_isExpanded;
               });
             },
-            elevation: kGroundElevation.toInt(),
+            elevation: kGroundElevation,
             expandedHeaderPadding: EdgeInsets.zero,
             children: [
               ExpansionPanel(

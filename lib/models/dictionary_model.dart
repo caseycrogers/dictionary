@@ -84,20 +84,17 @@ class DictionaryModel {
         context,
         newUrlEncodedHeadword: newEntry.headword.urlEncodedHeadword,
         newEntry: newEntry,
-        isRelated: false,
-        isOppositeHeadword: false,
       );
 
   void onHeadwordSelected(
     BuildContext context,
     String newUrlEncodedHeadword, {
-    bool? isRelated,
+    SelectedEntryReferrer? referrer
   }) {
     _onHeadwordSelected(
       context,
       newUrlEncodedHeadword: newUrlEncodedHeadword,
-      isRelated: isRelated ?? false,
-      isOppositeHeadword: false,
+      referrer: referrer,
     );
   }
 
@@ -109,18 +106,14 @@ class DictionaryModel {
     _onHeadwordSelected(
       context,
       newUrlEncodedHeadword: newUrlEncodedHeadword,
-      isRelated: false,
-      // The depth of an opp headword selection is 1 deeper than a typical
-      // selection.
-      isOppositeHeadword: true,
+      referrer: SelectedEntryReferrer.oppositeHeadword,
     );
   }
 
   void _onHeadwordSelected(
     BuildContext context, {
     required String newUrlEncodedHeadword,
-    required bool isRelated,
-    required bool isOppositeHeadword,
+    SelectedEntryReferrer? referrer,
     Entry? newEntry,
     SearchModel? pageModel,
   }) {
@@ -149,8 +142,7 @@ class DictionaryModel {
           ? DictionaryApp.db.getEntry(
               currTranslationModel.translationMode, newUrlEncodedHeadword)
           : Future<Entry>.value(newEntry),
-      isRelated: isRelated,
-      isOppositeHeadword: isOppositeHeadword,
+      referrer: referrer,
     );
     pageModel.currSelectedEntry.value = selectedEntry;
     pageModel.adKeywords.value = [

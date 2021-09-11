@@ -1,5 +1,5 @@
-import 'package:rogers_dictionary/util/map_utils.dart';
 import 'package:rogers_dictionary/protobufs/dialogues.pb.dart';
+import 'package:rogers_dictionary/util/map_utils.dart';
 
 typedef DialogueSubChapter = DialogueChapter_SubChapter;
 typedef Dialogue = DialogueChapter_Dialogue;

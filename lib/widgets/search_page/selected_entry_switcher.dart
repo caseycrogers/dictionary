@@ -1,10 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'package:implicit_navigator/implicit_navigator.dart';
+
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/search_model.dart';
 import 'package:rogers_dictionary/widgets/translation_mode_switcher.dart';
-import 'package:value_navigator/value_navigator.dart';
 
 import 'entry_list.dart';
 import 'entry_view.dart';
@@ -19,7 +20,7 @@ class SelectedEntrySwitcher extends StatefulWidget {
 }
 
 class _SelectedEntrySwitcherState extends State<SelectedEntrySwitcher> {
-  late ValueNavigatorState _valueNavigator;
+  late ImplicitNavigatorState _implicitNavigator;
   VoidCallback? _disposeListener;
 
   @override
@@ -27,10 +28,11 @@ class _SelectedEntrySwitcherState extends State<SelectedEntrySwitcher> {
     if (_disposeListener == null) {
       void onTranslationChanged() {
         if (isCurrentTranslationPage(context)) {
-          return _valueNavigator.enable();
+          return _implicitNavigator.enablePop();
         }
-        return _valueNavigator.disable();
+        return _implicitNavigator.disablePop();
       }
+
       DictionaryModel.of(context)
           .translationModel
           .addListener(onTranslationChanged);
@@ -49,16 +51,16 @@ class _SelectedEntrySwitcherState extends State<SelectedEntrySwitcher> {
 
   @override
   Widget build(BuildContext context) {
-    return ValueNavigator.fromNotifier<SelectedEntry?>(
+    return ImplicitNavigator<SelectedEntry?>.fromNotifier(
       // Used to ensure the navigator knows when to display an animation.
       key: _getKey(context),
       valueNotifier: SearchModel.of(context).currSelectedEntry,
       // Ensure that a base page is in the history on opposite headword.
-      initialHistory: [
+      initialHistory: const [
         ValueHistoryEntry(0, null),
       ],
       builder: (context, selectedEntry, _, __) {
-        _valueNavigator = ValueNavigator.of<dynamic>(context);
+        _implicitNavigator = ImplicitNavigator.of(context);
         if (selectedEntry == null) {
           return LayoutBuilder(
             builder: (context, _) {
@@ -80,13 +82,19 @@ class _SelectedEntrySwitcherState extends State<SelectedEntrySwitcher> {
       getDepth: (selectedEntry) {
         if (selectedEntry == null) {
           return 0;
-        } else if (!selectedEntry.isRelated) {
-          return 1;
         }
-        return 2;
+        switch (selectedEntry.referrer) {
+          case null:
+            return 1;
+          case SelectedEntryReferrer.oppositeHeadword:
+            return 2;
+          case SelectedEntryReferrer.relatedHeadword:
+            return null;
+        }
       },
       onPop: (selectedEntry, prevEntry) {
-        if (selectedEntry != null && selectedEntry.isOppositeHeadword) {
+        if (selectedEntry != null &&
+            selectedEntry.referrer == SelectedEntryReferrer.oppositeHeadword) {
           DictionaryModel.of(context).onTranslationModeChanged(context);
         }
       },

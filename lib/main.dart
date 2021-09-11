@@ -19,13 +19,12 @@ import 'package:rogers_dictionary/pages/dictionary_page.dart';
 import 'package:rogers_dictionary/widgets/get_dictionary_feedback.dart';
 
 import 'clients/dictionary_database.dart';
+import 'models/dictionary_model.dart';
 
-final Color englishPrimary = Colors.indigo.shade600;
-final Color spanishPrimary = Colors.orange.shade600;
-final Color englishSecondary = Colors.indigo.shade200;
-final Color spanishSecondary = Colors.orange.shade200;
+final MaterialColor englishPrimary = Colors.indigo;
+final MaterialColor spanishPrimary = Colors.orange;
 
-Color primaryColor(TranslationMode translationMode) =>
+MaterialColor primaryColor(TranslationMode translationMode) =>
     isEnglish(translationMode) ? englishPrimary : spanishPrimary;
 
 Future<void> main() async {
@@ -67,6 +66,11 @@ class DictionaryApp extends StatefulWidget {
 
 class _DictionaryAppState extends State<DictionaryApp> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   void dispose() {
     DictionaryApp.textToSpeech.dispose();
     super.dispose();
@@ -85,45 +89,45 @@ class _DictionaryAppState extends State<DictionaryApp> {
         ],
         feedbackBuilder: (BuildContext context, OnSubmit onSubmit) =>
             GetDictionaryFeedback(onSubmit),
-        child: MaterialApp(
-          title: 'Dictionary',
-          home: DictionaryPage(),
-          theme: ThemeData(
-
-            selectedRowColor: Colors.grey.shade200,
-            textTheme: TextTheme(
-              headline1: GoogleFonts.roboto(
-                fontSize: 30,
-                color: Colors.black,
-                fontWeight: FontWeight.bold,
+        child: ValueListenableBuilder<TranslationModel>(
+          valueListenable: DictionaryModel.of(context).translationModel,
+          builder: (context, model, _) {
+            return MaterialApp(
+              title: 'Dictionary',
+              home: DictionaryPage(),
+              theme: ThemeData(
+                colorScheme: ColorScheme.fromSwatch(
+                  primarySwatch: primaryColor(model.translationMode),
+                ),
+                selectedRowColor: Colors.grey.shade200,
+                textTheme: TextTheme(
+                  headline1: GoogleFonts.roboto(
+                    fontSize: 30,
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  headline2: GoogleFonts.roboto(
+                    color: Colors.black,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  bodyText2: GoogleFonts.roboto(
+                    fontSize: 18,
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
               ),
-              headline2: GoogleFonts.roboto(
-                color: Colors.black,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-              bodyText2: GoogleFonts.roboto(
-                fontSize: 18,
-                fontWeight: FontWeight.normal,
-              ),
-            ),
-            iconTheme: const IconThemeData(
-              color: Colors.white,
-            ),
-            accentIconTheme: IconThemeData(
-              color: Color.lerp(Colors.black, Colors.white, .52),
-            ),
-            backgroundColor: Colors.white,
-          ),
-          localizationsDelegates: const [
-            GlobalMaterialLocalizations.delegate,
-            GlobalWidgetsLocalizations.delegate,
-            GlobalCupertinoLocalizations.delegate,
-          ],
-          supportedLocales: const [
-            Locale('en', ''),
-            Locale('es', ''),
-          ],
+              localizationsDelegates: const [
+                GlobalMaterialLocalizations.delegate,
+                GlobalWidgetsLocalizations.delegate,
+                GlobalCupertinoLocalizations.delegate,
+              ],
+              supportedLocales: const [
+                Locale('en', ''),
+                Locale('es', ''),
+              ],
+            );
+          },
         ),
       ),
     );

@@ -27,7 +27,7 @@ linter:
     # - avoid_as
     - avoid_bool_literals_in_conditional_expressions
     # - avoid_catches_without_on_clauses
-    - avoid_catching_errors
+    # - avoid_catching_errors # If I'm catching an error it's because I have to
     - avoid_classes_with_only_static_members
     # - avoid_double_and_int_checks # only useful when targeting JS runtime
     - avoid_empty_else
@@ -65,11 +65,11 @@ linter:
     # - curly_braces_in_flow_control_structures # not yet tested
     # - diagnostic_describe_all_properties # not yet tested
     - directives_ordering
-    - empty_catches
+    # - empty_catches
     - empty_constructor_bodies
     - empty_statements
     - file_names
-    - flutter_style_todos
+    # - flutter_style_todos
     - hash_and_equals
     - implementation_imports
     # - invariant_booleans # too many false positives: https://github.com/dart-lang/linter/issues/811
@@ -134,7 +134,7 @@ linter:
     - slash_for_doc_comments
     # - sort_child_properties_last # noch nicht mit Flutter kompatibel
     - sort_constructors_first
-    - sort_pub_dependencies
+    # - sort_pub_dependencies
     - sort_unnamed_constructors_first
     - test_types_in_equals
     - throw_in_finally

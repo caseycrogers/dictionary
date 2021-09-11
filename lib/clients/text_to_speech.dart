@@ -30,7 +30,9 @@ class TextToSpeech {
   TextToSpeech();
 
   final http.Client _client = http.Client();
-  final AudioPlayer _player = AudioPlayer();
+  // Trivial call to `play()` ensures that the player is fully initialized
+  // before the first actual call to play.
+  final AudioPlayer _player = AudioPlayer()..play();
   final Future<AudioSession> _session = AudioSession.instance.then((session) {
     session.configure(
       const AudioSessionConfiguration(

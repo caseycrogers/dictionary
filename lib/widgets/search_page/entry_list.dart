@@ -169,7 +169,7 @@ class _EntryListState extends State<EntryList> {
         SearchModel.of(context).entrySearchModel.isEmpty &&
         dictionaryModel.currentTab.value == DictionaryTab.search) {
       return Column(children: [
-        const NoResultsWidget(),
+        const CollapsingNoResultsWidget(),
         const Divider(height: 0),
         row,
       ]);

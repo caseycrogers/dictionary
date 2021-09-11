@@ -50,11 +50,12 @@ class _TranslationModeSwitcherState extends State<TranslationModeSwitcher> {
             _controller!.page!.round() == targetPage) {
           return;
         }
-        _controller!.animateToPage(
-          targetPage,
-          duration: const Duration(milliseconds: 200),
-          curve: Curves.easeIn,
-        );
+        _controller!.jumpToPage(targetPage);
+        //_controller!.animateToPage(
+        //  targetPage,
+        //  duration: const Duration(milliseconds: 200),
+        //  curve: Curves.easeIn,
+        //);
       });
     }
     super.didChangeDependencies();

@@ -48,8 +48,8 @@ class _BookmarksButtonState extends State<BookmarksButton> {
               widget.entry.headword.urlEncodedHeadword)
           ? Icons.bookmark
           : Icons.bookmark_border,
-      color: Theme.of(context).accentIconTheme.color,
-      size: Theme.of(context).accentIconTheme.size,
+      color: Theme.of(context).colorScheme.secondary,
+      size: Theme.of(context).iconTheme.size,
     );
   }
 }

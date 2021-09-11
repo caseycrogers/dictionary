@@ -106,7 +106,7 @@ class EntryView extends StatelessWidget {
                   DictionaryModel.of(context).onHeadwordSelected(
                     context,
                     EntryUtils.urlEncode(headword),
-                    isRelated: true,
+                    referrer: SelectedEntryReferrer.relatedHeadword,
                   );
                 },
               ),

@@ -61,19 +61,20 @@ class SelectedEntry {
   SelectedEntry({
     required this.urlEncodedHeadword,
     required this.entry,
-    bool? isRelated,
-    bool? isOppositeHeadword,
-  })
-      : isRelated = isRelated ?? false,
-        isOppositeHeadword = isOppositeHeadword ?? false;
+    this.referrer,
+  });
 
   final String urlEncodedHeadword;
   final Future<Entry> entry;
-  final bool isRelated;
-  final bool isOppositeHeadword;
+  final SelectedEntryReferrer? referrer;
 
   @override
   String toString() {
     return 'SelectedEntry($urlEncodedHeadword)';
   }
+}
+
+enum SelectedEntryReferrer {
+  relatedHeadword,
+  oppositeHeadword,
 }
