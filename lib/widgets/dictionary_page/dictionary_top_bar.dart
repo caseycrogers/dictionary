@@ -1,11 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
-import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
-import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/pages/dictionary_page.dart';
 import 'package:rogers_dictionary/util/constants.dart';
+import 'package:rogers_dictionary/widgets/adaptive_material/adaptive_material.dart';
 import 'package:rogers_dictionary/widgets/buttons/help_menu.dart';
 import 'package:rogers_dictionary/widgets/buttons/translation_mode_selector.dart';
 import 'package:rogers_dictionary/widgets/search_page/search_bar.dart';
@@ -19,28 +18,24 @@ class DictionaryTopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final DictionaryModel dictionaryModel = DictionaryModel.of(context);
     return Container(
       height: kToolbarHeight,
-      child: ValueListenableBuilder<TranslationModel>(
-        valueListenable: dictionaryModel.translationModel,
-        builder: (context, translationPageModel, _) => Material(
-          color: primaryColor(translationPageModel.translationMode),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: _horizontalPad,
-            ),
-            child: Row(
-              children: const [
-                _TopSearchBar(),
-                TranslationModeSelector(),
-                Spacer(),
-                HelpMenu(),
-              ],
-            ),
+      child: AdaptiveMaterial(
+        adaptiveColor: AdaptiveColor.primary,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: _horizontalPad,
+          ),
+          child: Row(
+            children: const [
+              _TopSearchBar(),
+              TranslationModeSelector(),
+              Spacer(),
+              HelpMenu(),
+            ],
           ),
         ),
-      ),
+      )
     );
   }
 }

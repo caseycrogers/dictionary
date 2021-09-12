@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:rogers_dictionary/main.dart';
 
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/translation_model.dart';
@@ -78,6 +79,8 @@ class _TranslationModeSwitcherState extends State<TranslationModeSwitcher> {
 
   Widget pages(BuildContext context) {
     final DictionaryModel dictionaryModel = DictionaryModel.of(context);
+    // Used to force rebuilds on phone rotation. Otherwise translation mode
+    // switcher gets messed up.
     return LayoutBuilder(
       builder: (context, constraints) {
         return PageView(
@@ -85,32 +88,42 @@ class _TranslationModeSwitcherState extends State<TranslationModeSwitcher> {
           onPageChanged: (int index) => DictionaryModel.of(context)
               .onTranslationModeChanged(context, indexToTranslationMode(index)),
           children: [
-            Row(
-              children: [
-                Expanded(
+            Theme(
+              data: Theme.of(context).copyWith(
+                colorScheme: englishColorScheme,
+              ),
+              child: Row(
+                children: [
+                  Expanded(
+                      key: const PageStorageKey<TranslationMode>(
+                        TranslationMode.English,
+                      ),
+                      child: TranslationModelProvider(
+                        translationModel: dictionaryModel.englishPageModel,
+                        child: widget.child,
+                      )),
+                  const VerticalDivider(width: .25, thickness: .25),
+                ],
+              ),
+            ),
+            Theme(
+              data: Theme.of(context).copyWith(
+                colorScheme: spanishColorScheme,
+              ),
+              child: Row(
+                children: [
+                  const VerticalDivider(width: .25, thickness: .25),
+                  Expanded(
                     key: const PageStorageKey<TranslationMode>(
-                      TranslationMode.English,
+                      TranslationMode.Spanish,
                     ),
                     child: TranslationModelProvider(
-                      translationModel: dictionaryModel.englishPageModel,
+                      translationModel: dictionaryModel.spanishPageModel,
                       child: widget.child,
-                    )),
-                const VerticalDivider(width: .25, thickness: .25),
-              ],
-            ),
-            Row(
-              children: [
-                const VerticalDivider(width: .25, thickness: .25),
-                Expanded(
-                  key: const PageStorageKey<TranslationMode>(
-                    TranslationMode.Spanish,
+                    ),
                   ),
-                  child: TranslationModelProvider(
-                    translationModel: dictionaryModel.spanishPageModel,
-                    child: widget.child,
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ],
         );

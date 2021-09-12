@@ -2,11 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:rogers_dictionary/i18n.dart' as i18n;
-import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/search_model.dart';
 import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/util/constants.dart';
+import 'package:rogers_dictionary/widgets/adaptive_material/adaptive_material.dart';
 
 class SearchBar extends StatefulWidget {
   const SearchBar();
@@ -46,8 +46,8 @@ class _SearchBarState extends State<SearchBar> {
     return ValueListenableBuilder<TranslationModel>(
       valueListenable: DictionaryModel.of(context).translationModel,
       builder: (context, translationPage, child) {
-        return Material(
-          color: primaryColor(translationPage.translationMode),
+        return AdaptiveMaterial(
+          adaptiveColor: AdaptiveColor.primary,
           child: child!,
         );
       },

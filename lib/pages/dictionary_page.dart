@@ -2,11 +2,9 @@ import 'dart:collection';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 
 import 'package:implicit_navigator/implicit_navigator.dart';
 
-import 'package:rogers_dictionary/i18n.dart' as i18n;
 import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/translation_model.dart';
@@ -14,8 +12,8 @@ import 'package:rogers_dictionary/pages/dialogues_page.dart';
 import 'package:rogers_dictionary/util/constants.dart';
 import 'package:rogers_dictionary/util/string_utils.dart';
 import 'package:rogers_dictionary/widgets/adaptive_material/adaptive_material.dart';
+import 'package:rogers_dictionary/widgets/dictionary_page/dictionary_navigation_bar.dart';
 import 'package:rogers_dictionary/widgets/dictionary_page/dictionary_tab_bar_view.dart';
-import 'package:rogers_dictionary/widgets/dictionary_page/dictionary_tab_entry.dart';
 import 'package:rogers_dictionary/widgets/dictionary_page/dictionary_top_bar.dart';
 
 import 'bookmarks_page.dart';
@@ -30,79 +28,43 @@ enum DictionaryTab {
 String dictionaryTabName(DictionaryTab dictionaryTab) =>
     dictionaryTab.toString().enumString;
 
-class DictionaryPage extends StatefulWidget {
-  @override
-  _DictionaryPageState createState() => _DictionaryPageState();
-}
-
-class _DictionaryPageState extends State<DictionaryPage> {
+class DictionaryPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final DictionaryModel dictionaryModel = DictionaryModel.of(context);
-    return Scaffold(
-      body: Column(
-        children: [
-          AppBar(
-            leading: const ImplicitNavigatorBackButton(),
-            elevation: kGroundElevation,
-            titleSpacing: 0,
-            title: const DictionaryTopBar(),
-          ),
-          Expanded(
-            child: DictionaryTabBarView(
-              children: LinkedHashMap.from(<DictionaryTab, Widget>{
-                DictionaryTab.search: SearchPage(),
-                DictionaryTab.bookmarks: BookmarksPage(),
-                DictionaryTab.dialogues: DialoguesPage(),
-              }),
-            ),
-          ),
-          AdaptiveMaterial(
+    return ValueListenableBuilder<TranslationModel>(
+      valueListenable: DictionaryModel.of(context).translationModel,
+      builder: (context, model, tabBarView) {
+        return Scaffold(
+          body: AdaptiveMaterial(
             adaptiveColor: AdaptiveColor.background,
-            child: Container(
-              alignment: Alignment.topCenter,
-              padding: EdgeInsets.only(
-                  bottom: MediaQuery.of(context).padding.bottom),
-              child: MediaQuery(
-                data: MediaQuery.of(context).removePadding(removeBottom: true),
-                child: Container(
-                  height: kToolbarHeight,
-                  child: TabBar(
-                    labelColor: Colors.white,
-                    unselectedLabelColor: Colors.white38,
-                    labelPadding:
-                        const EdgeInsets.symmetric(horizontal: 2 * kPad),
-                    tabs: [
-                      DictionaryTabEntry(
-                        index: 0,
-                        icon: const Icon(Icons.search),
-                        text: i18n.dictionary.cap.get(context),
-                      ),
-                      DictionaryTabEntry(
-                        index: 1,
-                        icon: const Icon(Icons.bookmarks_outlined),
-                        text: i18n.bookmarks.cap.get(context),
-                      ),
-                      DictionaryTabEntry(
-                        index: 2,
-                        icon: const Icon(Icons.speaker_notes_outlined),
-                        text: i18n.dialogues.cap.get(context),
-                      ),
-                    ],
-                    isScrollable: true,
-                    indicator: const UnderlineTabIndicator(
-                      borderSide: BorderSide(
-                        color: Colors.white,
-                        width: 2,
-                      ),
+            child: Theme(
+              data: Theme.of(context).copyWith(colorScheme: themeOf(model)),
+              child: Column(
+                children: [
+                  AppBar(
+                    leading: const ImplicitNavigatorBackButton(),
+                    elevation: kGroundElevation,
+                    titleSpacing: 0,
+                    title: const DictionaryTopBar(),
+                  ),
+                  // Intentionally don't wrap this in theme, it'll cause excess
+                  // rebuilds.
+                  Expanded(
+                    child: DictionaryTabBarView(
+                      children: LinkedHashMap.from(<DictionaryTab, Widget>{
+                        DictionaryTab.search: SearchPage(),
+                        DictionaryTab.bookmarks: BookmarksPage(),
+                        DictionaryTab.dialogues: DialoguesPage(),
+                      }),
                     ),
                   ),
-                ),
+                  const DictionaryNavigationBar(),
+                ],
               ),
             ),
           ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
