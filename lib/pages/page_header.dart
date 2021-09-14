@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:rogers_dictionary/util/constants.dart';
+import 'package:rogers_dictionary/widgets/adaptive_material/adaptive_material.dart';
 import 'package:rogers_dictionary/widgets/buttons/close_page.dart';
 
 class PageHeader extends StatelessWidget {
@@ -25,8 +26,8 @@ class PageHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Material(
-          color: Theme.of(context).cardColor,
+        AdaptiveMaterial(
+          adaptiveColor: AdaptiveColor.surface,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: padding),
             child: Row(

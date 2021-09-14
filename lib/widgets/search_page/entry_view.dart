@@ -180,9 +180,10 @@ class EntryView extends StatelessWidget {
                 ? const EdgeInsets.only(top: kPad / 2)
                 : null,
             child: partOfSpeechText(context, partOfSpeech, _preview),
-            alignment: Alignment.centerRight,
+            alignment: Alignment.topRight,
           ),
           Container(
+            alignment: Alignment.topLeft,
             child: previewTranslationLine(
               context,
               translations,

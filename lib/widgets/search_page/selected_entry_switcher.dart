@@ -5,6 +5,7 @@ import 'package:implicit_navigator/implicit_navigator.dart';
 
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/search_model.dart';
+import 'package:rogers_dictionary/util/layout_picker.dart';
 import 'package:rogers_dictionary/widgets/translation_mode_switcher.dart';
 
 import 'entry_list.dart';
@@ -62,19 +63,15 @@ class _SelectedEntrySwitcherState extends State<SelectedEntrySwitcher> {
       builder: (context, selectedEntry, _, __) {
         _implicitNavigator = ImplicitNavigator.of(context);
         if (selectedEntry == null) {
-          return LayoutBuilder(
-            builder: (context, _) {
-              if (MediaQuery.of(context).orientation == Orientation.portrait) {
-                return EntryList(
-                  key: PageStorageKey('${SearchModel.of(context).mode}'
-                      '_${SearchModel.of(context).isBookmarkedOnly}'
-                      '_entry_list'),
-                );
-              }
-              return Container(
-                color: Theme.of(context).scaffoldBackgroundColor,
-              );
-            },
+          if (isBigEnoughForAdvanced(context)) {
+            return Container(
+              color: Theme.of(context).colorScheme.background,
+            );
+          }
+          return EntryList(
+            key: PageStorageKey('${SearchModel.of(context).mode}'
+                '_${SearchModel.of(context).isBookmarkedOnly}'
+                '_entry_list'),
           );
         }
         return EntryView.asPage(selectedEntry);

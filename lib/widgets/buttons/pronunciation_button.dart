@@ -7,6 +7,8 @@ import 'package:rogers_dictionary/clients/text_to_speech.dart';
 import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/util/dictionary_progress_indicator.dart';
+import 'package:rogers_dictionary/widgets/adaptive_material/adaptive_icon_button.dart';
+import 'package:rogers_dictionary/widgets/adaptive_material/adaptive_material.dart';
 
 class PronunciationButton extends StatelessWidget {
   PronunciationButton({
@@ -64,7 +66,7 @@ class _PlayButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
+    return AdaptiveIconButton(
       visualDensity: VisualDensity.compact,
       onPressed: () async {
         unawaited(DictionaryApp.analytics.logEvent(
@@ -77,11 +79,7 @@ class _PlayButton extends StatelessWidget {
         _currPlaybackStream.value =
             DictionaryApp.textToSpeech.playAudio(text, mode);
       },
-      icon: Icon(
-        Icons.volume_up,
-        color: Theme.of(context).accentIconTheme.color,
-        size: Theme.of(context).accentIconTheme.size,
-      ),
+      icon: const Icon(Icons.volume_up),
     );
   }
 }
@@ -143,17 +141,13 @@ class _StopButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
+    return AdaptiveIconButton(
       visualDensity: VisualDensity.compact,
       onPressed: () {
         _onDone();
         DictionaryApp.textToSpeech.stopIfPlaying(text, mode);
       },
-      icon: Icon(
-        Icons.stop,
-        color: Theme.of(context).accentIconTheme.color,
-        size: Theme.of(context).accentIconTheme.size,
-      ),
+      icon: const Icon(Icons.stop),
     );
   }
 }
@@ -173,7 +167,7 @@ class _LoadingIndicator extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         child: CircularProgressIndicator(
           strokeWidth: 3,
-          color: Theme.of(context).accentIconTheme.color,
+          color: AdaptiveMaterial.secondaryOnColorOf(context)!,
         ),
       ),
     );

@@ -164,6 +164,7 @@ Widget alternateHeadwordLines(BuildContext context,
       children: alternateHeadwords.map(
         (alt) {
           return Wrap(
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               // Only display the alt header for the first entry.
               Opacity(
@@ -325,27 +326,30 @@ Widget irregularInflectionsTable(
   if (inflections.isEmpty) {
     return Container();
   }
-  return DictionaryChip(
-    childPadding: const EdgeInsets.all(kPad / 2),
-    color: Colors.grey.shade200,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        bold1Text(context, '${i18n.irregularInflections.get(context)}:'),
-        Table(
-          defaultColumnWidth: const IntrinsicColumnWidth(),
-          children: [
-            ...inflections.map(
-              (i) => TableRow(
-                children: [
-                  OverflowMarkdown('${i.split('* ').first.trim()}* '),
-                  Indent(child: OverflowMarkdown(i.split('* ').last.trim())),
-                ],
+  return Padding(
+    padding: const EdgeInsets.only(top: kPad / 2),
+    child: DictionaryChip(
+      childPadding: const EdgeInsets.all(kPad / 2),
+      color: Colors.grey.shade200,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          bold1Text(context, '${i18n.irregularInflections.get(context)}:'),
+          Table(
+            defaultColumnWidth: const IntrinsicColumnWidth(),
+            children: [
+              ...inflections.map(
+                (i) => TableRow(
+                  children: [
+                    OverflowMarkdown('${i.split('* ').first.trim()}* '),
+                    Indent(child: OverflowMarkdown(i.split('* ').last.trim())),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
-      ],
+            ],
+          ),
+        ],
+      ),
     ),
   );
 }
@@ -376,12 +380,23 @@ Widget examplePhraseText(BuildContext context, List<String> examplePhrases) {
 Widget headwordLine(
     BuildContext context, Entry entry, bool preview, String searchString) {
   final List<Widget> wraps = [
-    ...highlightedText(context, entry.headword.headwordText, preview,
-        searchString: searchString, isHeadword: true),
+    ...highlightedText(
+      context,
+      entry.headword.headwordText,
+      preview,
+      searchString: searchString,
+      isHeadword: true,
+    ),
     if (entry.headword.abbreviation.isNotEmpty) headline1Text(context, ' '),
     if (entry.headword.abbreviation.isNotEmpty)
-      ...highlightedText(context, '(${entry.headword.abbreviation})', preview,
-          searchString: searchString, isHeadword: true, forWrap: false),
+      ...highlightedText(
+        context,
+        '(${entry.headword.abbreviation})',
+        preview,
+        searchString: searchString,
+        isHeadword: true,
+        forWrap: false,
+      ),
     ...parentheticalTexts(
       context,
       entry.headword.parentheticalQualifier,

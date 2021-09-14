@@ -3,6 +3,7 @@ import 'dart:math' as math;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:rogers_dictionary/widgets/adaptive_material/adaptive_material.dart';
 
 class DictionaryProgressIndicator extends StatelessWidget {
   const DictionaryProgressIndicator({
@@ -32,14 +33,14 @@ class DictionaryProgressIndicator extends StatelessWidget {
 }
 
 class ProgressGradient extends StatelessWidget {
-  const ProgressGradient({
-    Key? key,
-    required this.child,
-    required this.style,
-    required this.progress,
-    this.positiveColor,
-    this.negativeColor
-  }) : super(key: key);
+  const ProgressGradient(
+      {Key? key,
+      required this.child,
+      required this.style,
+      required this.progress,
+      this.positiveColor,
+      this.negativeColor})
+      : super(key: key);
 
   final Widget child;
   final IndicatorStyle style;
@@ -49,19 +50,17 @@ class ProgressGradient extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final Color _positiveColor =
+        positiveColor ?? AdaptiveMaterial.onColorOf(context)!.withAlpha(20);
+    final Color _negativeColor =
+        negativeColor ?? AdaptiveMaterial.colorOf(context)!.withAlpha(20);
     switch (style) {
       case IndicatorStyle.linear:
         return Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [
-                positiveColor ?? Theme.of(context).selectedRowColor,
-                negativeColor ?? Theme.of(context).cardColor,
-              ],
-              stops: [
-                progress,
-                progress,
-              ],
+              colors: [_positiveColor, _negativeColor],
+              stops: [progress, progress],
             ),
           ),
           child: child,
@@ -73,14 +72,8 @@ class ProgressGradient extends StatelessWidget {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               gradient: SweepGradient(
-                colors: [
-                  positiveColor ?? Theme.of(context).selectedRowColor,
-                  negativeColor ?? Theme.of(context).cardColor,
-                ],
-                stops: [
-                  progress,
-                  progress,
-                ],
+                colors: [_positiveColor, _negativeColor],
+                stops: [progress, progress],
               ),
             ),
             child: child,
@@ -91,14 +84,8 @@ class ProgressGradient extends StatelessWidget {
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             gradient: RadialGradient(
-              colors: [
-                positiveColor ?? Theme.of(context).selectedRowColor,
-                negativeColor ?? Theme.of(context).cardColor,
-              ],
-              stops: [
-                progress,
-                progress,
-              ],
+              colors: [_positiveColor, _negativeColor],
+              stops: [progress, progress],
             ),
           ),
           duration: const Duration(milliseconds: 10),

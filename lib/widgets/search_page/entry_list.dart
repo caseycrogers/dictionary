@@ -12,6 +12,7 @@ import 'package:rogers_dictionary/pages/dictionary_page.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
 import 'package:rogers_dictionary/util/constants.dart';
 import 'package:rogers_dictionary/util/delayed.dart';
+import 'package:rogers_dictionary/util/layout_picker.dart';
 import 'package:rogers_dictionary/widgets/buttons/open_page.dart';
 import 'package:rogers_dictionary/widgets/loading_text.dart';
 import 'package:rogers_dictionary/widgets/no_results_widget.dart';
@@ -115,8 +116,7 @@ class _EntryListState extends State<EntryList> {
         final bool isSelected = entry.headword.urlEncodedHeadword ==
             selectedEntry?.urlEncodedHeadword;
         final bool shouldHighlight =
-            MediaQuery.of(context).orientation == Orientation.landscape &&
-                isSelected;
+            isBigEnoughForAdvanced(context) && isSelected;
         return Column(
           children: [
             InkWell(

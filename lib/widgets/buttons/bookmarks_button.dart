@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:rogers_dictionary/clients/entry_builders.dart';
 import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
+import 'package:rogers_dictionary/widgets/adaptive_material/adaptive_icon_button.dart';
 
 class BookmarksButton extends StatefulWidget {
   const BookmarksButton({required this.entry});
@@ -18,7 +20,7 @@ class _BookmarksButtonState extends State<BookmarksButton> {
   @override
   Widget build(BuildContext context) {
     final translationMode = TranslationModel.of(context).translationMode;
-    return IconButton(
+    return AdaptiveIconButton(
       visualDensity: VisualDensity.compact,
       icon: _icon,
       onPressed: () async {
@@ -48,8 +50,6 @@ class _BookmarksButtonState extends State<BookmarksButton> {
               widget.entry.headword.urlEncodedHeadword)
           ? Icons.bookmark
           : Icons.bookmark_border,
-      color: Theme.of(context).colorScheme.secondary,
-      size: Theme.of(context).iconTheme.size,
     );
   }
 }

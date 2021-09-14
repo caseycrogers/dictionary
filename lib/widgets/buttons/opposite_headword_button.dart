@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:rogers_dictionary/clients/entry_builders.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
+import 'package:rogers_dictionary/widgets/adaptive_material/adaptive_icon_button.dart';
 
 class OppositeHeadwordButton extends StatelessWidget {
   const OppositeHeadwordButton({
@@ -14,7 +15,7 @@ class OppositeHeadwordButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return IconButton(
+    return AdaptiveIconButton(
       visualDensity: VisualDensity.compact,
       onPressed: () {
         DictionaryModel.of(context).onOppositeHeadwordSelected(
@@ -24,10 +25,6 @@ class OppositeHeadwordButton extends StatelessWidget {
       },
       icon: Icon(
         Icons.open_in_new,
-        color: Theme
-            .of(context)
-            .accentIconTheme
-            .color,
         size: Theme
             .of(context)
             .accentIconTheme

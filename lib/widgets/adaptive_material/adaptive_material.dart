@@ -8,7 +8,7 @@ enum AdaptiveColor {
 }
 
 class AdaptiveMaterial extends StatelessWidget {
-  AdaptiveMaterial({
+  const AdaptiveMaterial({
     required this.adaptiveColor,
     required this.child,
   });
@@ -26,15 +26,15 @@ class AdaptiveMaterial extends StatelessWidget {
           color: _toColor(context, adaptiveColor),
           child: child,
         ),
-        _toColor(context, adaptiveColor),
+        _toColor(context, adaptiveColor)!,
       ),
-      _toOnColor(context, adaptiveColor),
+      _toOnColor(context, adaptiveColor)!,
     );
   }
 
   static Color? colorOf(BuildContext context) {
     final _ColorProvider? result =
-    context.dependOnInheritedWidgetOfExactType<_ColorProvider<_Color>>();
+        context.dependOnInheritedWidgetOfExactType<_ColorProvider<_Color>>();
     if (result == null) {
       return null;
     }
@@ -42,19 +42,26 @@ class AdaptiveMaterial extends StatelessWidget {
   }
 
   static Color? onColorOf(BuildContext context) {
-    final _ColorProvider? result =
-    context.dependOnInheritedWidgetOfExactType<_ColorProvider<_OnColor>>();
-    if (result == null) {
-      return null;
-    }
-    return result._colorFromScheme;
+    return _toOnColor(context, _adaptiveColorOf(context));
   }
 
-  static Color _toColor(
-      BuildContext context,
-      AdaptiveColor adaptiveColor,
-      ) {
+  static Color? secondaryOnColorOf(BuildContext context) {
+    return onColorOf(context)?.withAlpha(120);
+  }
+
+  static AdaptiveColor? _adaptiveColorOf(BuildContext context) {
+    return context
+        .dependOnInheritedWidgetOfExactType<_ColorProvider<_OnColor>>()
+        ?.adaptiveColor;
+  }
+
+  static Color? _toColor(
+    BuildContext context,
+    AdaptiveColor? adaptiveColor,
+  ) {
     switch (adaptiveColor) {
+      case null:
+        return null;
       case AdaptiveColor.primary:
         return Theme.of(context).colorScheme.primary;
       case AdaptiveColor.secondary:
@@ -66,11 +73,13 @@ class AdaptiveMaterial extends StatelessWidget {
     }
   }
 
-  static Color _toOnColor(
-      BuildContext context,
-      AdaptiveColor adaptiveColor,
-      ) {
+  static Color? _toOnColor(
+    BuildContext context,
+    AdaptiveColor? adaptiveColor,
+  ) {
     switch (adaptiveColor) {
+      case null:
+        return null;
       case AdaptiveColor.primary:
         return Theme.of(context).colorScheme.onPrimary;
       case AdaptiveColor.secondary:
@@ -91,10 +100,10 @@ class _OnColor implements _ColorProviderType {}
 
 class _ColorProvider<T extends _ColorProviderType> extends InheritedWidget {
   const _ColorProvider(
-      this.adaptiveColor,
-      Widget child,
-      this._colorFromScheme,
-      ) : super(child: child);
+    this.adaptiveColor,
+    Widget child,
+    this._colorFromScheme,
+  ) : super(child: child);
 
   final AdaptiveColor adaptiveColor;
 

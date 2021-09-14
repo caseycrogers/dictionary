@@ -86,7 +86,7 @@ abstract class DictionaryDatabase {
   }
 
   Stream<DialogueChapter> getDialogues({
-    int startAt,
+    required int startAt,
   });
 
   Map<String, bool> _getCache(TranslationMode translationMode) =>

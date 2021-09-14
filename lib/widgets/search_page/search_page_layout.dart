@@ -4,6 +4,7 @@ import 'package:rogers_dictionary/models/search_model.dart';
 
 import 'package:rogers_dictionary/pages/dictionary_page.dart';
 import 'package:rogers_dictionary/util/constants.dart';
+import 'package:rogers_dictionary/util/layout_picker.dart';
 import 'package:rogers_dictionary/widgets/search_page/search_bar.dart';
 import 'package:rogers_dictionary/widgets/search_page/selected_entry_switcher.dart';
 import 'package:rogers_dictionary/widgets/translation_mode_switcher.dart';
@@ -22,19 +23,17 @@ class SearchPageLayout extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, _) {
-        switch (MediaQuery.of(context).orientation) {
-          case Orientation.portrait:
-            return const _PortraitPage();
-          case Orientation.landscape:
-            return const _LandscapePage();
+        if (isBigEnoughForAdvanced(context)) {
+          return const _LandscapeLayout();
         }
+        return const _PortraitLayout();
       },
     );
   }
 }
 
-class _PortraitPage extends StatelessWidget {
-  const _PortraitPage({
+class _PortraitLayout extends StatelessWidget {
+  const _PortraitLayout({
     Key? key,
   }) : super(key: key);
 
@@ -47,8 +46,8 @@ class _PortraitPage extends StatelessWidget {
   }
 }
 
-class _LandscapePage extends StatelessWidget {
-  const _LandscapePage({Key? key}) : super(key: key);
+class _LandscapeLayout extends StatelessWidget {
+  const _LandscapeLayout({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -11,22 +11,25 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:package_info/package_info.dart';
+import 'package:rogers_dictionary/clients/dictionary_database/dictionary_database.dart';
 
-import 'package:rogers_dictionary/clients/sqflite_database.dart';
+import 'package:rogers_dictionary/clients/dictionary_database/sqflite_database.dart';
 import 'package:rogers_dictionary/clients/text_to_speech.dart';
 import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/pages/dictionary_page.dart';
+import 'package:rogers_dictionary/util/resolution_tester.dart';
 import 'package:rogers_dictionary/widgets/get_dictionary_feedback.dart';
 
-import 'clients/dictionary_database.dart';
-
 final ColorScheme englishColorScheme = ColorScheme.fromSwatch(
-  primarySwatch: Colors.purple,
+  primarySwatch: Colors.indigo,
+  backgroundColor: Colors.grey.shade200,
+
 );
 
 final ColorScheme spanishColorScheme = ColorScheme.fromSwatch(
-  primarySwatch: Colors.green,
-);
+  primarySwatch: Colors.orange,
+  backgroundColor: Colors.grey.shade200,
+).copyWith(onPrimary: Colors.white);
 
 ColorScheme themeOf(TranslationModel translationModel) {
   if (translationModel.isEnglish) {
@@ -93,7 +96,7 @@ class _DictionaryAppState extends State<DictionaryApp> {
         feedbackBuilder: (BuildContext context, OnSubmit onSubmit) =>
             GetDictionaryFeedback(onSubmit),
         child: MaterialApp(
-          title: 'Dictionary',
+          title: 'Rogers Dictionary',
           home: DictionaryPage(),
           theme: ThemeData(
             selectedRowColor: Colors.grey.shade200,

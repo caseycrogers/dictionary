@@ -26,7 +26,8 @@ dependencies:
   google_fonts: ^2.0.0
   google_mobile_ads: ^0.13.3
   http: ^0.13.3
-  implicit_navigator: ^0.1.0
+  implicit_navigator:
+    path: ../implicit_navigator
   intl: ^0.17.0
   just_audio: ^0.9.7
   package_info: ^2.0.0
