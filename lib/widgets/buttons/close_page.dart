@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+
 import 'package:rogers_dictionary/widgets/adaptive_material/adaptive_icon_button.dart';
 
 class ClosePage extends StatelessWidget {
@@ -11,7 +12,7 @@ class ClosePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdaptiveIconButton(
-      icon: Icon(
+      icon: const Icon(
         Icons.close,
       ),
       onPressed: onClose,

@@ -20,6 +20,7 @@ class HelpMenu extends StatelessWidget {
         ],
       ),
       icon: const AdaptiveIcon(Icons.more_vert, forcePrimary: true),
+      selectedColor: Colors.black12,
     );
   }
 }

@@ -1,7 +1,7 @@
 import 'dart:collection';
 
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import 'package:rogers_dictionary/clients/entry_builders.dart';
 import 'package:rogers_dictionary/i18n.dart' as i18n;
@@ -10,10 +10,10 @@ import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
 import 'package:rogers_dictionary/util/overflow_markdown_base.dart';
 import 'package:rogers_dictionary/util/string_utils.dart';
+import 'package:rogers_dictionary/widgets/buttons/bookmarks_button.dart';
 import 'package:rogers_dictionary/widgets/buttons/opposite_headword_button.dart';
 import 'package:rogers_dictionary/widgets/buttons/pronunciation_button.dart';
 import 'package:rogers_dictionary/widgets/dictionary_chip.dart';
-import 'package:rogers_dictionary/widgets/buttons/bookmarks_button.dart';
 
 import 'constants.dart';
 import 'overflow_markdown.dart';
@@ -145,7 +145,9 @@ LinkedHashMap<OverrideRule, TextStyle> _highlightSearchMatch(
         return MapEntry(
           OverrideRule(styleIndex: e.key, start: start, stop: stop),
           TextStyle(
-              backgroundColor: Theme.of(context).accentColor.withOpacity(.25)),
+            backgroundColor:
+                Theme.of(context).colorScheme.primary.withOpacity(.25),
+          ),
         );
       },
     ),

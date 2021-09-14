@@ -17,7 +17,6 @@ import 'package:rogers_dictionary/clients/dictionary_database/sqflite_database.d
 import 'package:rogers_dictionary/clients/text_to_speech.dart';
 import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/pages/dictionary_page.dart';
-import 'package:rogers_dictionary/util/resolution_tester.dart';
 import 'package:rogers_dictionary/widgets/get_dictionary_feedback.dart';
 
 final ColorScheme englishColorScheme = ColorScheme.fromSwatch(

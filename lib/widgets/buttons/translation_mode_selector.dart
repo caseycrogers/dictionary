@@ -33,7 +33,7 @@ class TranslationModeSelector extends StatelessWidget {
       valueListenable: pageModel.pageOffset,
       builder: (context, pageOffset, _) {
         return Container(
-          height: _Button._buttonHeight,
+          height: kButtonHeight,
           child: Stack(
             children: [
               if (pageOffset % 1 != 0)
@@ -54,7 +54,7 @@ class TranslationModeSelector extends StatelessWidget {
                       _getBox(TranslationMode.Spanish).size.width,
                       pageOffset,
                     )!,
-                    height: _Button._buttonHeight,
+                    height: kButtonHeight,
                     decoration: decoration,
                   ),
                   duration: const Duration(milliseconds: 100),
@@ -89,7 +89,6 @@ class TranslationModeSelector extends StatelessWidget {
 class _Button extends StatelessWidget {
   const _Button(this.mode, {Key? key}) : super(key: key);
 
-  static const double _buttonHeight = kToolbarHeight - 2*kPad;
   static const double _buttonSpacing = 5;
 
   final TranslationMode mode;
@@ -100,7 +99,7 @@ class _Button extends StatelessWidget {
     final bool isSelected =
         dictionaryModel.translationModel.value.translationMode == mode;
     return Container(
-      height: _buttonHeight,
+      height: kButtonHeight,
       child: TextButton(
         style: ButtonStyle(
           overlayColor: MaterialStateProperty.all(Colors.black38),

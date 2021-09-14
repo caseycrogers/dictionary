@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 
 import 'package:implicit_navigator/implicit_navigator.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
-import 'package:rogers_dictionary/pages/dictionary_page.dart';
 import 'package:rogers_dictionary/util/animation_utils.dart';
+import 'package:rogers_dictionary/widgets/dictionary_page/dictionary_tab.dart';
 
 class DictionaryTabBarView extends StatefulWidget {
   /// Creates a page view with one child per tab.
@@ -64,6 +64,9 @@ class _DictionaryTabBarViewState extends State<DictionaryTabBarView> {
   }
 
   void _handleTabControllerAnimationTick() {
+    if (!mounted) {
+      return;
+    }
     currentTab.value = widget.children.keys.toList()[_controller!.index];
   }
 

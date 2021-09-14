@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:implicit_navigator/implicit_navigator.dart';
 
 import 'package:rogers_dictionary/models/dictionary_model.dart';
-import 'package:rogers_dictionary/pages/dictionary_page.dart';
 import 'package:rogers_dictionary/util/constants.dart';
 import 'package:rogers_dictionary/util/layout_picker.dart';
 import 'package:rogers_dictionary/widgets/adaptive_material/adaptive_material.dart';
 import 'package:rogers_dictionary/widgets/buttons/help_menu.dart';
 import 'package:rogers_dictionary/widgets/buttons/translation_mode_selector.dart';
+import 'package:rogers_dictionary/widgets/dictionary_page/dictionary_tab.dart';
 import 'package:rogers_dictionary/widgets/search_page/search_bar.dart';
+
+import 'dictionary_tab_bar.dart';
 
 const double _horizontalPad = 8;
 
@@ -28,15 +30,15 @@ class DictionaryAppBar extends StatelessWidget {
         titleSpacing: 0,
         title: const Padding(
           padding: EdgeInsets.symmetric(horizontal: _horizontalPad),
-          child: DictionaryTopBar(),
+          child: _DictionaryTopBar(),
         ),
       ),
     );
   }
 }
 
-class DictionaryTopBar extends StatelessWidget {
-  const DictionaryTopBar({Key? key}) : super(key: key);
+class _DictionaryTopBar extends StatelessWidget {
+  const _DictionaryTopBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -82,6 +84,7 @@ class DictionaryTopBar extends StatelessWidget {
                     child: TranslationModeSelector(),
                   ),
                   Spacer(),
+                  DictionaryTabBar(indicator: false),
                   HelpMenu(),
                 ],
               ),

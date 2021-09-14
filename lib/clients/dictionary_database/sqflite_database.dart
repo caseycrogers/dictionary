@@ -24,11 +24,11 @@ class SqfliteDatabase extends DictionaryDatabase {
 
   String _relevancyScore(String searchString, String columnName) {
     final String index =
-        'INSTR(LOWER(" " || $columnName), LOWER(" $searchString"))';
+        '''INSTR(LOWER(' ' || $columnName), LOWER(' $searchString'))''';
     return '''CASE 
     WHEN $index = 0
     THEN $NO_MATCH
-    ELSE 1000*INSTR(SUBSTR(" " || $columnName || " ", $index + ${searchString.length + 1}), " ") + LENGTH($columnName)
+    ELSE 1000*INSTR(SUBSTR(' ' || $columnName || ' ', $index + ${searchString.length + 1}), ' ') + LENGTH($columnName)
     END''';
   }
 
@@ -64,7 +64,7 @@ class SqfliteDatabase extends DictionaryDatabase {
                FROM ${_bookmarksTable(translationMode)}
                WHERE $URL_ENCODED_HEADWORD = ${_entryTable(translationMode)}.$URL_ENCODED_HEADWORD) AS $IS_FAVORITE
  FROM ${_entryTable(translationMode)}
- WHERE $URL_ENCODED_HEADWORD = "$urlEncodedHeadword";''').then((List<
+ WHERE $URL_ENCODED_HEADWORD = '$urlEncodedHeadword';''').then((List<
                   Map<String, Object?>>
               value) =>
           value.isEmpty ? null : value.single),
@@ -96,7 +96,7 @@ class SqfliteDatabase extends DictionaryDatabase {
     } else {
       await db.delete(
         _bookmarksTable(translationMode),
-        where: '$URL_ENCODED_HEADWORD = "$urlEncodedHeadword"',
+        where: '$URL_ENCODED_HEADWORD = \'$urlEncodedHeadword\'',
       );
     }
     return super.setBookmark(translationMode, urlEncodedHeadword, bookmark);

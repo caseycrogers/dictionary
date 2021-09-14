@@ -1,19 +1,20 @@
 import 'dart:io';
 import 'dart:typed_data';
 
+import 'package:feedback/feedback.dart';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_email_sender/flutter_email_sender.dart';
+
+import 'package:path_provider/path_provider.dart';
 import 'package:pedantic/pedantic.dart';
 
 import 'package:rogers_dictionary/i18n.dart' as i18n;
-import 'package:feedback/feedback.dart';
-import 'package:flutter_email_sender/flutter_email_sender.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/util/string_utils.dart';
 import 'package:rogers_dictionary/util/text_utils.dart';
 import 'package:rogers_dictionary/widgets/get_dictionary_feedback.dart';
-
-import '../../main.dart';
 
 class FeedbackButton extends StatelessWidget {
   const FeedbackButton({Key? key, this.onPressed}) : super(key: key);

@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/search_model.dart';
 
-import 'package:rogers_dictionary/pages/dictionary_page.dart';
 import 'package:rogers_dictionary/util/constants.dart';
 import 'package:rogers_dictionary/util/layout_picker.dart';
+import 'package:rogers_dictionary/widgets/dictionary_page/dictionary_tab.dart';
 import 'package:rogers_dictionary/widgets/search_page/search_bar.dart';
 import 'package:rogers_dictionary/widgets/search_page/selected_entry_switcher.dart';
 import 'package:rogers_dictionary/widgets/translation_mode_switcher.dart';
@@ -57,19 +57,22 @@ class _LandscapeLayout extends StatelessWidget {
           child: Row(
             children: [
               Flexible(
-                child: Builder(
-                  builder: (context) {
-                    // We need the builder to get [SearchModel] below.
-                    return EntryList(
-                      key: PageStorageKey(
-                        '${SearchModel.of(context).mode}'
-                        '_${SearchModel.of(context).isBookmarkedOnly}'
-                        '_entry_list',
-                      ),
-                    );
-                  },
-                ),
                 flex: kLandscapeLeftFlex,
+                child: Container(
+                  width: double.infinity,
+                  child: Builder(
+                    builder: (context) {
+                      // We need the builder to get [SearchModel] below.
+                      return EntryList(
+                        key: PageStorageKey(
+                          '${SearchModel.of(context).mode}'
+                          '_${SearchModel.of(context).isBookmarkedOnly}'
+                          '_entry_list',
+                        ),
+                      );
+                    },
+                  ),
+                ),
               ),
               Flexible(
                 flex: kLandscapeRightFlex,

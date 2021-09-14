@@ -1,19 +1,20 @@
+import 'package:collection/collection.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-
-import 'package:collection/collection.dart';
 
 import 'package:rogers_dictionary/clients/entry_builders.dart';
 import 'package:rogers_dictionary/i18n.dart' as i18n;
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/search_model.dart';
+import 'package:rogers_dictionary/pages/page_header.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
 import 'package:rogers_dictionary/util/constants.dart';
 import 'package:rogers_dictionary/util/delayed.dart';
+import 'package:rogers_dictionary/util/layout_picker.dart';
 import 'package:rogers_dictionary/util/overflow_markdown.dart';
 import 'package:rogers_dictionary/util/text_utils.dart';
-import 'package:rogers_dictionary/pages/page_header.dart';
 
 class EntryView extends StatelessWidget {
   EntryView._instance(this._entry, this._preview) {
@@ -43,12 +44,14 @@ class EntryView extends StatelessWidget {
                 );
               final Entry entry = snap.data!;
               return PageHeader(
-                header: headwordLine(
-                  context,
-                  entry,
-                  false,
-                  SearchModel.of(context).searchString,
-                ),
+                header: !isBigEnoughForAdvanced(context)
+                    ? headwordLine(
+                        context,
+                        entry,
+                        false,
+                        SearchModel.of(context).searchString,
+                      )
+                    : null,
                 child: EntryView._instance(entry, false),
               );
             },

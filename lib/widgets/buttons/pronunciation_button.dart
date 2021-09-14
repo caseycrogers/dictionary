@@ -7,6 +7,7 @@ import 'package:rogers_dictionary/clients/text_to_speech.dart';
 import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/util/dictionary_progress_indicator.dart';
+import 'package:rogers_dictionary/util/color_utils.dart';
 import 'package:rogers_dictionary/widgets/adaptive_material/adaptive_icon_button.dart';
 import 'package:rogers_dictionary/widgets/adaptive_material/adaptive_material.dart';
 
@@ -141,13 +142,15 @@ class _StopButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AdaptiveIconButton(
+    return IconButton(
       visualDensity: VisualDensity.compact,
       onPressed: () {
         _onDone();
         DictionaryApp.textToSpeech.stopIfPlaying(text, mode);
       },
       icon: const Icon(Icons.stop),
+      color: AdaptiveMaterial.secondaryOnColorOf(context)!
+          .bake(Theme.of(context).cardColor),
     );
   }
 }

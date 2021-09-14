@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import 'package:implicit_navigator/implicit_navigator.dart';
 
 import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/protobufs/dialogues.pb.dart';
-import 'package:rogers_dictionary/widgets/dialogues_page/chapter_view.dart';
 import 'package:rogers_dictionary/widgets/dialogues_page/chapter_list.dart';
+import 'package:rogers_dictionary/widgets/dialogues_page/chapter_view.dart';
 
 class SelectedDialogueSwitcher extends StatelessWidget {
   @override

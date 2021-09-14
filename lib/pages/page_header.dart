@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import 'package:rogers_dictionary/util/constants.dart';
 import 'package:rogers_dictionary/widgets/adaptive_material/adaptive_material.dart';
@@ -15,7 +15,7 @@ class PageHeader extends StatelessWidget {
     this.padding = kPad,
   });
 
-  final Widget header;
+  final Widget? header;
   final Widget child;
   final VoidCallback? onClose;
   final bool divider;
@@ -33,7 +33,7 @@ class PageHeader extends StatelessWidget {
             child: Row(
               children: [
                 if (onClose != null) ClosePage(onClose: onClose!),
-                Expanded(child: header),
+                if (header != null) Expanded(child: header!),
               ],
             ),
           ),

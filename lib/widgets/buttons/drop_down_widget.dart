@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:rogers_dictionary/util/constants.dart';
 import 'package:rogers_dictionary/widgets/adaptive_material/adaptive_icon_button.dart';
 import 'package:rogers_dictionary/widgets/adaptive_material/adaptive_material.dart';
 
@@ -10,11 +11,13 @@ class DropDownWidget extends StatefulWidget {
     required this.builder,
     required this.icon,
     this.padding,
+    this.selectedColor,
   });
 
   final Widget Function(BuildContext, VoidCallback) builder;
   final Widget icon;
   final EdgeInsets? padding;
+  final Color? selectedColor;
 
   @override
   _DropDownWidgetState createState() => _DropDownWidgetState();
@@ -54,9 +57,13 @@ class _DropDownWidgetState extends State<DropDownWidget>
       child: Container(
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: _isMounted ? Colors.white10 : Colors.transparent,
+          color: _isMounted
+              ? widget.selectedColor ?? Colors.white10
+              : Colors.transparent,
         ),
         child: AdaptiveIconButton(
+          splashColor: widget.selectedColor,
+          highlightColor: widget.selectedColor,
           icon: widget.icon,
           onPressed: () => _toggle(),
         ),
@@ -85,9 +92,10 @@ class _DropDownWidgetState extends State<DropDownWidget>
             ),
           ),
           Positioned(
-            top: upperLeft.dy + renderBox.size.height + 4.0,
+            top: upperLeft.dy + renderBox.size.height + kPad - 1,
             left: onLeft ? upperLeft.dx : null,
-            right: onLeft ? null : width - upperLeft.dx - renderBox.size.width,
+            right:
+                onLeft ? null : width - upperLeft.dx - renderBox.size.width - 7,
             child: ScaleTransition(
               alignment: Alignment.topRight,
               scale: _curve,

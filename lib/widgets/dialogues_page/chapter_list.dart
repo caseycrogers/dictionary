@@ -6,8 +6,8 @@ import 'package:rogers_dictionary/clients/dialogue_builders.dart';
 import 'package:rogers_dictionary/models/dialogues_page_model.dart';
 import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/protobufs/dialogues.pb.dart';
-import 'package:rogers_dictionary/util/text_utils.dart';
 import 'package:rogers_dictionary/util/dialogue_extensions.dart';
+import 'package:rogers_dictionary/util/text_utils.dart';
 import 'package:rogers_dictionary/widgets/buttons/indent_icon.dart';
 import 'package:rogers_dictionary/widgets/loading_text.dart';
 

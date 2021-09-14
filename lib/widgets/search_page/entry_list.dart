@@ -8,12 +8,12 @@ import 'package:rogers_dictionary/clients/entry_builders.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/entry_search_model.dart';
 import 'package:rogers_dictionary/models/search_model.dart';
-import 'package:rogers_dictionary/pages/dictionary_page.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
 import 'package:rogers_dictionary/util/constants.dart';
 import 'package:rogers_dictionary/util/delayed.dart';
 import 'package:rogers_dictionary/util/layout_picker.dart';
 import 'package:rogers_dictionary/widgets/buttons/open_page.dart';
+import 'package:rogers_dictionary/widgets/dictionary_page/dictionary_tab.dart';
 import 'package:rogers_dictionary/widgets/loading_text.dart';
 import 'package:rogers_dictionary/widgets/no_results_widget.dart';
 import 'package:rogers_dictionary/widgets/search_page/entry_view.dart';
@@ -74,7 +74,10 @@ class _EntryListState extends State<EntryList> {
       key: const PageStorageKey('list_view'),
       padding: EdgeInsets.zero,
       noResultsWidgetBuilder: (context) => const SingleChildScrollView(
-        child: NoResultsWidget(),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 2*kPad),
+          child: NoResultsWidget(),
+        ),
       ),
       stream: _entryStream,
       initialData: _initialData,

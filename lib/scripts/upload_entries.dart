@@ -1,19 +1,20 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:args/args.dart';
+import 'package:df/df.dart';
+import 'package:path/path.dart';
+
 import 'package:rogers_dictionary/clients/database_constants.dart';
 import 'package:rogers_dictionary/clients/entry_builders.dart';
 import 'package:rogers_dictionary/protobufs/database_version.pb.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
+import 'package:rogers_dictionary/util/collection_utils.dart';
 import 'package:rogers_dictionary/util/overflow_markdown_base.dart';
 import 'package:rogers_dictionary/util/string_utils.dart';
 
-import 'package:args/args.dart';
-import 'package:df/df.dart';
-import 'package:path/path.dart';
 import 'package:sqflite/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
-import 'package:rogers_dictionary/util/list_utils.dart';
 
 const WARNING = '(WARN):';
 const ERROR = '(ERROR):';

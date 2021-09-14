@@ -8,9 +8,9 @@ import 'package:rogers_dictionary/clients/entry_builders.dart';
 import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/models/search_model.dart';
 import 'package:rogers_dictionary/models/translation_model.dart';
-import 'package:rogers_dictionary/pages/dictionary_page.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
 import 'package:rogers_dictionary/util/string_utils.dart';
+import 'package:rogers_dictionary/widgets/dictionary_page/dictionary_tab.dart';
 
 const TranslationMode DEFAULT_TRANSLATION_MODE = TranslationMode.English;
 
@@ -80,7 +80,7 @@ class DictionaryModel {
   }
 
   void onEntrySelected(BuildContext context, Entry newEntry) =>
-      _onHeadwordSelected(
+      _onEntrySelected(
         context,
         newUrlEncodedHeadword: newEntry.headword.urlEncodedHeadword,
         newEntry: newEntry,
@@ -89,9 +89,9 @@ class DictionaryModel {
   void onHeadwordSelected(
     BuildContext context,
     String newUrlEncodedHeadword, {
-    SelectedEntryReferrer? referrer
+    SelectedEntryReferrer? referrer,
   }) {
-    _onHeadwordSelected(
+    _onEntrySelected(
       context,
       newUrlEncodedHeadword: newUrlEncodedHeadword,
       referrer: referrer,
@@ -103,14 +103,14 @@ class DictionaryModel {
     String newUrlEncodedHeadword,
   ) {
     translationModel.value = _oppModel;
-    _onHeadwordSelected(
+    _onEntrySelected(
       context,
       newUrlEncodedHeadword: newUrlEncodedHeadword,
       referrer: SelectedEntryReferrer.oppositeHeadword,
     );
   }
 
-  void _onHeadwordSelected(
+  void _onEntrySelected(
     BuildContext context, {
     required String newUrlEncodedHeadword,
     SelectedEntryReferrer? referrer,

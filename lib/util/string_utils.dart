@@ -1,6 +1,6 @@
 import 'package:rogers_dictionary/util/overflow_markdown_base.dart';
 
-import 'map_utils.dart';
+import 'collection_utils.dart';
 
 extension NotShittyString on String {
   static const diacritics =

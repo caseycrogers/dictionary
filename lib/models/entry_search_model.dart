@@ -6,17 +6,14 @@ import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
+import 'package:rogers_dictionary/util/layout_picker.dart';
 
 class EntrySearchModel {
-  EntrySearchModel._(
-    this._translationMode,
-    this._isBookmarkedOnly,
-  );
+  EntrySearchModel._(this._translationMode,
+      this._isBookmarkedOnly,);
 
-  EntrySearchModel.empty(
-    TranslationMode translationMode,
-    bool isBookmarkedOnly,
-  ) : this._(translationMode, isBookmarkedOnly);
+  EntrySearchModel.empty(TranslationMode translationMode,
+      bool isBookmarkedOnly,) : this._(translationMode, isBookmarkedOnly);
 
   // Static so that this is shared between both modes
   static final ValueNotifier<String> _currSearchString = ValueNotifier('');
@@ -46,7 +43,7 @@ class EntrySearchModel {
       startAt: startAt,
     )
         .handleError(
-      (Object error, StackTrace stackTrace) {
+          (Object error, StackTrace stackTrace) {
         print('ERROR (entry stream): $error\n$stackTrace');
       },
     );
@@ -66,10 +63,9 @@ class EntrySearchModel {
       return;
     }
     DictionaryApp.analytics.logSearch(searchTerm: newSearchString);
-    DictionaryModel.of(context).onHeadwordSelected(
-      context,
-      '',
-    );
+    if (!isBigEnoughForAdvanced(context)) {
+      DictionaryModel.of(context).onHeadwordSelected(context, '');
+    }
     currSearchString.value = newSearchString;
   }
 }

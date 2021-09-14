@@ -17,14 +17,7 @@ class SearchModel {
           mode,
           isBookmarksOnly,
         ),
-        adKeywords = ValueNotifier([]) {
-    entrySearchModel.currSearchString.addListener(() {
-      if (entrySearchModel.currSearchString.value.isNotEmpty) {
-        currSelectedEntry.value = null;
-      }
-    });
-  }
-
+        adKeywords = ValueNotifier([]);
   // Translation mode state.
   final TranslationMode mode;
 
