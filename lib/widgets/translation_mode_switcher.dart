@@ -6,20 +6,17 @@ import 'package:rogers_dictionary/models/dictionary_model.dart';
 import 'package:rogers_dictionary/models/translation_mode.dart';
 import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/util/constants.dart';
-import 'package:rogers_dictionary/widgets/dictionary_banner_ad.dart';
 
 class TranslationModeSwitcher extends StatefulWidget {
   const TranslationModeSwitcher({
     required this.child,
     this.header,
-    this.keywordNotifier,
   });
 
   final Widget child;
 
   final Widget? header;
 
-  final ValueNotifier<List<String>>? keywordNotifier;
 
   @override
   _TranslationModeSwitcherState createState() =>
@@ -69,7 +66,6 @@ class _TranslationModeSwitcherState extends State<TranslationModeSwitcher> {
       child: Column(
         children: [
           if (widget.header != null) widget.header!,
-          DictionaryBannerAd(keywordNotifier: widget.keywordNotifier),
           Expanded(child: pages(context)),
         ],
       ),

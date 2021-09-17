@@ -2,12 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:rogers_dictionary/dictionary_app.dart';
+import 'package:rogers_dictionary/models/dictionary_model.dart';
 
 class DictionaryBannerAd extends StatefulWidget {
-  const DictionaryBannerAd({Key? key, this.keywordNotifier})
+  const DictionaryBannerAd({Key? key})
       : super(key: key);
-
-  final ValueNotifier<List<String>>? keywordNotifier;
 
   @override
   _DictionaryBannerAdState createState() => _DictionaryBannerAdState();
@@ -25,11 +24,15 @@ class _DictionaryBannerAdState extends State<DictionaryBannerAd> {
     'doctor',
   ];
 
+  ValueNotifier<List<String>> get adKeywords {
+    return DictionaryModel.of(context).currentAdKeywords;
+  }
+
   @override
   void initState() {
     super.initState();
-    widget.keywordNotifier?.addListener(() {
-      _updateKeywords(widget.keywordNotifier!.value);
+    adKeywords.addListener(() {
+      _updateKeywords(adKeywords.value);
     });
   }
 
@@ -42,12 +45,15 @@ class _DictionaryBannerAdState extends State<DictionaryBannerAd> {
     ]);
   }
 
-  late final Future<BannerAd> _bannerAd = _getBannerAd();
+  late Future<BannerAd> _bannerAd = _getBannerAd();
+  late MediaQueryData _query = MediaQuery.of(context);
 
   Future<BannerAd> _getBannerAd() async {
     final AdSize? adSize = await AdSize.getAnchoredAdaptiveBannerAdSize(
-      MediaQuery.of(context).orientation,
-      MediaQuery.of(context).size.width.round(),
+      _query.orientation,
+      // Don't allow the ad to be wider than the screen height so that it
+      // doesn't overdraw on screen rotate.
+      _query.size.width.truncate(),
     );
     final BannerAd ad = BannerAd(
       adUnitId: _testAdUnitId,
@@ -55,7 +61,7 @@ class _DictionaryBannerAdState extends State<DictionaryBannerAd> {
       request: AdRequest(
         keywords: [
           ..._universalKeywords,
-          ...widget.keywordNotifier?.value ?? [],
+          ...adKeywords.value,
         ],
         nonPersonalizedAds: true,
       ),
@@ -74,21 +80,35 @@ class _DictionaryBannerAdState extends State<DictionaryBannerAd> {
   }
 
   @override
+  void didChangeDependencies() {
+    final MediaQueryData newQuery = MediaQuery.of(context);
+    if (newQuery.size != _query.size) {
+      _query = newQuery;
+      _bannerAd = _getBannerAd();
+    }
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return FutureBuilder<BannerAd>(
-      future: _bannerAd,
-      builder: (context, snap) {
-        if (!snap.hasData || snap.data == null) {
-          return Container();
-        }
-        return Container(
-          height: snap.data!.size.height.toDouble(),
-          width: snap.data!.size.width.toDouble(),
-          child: AdWidget(
-            ad: snap.data!,
-          ),
-        );
-      },
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      color: Theme.of(context).colorScheme.background,
+      child: FutureBuilder<BannerAd>(
+        future: _bannerAd,
+        builder: (context, snap) {
+          if (!snap.hasData || snap.data == null) {
+            return Container();
+          }
+          return Container(
+            height: snap.data!.size.height.toDouble(),
+            width: snap.data!.size.width.toDouble(),
+            child: AdWidget(
+              ad: snap.data!,
+            ),
+          );
+        },
+      ),
     );
   }
 }

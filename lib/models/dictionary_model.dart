@@ -11,6 +11,7 @@ import 'package:rogers_dictionary/models/translation_mode.dart';
 import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
 import 'package:rogers_dictionary/util/string_utils.dart';
+import 'package:rogers_dictionary/util/value_notifier_extension.dart';
 import 'package:rogers_dictionary/widgets/dictionary_page/dictionary_tab.dart';
 
 const TranslationMode DEFAULT_TRANSLATION_MODE = TranslationMode.English;
@@ -54,6 +55,20 @@ class DictionaryModel {
   final ValueNotifier<DictionaryTab> currentTab;
 
   final ValueNotifier<double> pageOffset = ValueNotifier(0);
+
+  ValueNotifier<List<String>> get currentAdKeywords {
+    return currentTab.expand<List<String>>((tab) {
+      switch (tab) {
+        case DictionaryTab.search:
+          return currTranslationModel.searchPageModel.adKeywords;
+        case DictionaryTab.bookmarks:
+          return currTranslationModel.bookmarksPageModel.adKeywords;
+        case DictionaryTab.dialogues:
+          // There are no ad keywords for the dialogues page.
+          return ValueNotifier([]);
+      }
+    });
+  }
 
   final ScrollController nestedController = ScrollController();
 
