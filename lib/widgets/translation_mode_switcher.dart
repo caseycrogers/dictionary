@@ -52,12 +52,11 @@ class _TranslationModeSwitcherState extends State<TranslationModeSwitcher> {
             _controller!.page!.round() == targetPage) {
           return;
         }
-        _controller!.jumpToPage(targetPage);
-        //_controller!.animateToPage(
-        //  targetPage,
-        //  duration: const Duration(milliseconds: 200),
-        //  curve: Curves.easeIn,
-        //);
+        _controller!.animateToPage(
+          targetPage,
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeIn,
+        );
       });
     }
     super.didChangeDependencies();
@@ -70,7 +69,7 @@ class _TranslationModeSwitcherState extends State<TranslationModeSwitcher> {
       child: Column(
         children: [
           if (widget.header != null) widget.header!,
-          //DictionaryBannerAd(keywordNotifier: widget.keywordNotifier),
+          DictionaryBannerAd(keywordNotifier: widget.keywordNotifier),
           Expanded(child: pages(context)),
         ],
       ),

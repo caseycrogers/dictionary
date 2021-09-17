@@ -83,11 +83,11 @@ class SqfliteDatabase extends DictionaryDatabase {
       urlEncodedHeadword,
       translationMode,
       await db.rawQuery('''
- SELECT *,
-        EXISTS(SELECT $URL_ENCODED_HEADWORD
-               FROM ${entryTable(translationMode)}
-               WHERE $URL_ENCODED_HEADWORD =
-                 ${bookmarksTable(translationMode)}.$URL_ENCODED_HEADWORD) AS $IS_FAVORITE
+SELECT *,
+       EXISTS(SELECT $URL_ENCODED_HEADWORD
+              FROM ${bookmarksTable(translationMode)}
+              WHERE $URL_ENCODED_HEADWORD =
+                ${bookmarksTable(translationMode)}.$URL_ENCODED_HEADWORD) AS $IS_FAVORITE
  FROM ${entryTable(translationMode)}
  WHERE $URL_ENCODED_HEADWORD = '$urlEncodedHeadword';''').then((List<
                   Map<String, Object?>>
