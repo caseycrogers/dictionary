@@ -1,0 +1,4 @@
+enum TranslationMode {
+  English,
+  Spanish,
+}
