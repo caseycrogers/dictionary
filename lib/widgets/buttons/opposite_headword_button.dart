@@ -23,13 +23,7 @@ class OppositeHeadwordButton extends StatelessWidget {
           EntryUtils.urlEncode(translation.getOppositeHeadword),
         );
       },
-      icon: Icon(
-        Icons.open_in_new,
-        size: Theme
-            .of(context)
-            .accentIconTheme
-            .size,
-      ),
+      icon: const Icon(Icons.open_in_new),
     );
   }
 }

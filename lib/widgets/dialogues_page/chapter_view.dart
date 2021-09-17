@@ -13,7 +13,6 @@ import 'package:rogers_dictionary/util/text_utils.dart';
 
 import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
-
 class ChapterView extends StatefulWidget {
   ChapterView({
     required this.chapter,
@@ -236,12 +235,7 @@ class _ChapterViewState extends State<ChapterView> {
         child: ListTile(
           contentPadding: EdgeInsets.symmetric(horizontal: padding),
           title: headline2Text(context, subChapter.title(context)),
-          subtitle: Text(
-            subChapter.oppositeTitle(context),
-            style: isSelected
-                ? TextStyle(color: Theme.of(context).accentColor)
-                : null,
-          ),
+          subtitle: Text(subChapter.oppositeTitle(context)),
           onTap: onTap,
         ),
       );
