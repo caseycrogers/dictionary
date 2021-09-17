@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -7,16 +8,45 @@ import 'package:path/path.dart';
 import 'package:rogers_dictionary/clients/database_constants.dart';
 import 'package:rogers_dictionary/clients/dictionary_database/dictionary_database.dart';
 import 'package:rogers_dictionary/clients/entry_builders.dart';
-import 'package:rogers_dictionary/models/translation_model.dart';
+import 'package:rogers_dictionary/models/translation_mode.dart';
 import 'package:rogers_dictionary/protobufs/database_version.pb.dart';
 import 'package:rogers_dictionary/protobufs/dialogues.pb.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
 import 'package:rogers_dictionary/util/string_utils.dart';
 
 import 'package:sqflite/sqflite.dart';
+import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class SqfliteDatabase extends DictionaryDatabase {
-  final Future<Database> _dbFuture = _getDatabase();
+  SqfliteDatabase() {
+    _initialize();
+  }
+
+  late final String _databasesPath;
+  late final String _path;
+  late final String _bookmarksPath;
+  late final DatabaseVersion _version;
+  final Completer<Database> _dbCompleter = Completer();
+
+  Future<Database> get _dbFuture => _dbCompleter.future;
+
+  Future<void> _initialize() async {
+    _databasesPath = await _getDatabasePath();
+
+    // Manually inject proper slash, don't use join it breaks on Windows.
+    _version = VersionUtils.fromString(
+      await rootBundle.loadString('assets/$VERSION_FILE'),
+    );
+    _path = join(
+      _databasesPath,
+      '${DICTIONARY_DB}V${_version.versionString}.db',
+    );
+    _bookmarksPath = join(
+      _databasesPath,
+      '$BOOKMARKS_DB.db',
+    );
+    _dbCompleter.complete(_getDatabase());
+  }
 
   // We need an int that represents no string match and is smaller than any
   // conceivable real string match
@@ -31,12 +61,6 @@ class SqfliteDatabase extends DictionaryDatabase {
     ELSE 1000*INSTR(SUBSTR(' ' || $columnName || ' ', $index + ${searchString.length + 1}), ' ') + LENGTH($columnName)
     END''';
   }
-
-  String _entryTable(TranslationMode translationMode) =>
-      isEnglish(translationMode) ? ENGLISH : SPANISH;
-
-  String _bookmarksTable(TranslationMode translationMode) =>
-      '${_entryTable(translationMode)}_bookmarks';
 
   @override
   Stream<Entry> getEntries(
@@ -61,9 +85,10 @@ class SqfliteDatabase extends DictionaryDatabase {
       await db.rawQuery('''
  SELECT *,
         EXISTS(SELECT $URL_ENCODED_HEADWORD
-               FROM ${_bookmarksTable(translationMode)}
-               WHERE $URL_ENCODED_HEADWORD = ${_entryTable(translationMode)}.$URL_ENCODED_HEADWORD) AS $IS_FAVORITE
- FROM ${_entryTable(translationMode)}
+               FROM ${entryTable(translationMode)}
+               WHERE $URL_ENCODED_HEADWORD =
+                 ${bookmarksTable(translationMode)}.$URL_ENCODED_HEADWORD) AS $IS_FAVORITE
+ FROM ${entryTable(translationMode)}
  WHERE $URL_ENCODED_HEADWORD = '$urlEncodedHeadword';''').then((List<
                   Map<String, Object?>>
               value) =>
@@ -90,12 +115,15 @@ class SqfliteDatabase extends DictionaryDatabase {
     final Database db = await _dbFuture;
     if (bookmark) {
       await db.insert(
-        _bookmarksTable(translationMode),
-        {URL_ENCODED_HEADWORD: urlEncodedHeadword},
+        bookmarksTable(translationMode),
+        {
+          BOOKMARK_TAG: FAVORITES,
+          URL_ENCODED_HEADWORD: urlEncodedHeadword,
+        },
       );
     } else {
       await db.delete(
-        _bookmarksTable(translationMode),
+        bookmarksTable(translationMode),
         where: '$URL_ENCODED_HEADWORD = \'$urlEncodedHeadword\'',
       );
     }
@@ -188,10 +216,11 @@ class SqfliteDatabase extends DictionaryDatabase {
    OR ${_relevancyScore(searchString, IRREGULAR_INFLECTIONS + WITHOUT_OPTIONALS)} != $NO_MATCH)''';
     while (true) {
       final String query = '''SELECT *,
-       EXISTS(SELECT $URL_ENCODED_HEADWORD
-              FROM ${_bookmarksTable(translationMode)}
-              WHERE $URL_ENCODED_HEADWORD = ${_entryTable(translationMode)}.$URL_ENCODED_HEADWORD) AS $IS_FAVORITE
-FROM ${_entryTable(translationMode)}
+       EXISTS(SELECT $BOOKMARK_TAG, $URL_ENCODED_HEADWORD
+              FROM ${bookmarksTable(translationMode)}
+              WHERE ${entryTable(translationMode)}.$URL_ENCODED_HEADWORD = 
+                ${bookmarksTable(translationMode)}.$URL_ENCODED_HEADWORD) AS $IS_FAVORITE
+FROM ${entryTable(translationMode)}
 WHERE $whereClause
 ORDER BY $orderByClause
 LIMIT 20
@@ -208,46 +237,63 @@ OFFSET $offset;''';
       }
     }
   }
-}
 
-Future<Database> _getDatabase() async {
-  final String databasesPath = await getDatabasesPath();
+  @override
+  Future<void> dispose() async {
+    final Database db = await _dbFuture;
+    return db.close();
+  }
 
-  final DatabaseVersion version = VersionUtils.fromString(
-    await rootBundle.loadString(join('assets', '$VERSION_FILE')),
-  );
-  final String path = join(
-    databasesPath,
-    '${DICTIONARY_DB}V${version.versionString}.db',
-  );
-
-  // Check if the database exists
-  final bool exists = await databaseExists(path);
-
-  if (!exists) {
-    print('Creating new copy from asset: '
-        '${DICTIONARY_DB}V${version.versionString}.db');
-
-    // Make sure the parent directory exists
-    try {
-      await Directory(dirname(path)).create(recursive: true);
-    } catch (e) {
-      print(e);
+  Future<String> _getDatabasePath() async {
+    if (Platform.isWindows) {
+      return File('~\\Documents').absolute.path;
     }
+    return getDatabasesPath();
+  }
 
-    // Copy from asset
-    final ByteData data = await rootBundle.load(join(
-      'assets',
-      '${DICTIONARY_DB}V${version.versionString}.db',
-    ));
+  Future<Database> _getDatabase() async {
+    // Check if the database exists
+    final bool exists = await databaseExists(_path);
+    if (!exists) {
+      // Make sure the parent directory exists
+      try {
+        await Directory(dirname(_path)).create(recursive: true);
+      } catch (e) {
+        print(e);
+      }
+
+      // Copy from asset.
+      await _copyDb('${DICTIONARY_DB}V${_version.versionString}.db', _path);
+      if (!await databaseExists(_bookmarksPath)) {
+        await _copyDb('$BOOKMARKS_DB.db', _bookmarksPath);
+      }
+    } else {
+      print('Opening existing database');
+    }
+    // open the database
+    return _openDatabase();
+  }
+
+  Future<void> _copyDb(String assetName, String targetPath) async {
+    print('Creating new copy from asset: $assetName');
+    //Don't use join, it breaks on Windows.
+    final ByteData data = await rootBundle.load('assets/$assetName');
     final List<int> bytes =
         data.buffer.asUint8List(data.offsetInBytes, data.lengthInBytes);
 
     // Write and flush the bytes written
-    await File(path).writeAsBytes(bytes, flush: true);
-  } else {
-    print('Opening existing database');
+    await File(targetPath).writeAsBytes(bytes, flush: true);
   }
-  // open the database
-  return openDatabase(path, readOnly: false);
+
+  Future<Database> _openDatabase() async {
+    late Database db;
+    if (Platform.isWindows) {
+      db = await databaseFactoryFfi.openDatabase(_path);
+    } else {
+      db = await databaseFactory.openDatabase(_path);
+    }
+    db = await databaseFactory.openDatabase(_path);
+    await db.execute('''ATTACH DATABASE '$_bookmarksPath' AS $BOOKMARKS_DB''');
+    return db;
+  }
 }

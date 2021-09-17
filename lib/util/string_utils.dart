@@ -30,7 +30,7 @@ extension NotShittyString on String {
   String get withoutHyphenateds => replaceAll(RegExp(r' -.[^ ]+'), '').trim();
 
   String get withoutGenderIndicators =>
-      replaceAll(RegExp(r' \*[mf]+\*'), '').trim();
+      replaceAll(RegExp(r' \*([mf]{1,2}|mpl|fpl|m&f|mpl&fpl)\* '), ' ').trim();
 
   String get pronounceable => withoutHyphenateds.withoutGenderIndicators;
 

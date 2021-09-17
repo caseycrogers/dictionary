@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import 'package:rogers_dictionary/i18n.dart' as i18n;
 import 'package:rogers_dictionary/models/search_model.dart';
-import 'package:rogers_dictionary/util/change_notifier_extension.dart';
 import 'package:rogers_dictionary/util/constants.dart';
 
 class CollapsingNoResultsWidget extends StatelessWidget {
@@ -69,9 +68,7 @@ class _CollapsingScrollEntry extends StatefulWidget {
 }
 
 class _CollapsingScrollEntryState extends State<_CollapsingScrollEntry> {
-  late ScrollPosition _position;
-
-  bool _shouldInit = true;
+  ScrollPosition? _position;
   double? _height;
   double _pixels = 0;
 
@@ -80,7 +77,7 @@ class _CollapsingScrollEntryState extends State<_CollapsingScrollEntry> {
 
   void _onScroll() {
     _height ??= (context.findRenderObject() as RenderBox).size.height;
-    _pixels = _position.pixels;
+    _pixels = _position!.pixels;
     // This widget will already be disposed if progress exceeds 1.
     if (_progress < 1) {
       setState(() {});
@@ -89,19 +86,17 @@ class _CollapsingScrollEntryState extends State<_CollapsingScrollEntry> {
 
   @override
   void didChangeDependencies() {
-    if (_shouldInit || _position.isDisposed) {
-      _position = Scrollable.of(context)!.position;
-      _position.addListener(_onScroll);
-      _shouldInit = false;
+    final ScrollPosition newPosition = Scrollable.of(context)!.position;
+    if (newPosition != _position) {
+      _position?.removeListener(_onScroll);
+      _position = newPosition..addListener(_onScroll);
     }
     super.didChangeDependencies();
   }
 
   @override
   void dispose() {
-    if (!_position.isDisposed) {
-      _position.removeListener(_onScroll);
-    }
+    _position?.removeListener(_onScroll);
     super.dispose();
   }
 

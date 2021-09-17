@@ -7,6 +7,7 @@ import 'package:path/path.dart';
 
 import 'package:rogers_dictionary/clients/database_constants.dart';
 import 'package:rogers_dictionary/clients/entry_builders.dart';
+import 'package:rogers_dictionary/models/translation_mode.dart';
 import 'package:rogers_dictionary/protobufs/database_version.pb.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
 import 'package:rogers_dictionary/util/collection_utils.dart';
@@ -24,7 +25,7 @@ Future<void> uploadEntries(bool debug, bool verbose, bool isSpanish) async {
     'lib',
     'scripts',
     'entry_database-'
-        '${isSpanish ? SPANISH.toLowerCase() : ENGLISH.toLowerCase()}.csv',
+        '${isSpanish ? SPANISH : ENGLISH}.csv',
   );
   final String versionPath = join('assets', 'database_version.json');
   final DatabaseVersion version = VersionUtils.fromDisk(File(versionPath));
@@ -48,7 +49,7 @@ Future<void> uploadEntries(bool debug, bool verbose, bool isSpanish) async {
     i++;
   }
   i++;
-  while (i < rows.length) {
+  while (i < rows.length && i < 100) {
     if ((i + 2) % 500 == 0) {
       print('${i + 2}/${rows.length + 2} complete!');
     }
@@ -154,7 +155,7 @@ Future<void> uploadEntries(bool debug, bool verbose, bool isSpanish) async {
   assert(builder != null, 'Did not generate any entries!');
   return _uploadSqlFlite(
     version,
-    isSpanish ? SPANISH : ENGLISH,
+    isSpanish ? TranslationMode.Spanish : TranslationMode.English,
     entryBuilders.values.map((b) => b.build()).toList(),
     debug,
     verbose,
@@ -163,7 +164,7 @@ Future<void> uploadEntries(bool debug, bool verbose, bool isSpanish) async {
 
 Future<void> _uploadSqlFlite(
   DatabaseVersion version,
-  String tableName,
+  TranslationMode mode,
   List<Entry> entries,
   bool debug,
   bool verbose,
@@ -173,12 +174,22 @@ Future<void> _uploadSqlFlite(
     'assets',
     '${DICTIONARY_DB}V${version.versionString}.db',
   );
+  final bookmarksPath = join(
+    Directory.current.path,
+    'assets',
+    '$BOOKMARKS_DB.db',
+  );
   print('Writing to: $path.');
   sqfliteFfiInit();
   final Database db = await databaseFactoryFfi.openDatabase(path);
+  final Database bookmarksDb =
+      await databaseFactoryFfi.openDatabase(bookmarksPath);
   final Batch batch = db.batch();
   if (!debug) {
-    await wipeTables(db, tableName);
+    await wipeTable(db, entryTable(mode));
+    await wipeTable(bookmarksDb, bookmarksTable(mode));
+    await createEntryTable(db, entryTable(mode));
+    await createBookmarksTable(bookmarksDb, bookmarksTable(mode));
   }
 
   for (final Entry entry in entries) {
@@ -225,7 +236,7 @@ Future<void> _uploadSqlFlite(
           MapEntry(key, key == ENTRY_BLOB ? entry.toProto3Json() : value)));
       print('');
     }
-    batch.insert(tableName, entryRecord);
+    batch.insert(entryTable(mode), entryRecord);
   }
   if (debug) {
     return;
@@ -233,12 +244,17 @@ Future<void> _uploadSqlFlite(
   return batch.commit().then((_) => null);
 }
 
-Future<void> wipeTables(Database db, String tableName) async {
+Future<void> wipeTable(Database db, String tableName) async {
   try {
     await db.execute('''DROP TABLE $tableName''');
   } on Exception catch (e) {
     print(e.toString());
   }
+  return;
+}
+
+Future<void> createEntryTable(Database db, String tableName) async {
+  print('Creating table ${db.path}.$tableName.');
   await db.execute('''CREATE TABLE $tableName(
     $URL_ENCODED_HEADWORD STRING NOT NULL PRIMARY KEY,
     $ENTRY_ID INTEGER NOT NULL,
@@ -254,12 +270,13 @@ Future<void> wipeTables(Database db, String tableName) async {
     $IRREGULAR_INFLECTIONS$WITHOUT_OPTIONALS String,
     $ENTRY_BLOB BLOB NOT NULL
   )''');
-  try {
-    await db.execute('''DROP TABLE ${tableName}_bookmarks''');
-  } on Exception catch (e) {
-    print(e.toString());
-  }
-  await db.execute('''CREATE TABLE ${tableName}_bookmarks(
+  return;
+}
+
+Future<void> createBookmarksTable(Database db, String tableName) async {
+  print('Creating table $tableName in ${db.path}.');
+  await db.execute('''CREATE TABLE $tableName(
+    $BOOKMARK_TAG STRING NOT NULL,
     $URL_ENCODED_HEADWORD STRING NOT NULL
   )''');
   return;

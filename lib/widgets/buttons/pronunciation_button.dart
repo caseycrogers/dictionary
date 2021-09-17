@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:pedantic/pedantic.dart';
 
 import 'package:rogers_dictionary/clients/text_to_speech.dart';
-import 'package:rogers_dictionary/main.dart';
-import 'package:rogers_dictionary/models/translation_model.dart';
-import 'package:rogers_dictionary/util/dictionary_progress_indicator.dart';
+import 'package:rogers_dictionary/dictionary_app.dart';
+import 'package:rogers_dictionary/models/translation_mode.dart';
 import 'package:rogers_dictionary/util/color_utils.dart';
+import 'package:rogers_dictionary/util/dictionary_progress_indicator.dart';
 import 'package:rogers_dictionary/widgets/adaptive_material/adaptive_icon_button.dart';
 import 'package:rogers_dictionary/widgets/adaptive_material/adaptive_material.dart';
 

@@ -9,9 +9,9 @@ import 'package:flutter_email_sender/flutter_email_sender.dart';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:pedantic/pedantic.dart';
+import 'package:rogers_dictionary/dictionary_app.dart';
 
 import 'package:rogers_dictionary/i18n.dart' as i18n;
-import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/util/string_utils.dart';
 import 'package:rogers_dictionary/util/text_utils.dart';
 import 'package:rogers_dictionary/widgets/get_dictionary_feedback.dart';

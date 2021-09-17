@@ -12,7 +12,6 @@ import 'package:rogers_dictionary/pages/page_header.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
 import 'package:rogers_dictionary/util/constants.dart';
 import 'package:rogers_dictionary/util/delayed.dart';
-import 'package:rogers_dictionary/util/layout_picker.dart';
 import 'package:rogers_dictionary/util/overflow_markdown.dart';
 import 'package:rogers_dictionary/util/text_utils.dart';
 
@@ -44,14 +43,12 @@ class EntryView extends StatelessWidget {
                 );
               final Entry entry = snap.data!;
               return PageHeader(
-                header: !isBigEnoughForAdvanced(context)
-                    ? headwordLine(
-                        context,
-                        entry,
-                        false,
-                        SearchModel.of(context).searchString,
-                      )
-                    : null,
+                header: headwordLine(
+                  context,
+                  entry,
+                  false,
+                  SearchModel.of(context).searchString,
+                ),
                 child: EntryView._instance(entry, false),
               );
             },

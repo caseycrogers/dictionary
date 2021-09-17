@@ -1,5 +1,5 @@
 import 'package:rogers_dictionary/clients/dictionary_database/dictionary_database.dart';
-import 'package:rogers_dictionary/models/translation_model.dart';
+import 'package:rogers_dictionary/models/translation_mode.dart';
 import 'package:rogers_dictionary/protobufs/dialogues.pb.dart';
 import 'package:rogers_dictionary/protobufs/entry.pb.dart';
 
@@ -42,4 +42,7 @@ class MockDatabase extends DictionaryDatabase {
       translations: [Entry_Translation(content: 'bar')],
     );
   }
+
+  @override
+  Future<void> dispose() async {}
 }

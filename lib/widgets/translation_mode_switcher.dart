@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:rogers_dictionary/main.dart';
 
 import 'package:rogers_dictionary/models/dictionary_model.dart';
+import 'package:rogers_dictionary/models/translation_mode.dart';
 import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/util/constants.dart';
 import 'package:rogers_dictionary/widgets/dictionary_banner_ad.dart';

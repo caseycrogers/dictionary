@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 
 import 'package:rogers_dictionary/clients/entry_builders.dart';
+import 'package:rogers_dictionary/dictionary_app.dart';
 import 'package:rogers_dictionary/i18n.dart' as i18n;
-import 'package:rogers_dictionary/main.dart';
 import 'package:rogers_dictionary/pages/page_header.dart';
 import 'package:rogers_dictionary/util/collection_utils.dart';
 import 'package:rogers_dictionary/util/constants.dart';

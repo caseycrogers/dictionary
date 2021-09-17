@@ -2,14 +2,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:rogers_dictionary/models/search_model.dart';
+import 'package:rogers_dictionary/models/translation_mode.dart';
 import 'package:rogers_dictionary/widgets/translation_mode_switcher.dart';
 
 import 'dialogues_page_model.dart';
-
-enum TranslationMode {
-  English,
-  Spanish,
-}
 
 bool isEnglish(TranslationMode mode) => mode == TranslationMode.English;
 

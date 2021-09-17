@@ -21,13 +21,11 @@ class _ResolutionTesterState extends State<ResolutionTester> {
 
   @override
   void didChangeDependencies() {
-    if (_width == null) {
-      final Size size = MediaQuery.of(context).size;
-      _maxWidth = size.width;
-      _maxHeight = size.height;
-      _width ??= _maxWidth.toInt();
-      _height ??= _maxHeight.toInt();
-    }
+    final Size size = MediaQuery.of(context).size;
+    _maxWidth = size.width;
+    _maxHeight = size.height;
+    _width = (_width  ?? _maxWidth.toInt()).clamp(0, _maxWidth).toInt();
+    _height = (_height ?? _maxHeight.toInt()).clamp(0, _maxHeight).toInt();
     super.didChangeDependencies();
   }
 

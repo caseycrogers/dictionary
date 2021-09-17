@@ -92,10 +92,11 @@ class _DropDownWidgetState extends State<DropDownWidget>
             ),
           ),
           Positioned(
-            top: upperLeft.dy + renderBox.size.height + kPad - 1,
+            top: upperLeft.dy + renderBox.size.height - kPad/2,
             left: onLeft ? upperLeft.dx : null,
-            right:
-                onLeft ? null : width - upperLeft.dx - renderBox.size.width - 7,
+            right: onLeft
+                ? null
+                : width - upperLeft.dx - 2 * renderBox.size.width / 3,
             child: ScaleTransition(
               alignment: Alignment.topRight,
               scale: _curve,

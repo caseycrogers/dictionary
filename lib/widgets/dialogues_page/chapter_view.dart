@@ -137,9 +137,7 @@ class _ChapterViewState extends State<ChapterView> {
             expandedHeaderPadding: EdgeInsets.zero,
             children: [
               ExpansionPanel(
-                backgroundColor: _isExpanded
-                    ? Theme.of(context).cardColor
-                    : Colors.transparent,
+                backgroundColor: Theme.of(context).cardColor,
                 isExpanded: _isExpanded,
                 canTapOnHeader: true,
                 headerBuilder: (context, isOpen) => ListTile(

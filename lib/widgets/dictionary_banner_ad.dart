@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:rogers_dictionary/main.dart';
+import 'package:rogers_dictionary/dictionary_app.dart';
 
 class DictionaryBannerAd extends StatefulWidget {
   const DictionaryBannerAd({Key? key, this.keywordNotifier})

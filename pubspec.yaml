@@ -49,6 +49,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   sqflite_common_ffi: ^2.0.0
+  msix: ^2.1.3
 
 flutter:
   uses-material-design: true
@@ -67,3 +68,13 @@ flutter_native_splash:
   color: "ffffff"
   android_gravity: fill
   image: "assets/images/r_splash_screen.png"
+
+msix_config:
+  display_name: Rogers Dictionary
+  publisher_display_name: Rogers Dictionary
+  identity_name: com.rogers.dictionary
+  msix_version: 0.0.1.0
+  certificate_path: C:\Users\Waffl\Documents\code\rogers_dictionary\keys\not_a_virus.pfx
+  certificate_password: notavirus
+  publisher: E=caseycrogers@berkeley.edu, CN=Rogers Dictionary, O=Rogers Dictionary, L=Willits, S=California, C=US
+  architecture: x64

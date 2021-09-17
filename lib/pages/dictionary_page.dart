@@ -28,9 +28,7 @@ class DictionaryPage extends StatelessWidget {
         }
       },
       child: ValueListenableBuilder<TranslationModel>(
-        valueListenable: DictionaryModel
-            .of(context)
-            .translationModel,
+        valueListenable: DictionaryModel.of(context).translationModel,
         builder: (context, model, tabBarView) {
           return Scaffold(
             body: Theme(
@@ -52,7 +50,8 @@ class DictionaryPage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (!isBigEnoughForAdvanced(context)) const DictionaryTabBar(),
+                  if (!isBigEnoughForAdvanced(context))
+                    const DictionaryTabBar(),
                 ],
               ),
             ),

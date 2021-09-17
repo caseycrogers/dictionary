@@ -8,6 +8,7 @@ import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/protobufs/dialogues.pb.dart';
 import 'package:rogers_dictionary/util/dialogue_extensions.dart';
 import 'package:rogers_dictionary/util/text_utils.dart';
+import 'package:rogers_dictionary/widgets/adaptive_material/adaptive_material.dart';
 import 'package:rogers_dictionary/widgets/buttons/indent_icon.dart';
 import 'package:rogers_dictionary/widgets/loading_text.dart';
 
@@ -58,6 +59,7 @@ class ChapterList extends StatelessWidget {
                     ),
                   )
                   .toList(),
+              iconColor: AdaptiveMaterial.secondaryOnColorOf(context),
             );
           return _clickableHeader(context, false, chapter: chapter);
         },

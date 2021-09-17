@@ -1,13 +1,21 @@
-const String ENGLISH = 'English';
-const String SPANISH = 'Spanish';
+import 'package:rogers_dictionary/models/translation_mode.dart';
+
+const String ENGLISH = 'english';
+const String SPANISH = 'spanish';
 const String DICTIONARY_DB = 'dictionary';
 const String VERSION_FILE = 'database_version.json';
 
-// Column/field names.
+const String BOOKMARKS_DB = 'bookmarks';
+
+// Entry column names.
 const String URL_ENCODED_HEADWORD = 'url_encoded_headword';
 const String HEADWORD = 'headword';
 const String ENTRY_ID = 'entry_id';
 const String ENTRY_BLOB = 'entry_blob';
+
+// Bookmarks column names.
+const String FAVORITES = 'favorites';
+const String BOOKMARK_TAG = 'tag';
 
 const String IS_FAVORITE = 'is_favorite';
 
@@ -51,3 +59,17 @@ const String SPANISH_CONTENT = 'spanish_content';
 // Misc.
 const String WITHOUT_OPTIONALS = '_without_optionals';
 const String OPPOSITE_HEADWORD_SENTINEL = '1';
+
+String entryTable(TranslationMode mode) {
+  if (mode == TranslationMode.English) {
+    return ENGLISH;
+  }
+  return SPANISH;
+}
+
+String bookmarksTable(TranslationMode mode) {
+  if (mode == TranslationMode.English) {
+    return '${ENGLISH}_$BOOKMARKS_DB';
+  }
+  return '${SPANISH}_$BOOKMARKS_DB';
+}
