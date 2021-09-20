@@ -46,10 +46,7 @@ class _SearchBarState extends State<SearchBar> {
     return ValueListenableBuilder<TranslationModel>(
       valueListenable: DictionaryModel.of(context).translationModel,
       builder: (context, translationPage, child) {
-        return AdaptiveMaterial(
-          adaptiveColor: AdaptiveColor.primary,
-          child: child!,
-        );
+        return child!;
       },
       child: _SearchBarBase(controller: _controller),
     );
@@ -79,11 +76,11 @@ class _SearchBarBase extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       height: kToolbarHeight,
-      padding: const EdgeInsets.all(kPad),
+      padding: const EdgeInsets.symmetric(vertical: kPad),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(40),
         child: Container(
-          color: Theme.of(context).cardColor,
+          color: Theme.of(context).colorScheme.surface,
           child: TextField(
             style: TextStyle(
               fontSize: Theme.of(context).textTheme.bodyText2!.fontSize,

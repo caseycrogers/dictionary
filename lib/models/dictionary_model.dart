@@ -56,6 +56,8 @@ class DictionaryModel {
 
   final ValueNotifier<double> pageOffset = ValueNotifier(0);
 
+  final ValueNotifier<bool> displayBackButton = ValueNotifier(false);
+
   ValueNotifier<List<String>> get currentAdKeywords {
     return currentTab.expand<List<String>>((tab) {
       switch (tab) {

@@ -21,32 +21,21 @@ class SelectedEntrySwitcher extends StatefulWidget {
 }
 
 class _SelectedEntrySwitcherState extends State<SelectedEntrySwitcher> {
-  late ImplicitNavigatorState _implicitNavigator;
-  VoidCallback? _disposeListener;
+  ImplicitNavigatorState<SelectedEntry?>? _navigator;
 
   @override
-  void didChangeDependencies() {
-    if (_disposeListener == null) {
-      void onTranslationChanged() {
-        if (isCurrentTranslationPage(context)) {
-          return _implicitNavigator.enablePop();
-        }
-        return _implicitNavigator.disablePop();
-      }
-
-      DictionaryModel.of(context)
-          .translationModel
-          .addListener(onTranslationChanged);
-      _disposeListener = () => DictionaryModel.of(context)
-          .translationModel
-          .removeListener(onTranslationChanged);
-    }
-    super.didChangeDependencies();
+  void initState() {
+    super.initState();
+    DictionaryModel.of(context)
+        .translationModel
+        .addListener(_onTranslationModeChanged);
   }
 
   @override
   void dispose() {
-    _disposeListener?.call();
+    DictionaryModel.of(context)
+        .translationModel
+        .removeListener(_onTranslationModeChanged);
     super.dispose();
   }
 
@@ -61,7 +50,7 @@ class _SelectedEntrySwitcherState extends State<SelectedEntrySwitcher> {
         ValueHistoryEntry(0, null),
       ],
       builder: (context, selectedEntry, _, __) {
-        _implicitNavigator = ImplicitNavigator.of(context);
+        _navigator = ImplicitNavigator.of<SelectedEntry?>(context);
         if (selectedEntry == null) {
           if (isBigEnoughForAdvanced(context)) {
             return Container(
@@ -96,6 +85,10 @@ class _SelectedEntrySwitcherState extends State<SelectedEntrySwitcher> {
         }
       },
     );
+  }
+
+  void _onTranslationModeChanged() {
+    _navigator!.canPop = isCurrentTranslationPage(context);
   }
 }
 

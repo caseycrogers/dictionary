@@ -4,6 +4,7 @@ import 'package:rogers_dictionary/models/search_model.dart';
 
 import 'package:rogers_dictionary/util/constants.dart';
 import 'package:rogers_dictionary/util/layout_picker.dart';
+import 'package:rogers_dictionary/widgets/adaptive_material/adaptive_material.dart';
 import 'package:rogers_dictionary/widgets/dictionary_page/dictionary_tab.dart';
 import 'package:rogers_dictionary/widgets/search_page/search_bar.dart';
 import 'package:rogers_dictionary/widgets/search_page/selected_entry_switcher.dart';
@@ -40,7 +41,15 @@ class _PortraitLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TranslationModeSwitcher(
-      header: _isSearch(context) ? const SearchBar() : null,
+      header: _isSearch(context)
+          ? const AdaptiveMaterial(
+              adaptiveColor: AdaptiveColor.primary,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: kPad),
+                child: SearchBar(),
+              ),
+            )
+          : null,
       child: const SelectedEntrySwitcher(),
     );
   }

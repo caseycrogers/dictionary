@@ -84,7 +84,23 @@ class _DictionaryTabBarViewState extends State<DictionaryTabBarView> {
     return ImplicitNavigator<DictionaryTab>.fromNotifier(
       key: const PageStorageKey('tab_selector'),
       valueNotifier: currentTab,
-      builder: (context, tab, _, __) => widget.children[tab]!,
+      builder: (context, tab, _, __) {
+        void updateBackButton() {
+          WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+            DictionaryModel.of(context).displayBackButton.value =
+                ImplicitNavigator.of<dynamic>(context, root: true).canPop;
+          });
+        }
+
+        updateBackButton();
+        return NotificationListener(
+          onNotification: (notification) {
+            updateBackButton();
+            return false;
+          },
+          child: widget.children[tab]!,
+        );
+      },
       getDepth: (tab) => tab == DictionaryTab.search ? 0 : 1,
       transitionsBuilder: _getTransition,
     );
