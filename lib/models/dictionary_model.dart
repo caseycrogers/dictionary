@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:implicit_navigator/implicit_navigator.dart';
 
 import 'package:rogers_dictionary/clients/entry_builders.dart';
 import 'package:rogers_dictionary/dictionary_app.dart';
@@ -58,11 +59,13 @@ class DictionaryModel {
 
   final ValueNotifier<bool> displayBackButton = ValueNotifier(false);
 
+  late ImplicitNavigatorState<DictionaryTab> tabNavigator;
+
   ValueNotifier<List<String>> get currentAdKeywords {
     return currentTab.expand<List<String>>((tab) {
       switch (tab) {
         case DictionaryTab.search:
-          return currTranslationModel.searchPageModel.adKeywords;
+          return currTranslationModel.searchModel.adKeywords;
         case DictionaryTab.bookmarks:
           return currTranslationModel.bookmarksPageModel.adKeywords;
         case DictionaryTab.dialogues:
@@ -137,7 +140,7 @@ class DictionaryModel {
   }) {
     pageModel ??= isBookmarksOnly
         ? currTranslationModel.bookmarksPageModel
-        : currTranslationModel.searchPageModel;
+        : currTranslationModel.searchModel;
     // Only update if the value has actually changed
     if (newUrlEncodedHeadword == pageModel.currSelectedHeadword) {
       return;
@@ -174,10 +177,10 @@ class DictionaryModel {
     String? thirdTier;
     switch (currentTab.value) {
       case DictionaryTab.search:
-        thirdTier = translationModel.value.searchPageModel.currSelectedHeadword;
+        thirdTier = translationModel.value.searchModel.currSelectedHeadword;
         break;
       case DictionaryTab.bookmarks:
-        thirdTier = translationModel.value.searchPageModel.currSelectedHeadword;
+        thirdTier = translationModel.value.searchModel.currSelectedHeadword;
         break;
       case DictionaryTab.dialogues:
         thirdTier = translationModel

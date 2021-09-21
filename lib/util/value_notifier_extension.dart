@@ -1,8 +1,14 @@
 import 'package:flutter/cupertino.dart';
 
 extension ValueNotifierExtension<T> on ValueNotifier<T> {
-  ValueNotifier<R> map<R>(R Function(T value) mapper) {
+  ValueNotifier<R> map<R>(
+    R Function(T value) mapper,
+    T Function(R value) backMapper,
+  ) {
     final ValueNotifier<R> proxyNotifier = ValueNotifier(mapper(value));
+    proxyNotifier.addListener(() {
+      value = backMapper(proxyNotifier.value);
+    });
     void onValueChanged() {
       proxyNotifier.value = mapper(value);
     }
@@ -18,6 +24,7 @@ extension ValueNotifierExtension<T> on ValueNotifier<T> {
     void onInnerValueChanged() {
       proxyNotifier.value = notifier!.value;
     }
+
     void onValueChanged() {
       notifier?.removeListener(onInnerValueChanged);
       notifier = mapper(value);

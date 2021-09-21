@@ -47,7 +47,7 @@ class SearchModel {
     if (context.findAncestorWidgetOfExactType<BookmarksPage>() != null) {
       return translationModel.bookmarksPageModel;
     }
-    return translationModel.searchPageModel;
+    return translationModel.searchModel;
   }
 }
 

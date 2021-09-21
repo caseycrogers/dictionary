@@ -15,7 +15,7 @@ TranslationMode oppositeMode(TranslationMode mode) =>
 class TranslationModel {
   TranslationModel({
     required this.translationMode,
-  })  : searchPageModel = SearchModel(
+  })  : searchModel = SearchModel(
           mode: translationMode,
           isBookmarksOnly: false,
         ),
@@ -28,7 +28,7 @@ class TranslationModel {
   // Translation mode state.
   final TranslationMode translationMode;
 
-  final SearchModel searchPageModel;
+  final SearchModel searchModel;
 
   final SearchModel bookmarksPageModel;
 

@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 
 import 'package:rogers_dictionary/i18n.dart' as i18n;
 import 'package:rogers_dictionary/models/dictionary_model.dart';
+import 'package:rogers_dictionary/models/entry_search_model.dart';
 import 'package:rogers_dictionary/models/search_model.dart';
 import 'package:rogers_dictionary/models/translation_model.dart';
 import 'package:rogers_dictionary/util/constants.dart';
-import 'package:rogers_dictionary/widgets/adaptive_material/adaptive_material.dart';
 
 class SearchBar extends StatefulWidget {
   const SearchBar();
@@ -17,20 +17,24 @@ class SearchBar extends StatefulWidget {
 
 class _SearchBarState extends State<SearchBar> {
   late TextEditingController _controller;
-  late bool _isEmpty;
+
+  late SearchModel _searchModel;
 
   bool _shouldInit = true;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    final SearchModel searchPageModel =
-        DictionaryModel.of(context).translationModel.value.searchPageModel;
+    _searchModel =
+        DictionaryModel.of(context).translationModel.value.searchModel;
 
     if (_shouldInit) {
-      _controller = TextEditingController(text: searchPageModel.searchString);
-      _controller.addListener(_onChanged);
-      _isEmpty = searchPageModel.searchString.isEmpty;
+      _controller = TextEditingController(text: _searchModel.searchString);
+      // Bidirectional listen. This won't create an infinite loop because it
+      // only notifies listeners if the value is new.
+      _controller.addListener(_onTextChanged);
+      _searchModel.entrySearchModel.currSearchString
+          .addListener(_onSearchChanged);
       _shouldInit = false;
     }
   }
@@ -38,6 +42,8 @@ class _SearchBarState extends State<SearchBar> {
   @override
   void dispose() {
     _controller.dispose();
+    _searchModel.entrySearchModel.currSearchString
+        .removeListener(_onTextChanged);
     super.dispose();
   }
 
@@ -52,17 +58,38 @@ class _SearchBarState extends State<SearchBar> {
     );
   }
 
-  void _onChanged() {
+  // Listener to update model if the local text has changed.
+  void _onTextChanged() {
+    final EntrySearchModel entrySearchModel = DictionaryModel.of(context)
+        .currTranslationModel
+        .searchModel
+        .entrySearchModel;
+    final bool oldIsEmpty = entrySearchModel.isEmpty;
     DictionaryModel.of(context)
         .currTranslationModel
-        .searchPageModel
+        .searchModel
         .entrySearchModel
         .onSearchStringChanged(
           context: context,
           newSearchString: _controller.text,
         );
-    if (_isEmpty != _controller.text.isEmpty) {
-      setState(() => _isEmpty = _controller.text.isEmpty);
+    if (oldIsEmpty != _controller.text.isEmpty) {
+      setState(() {});
+    }
+  }
+
+  // Listener to update local text if the model has changed.
+  void _onSearchChanged() {
+    final EntrySearchModel entrySearchModel = DictionaryModel.of(context)
+        .currTranslationModel
+        .searchModel
+        .entrySearchModel;
+    final String oldText = _controller.text;
+    if (oldText != entrySearchModel.searchString) {
+      _controller.text = entrySearchModel.searchString;
+    }
+    if (oldText.isEmpty != entrySearchModel.isEmpty) {
+      setState(() {});
     }
   }
 }

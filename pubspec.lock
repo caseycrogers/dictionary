@@ -342,7 +342,7 @@ packages:
       path: "../implicit_navigator"
       relative: true
     source: path
-    version: "0.1.0"
+    version: "0.3.0"
   injector:
     dependency: transitive
     description:
